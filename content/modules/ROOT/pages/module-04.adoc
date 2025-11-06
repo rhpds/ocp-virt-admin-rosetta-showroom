@@ -14,8 +14,8 @@ Install with defaults
 
 
 [start=2]
-. Operators > OperatorHub
-Search Self Node Remediation operator and pick the Red Hat operator
+Operators > OperatorHub
+. Search Self Node Remediation operator and pick the Red Hat operator
 Install with defaults
 
 [start=3]
@@ -31,7 +31,11 @@ Click create
 
 [start=5]
 . Find out what node your vm is running on 
-$ oc get vmi
+
+[source,bash]
+----
+oc get vmi
+----
 
 [start=6]
 . Open two terminal additional terminal sessions for monitoring
@@ -39,18 +43,28 @@ $ oc get vmi
 [start=7]
 . On the first new terminal you opened. We are going to use this to monitor the node found in step 5.
 
+[source,bash]
+----
 $ oc get nodes < worker from step 5> -w
+----
 
 [start=8]
 . On the second new terminal you opened. We are going to use this to monitor you vm
+
+[source,bash]
+----
 oc get -n labvm vmi -w
+----
 
 [start=9]
 . On the original terminal you created we are going to force the worker from step 5 to go into an unhealthy state.
 
-$ oc debug node/< worker from step 5>
-$ chroot /host
-$ systemctl stop kubelet
+[source,bash]
+----
+oc debug node/< worker from step 5>
+chroot /host
+systemctl stop kubelet
+----
 
 [start=10]
 . Go to operator > Installed operators  > Self Node Remediation Operator > Self Node Remediation
@@ -60,7 +74,6 @@ Here you can see that self remediation is occurring on the node
 . Initially, your worker will transition to a 'not ready' state, causing the VM to fail. Subsequently, the worker will enter a 'NotReady, SchedulingDisabled' state, and the VM will become pending.
 
 The VM will then proceed through scheduling and be scheduled onto a new node, where it will begin running. Concurrently, the original node will undergo remediation by the Self Node Remediation operator and be restored to a healthy state.
-
 
 
 
