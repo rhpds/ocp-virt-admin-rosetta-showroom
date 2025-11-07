@@ -1,6 +1,8 @@
 * xref:index.adoc[Introduction]
 
-* xref:module-01.adoc[1. Live Migration of Workloads ]
+* xref:module-01.adoc#compute[1. Live Migration of Workloads ]
+* xref:module-01.adoc#compute[Compute]
+* xref:module-01.adoc#storage[Storage]
 
 * xref:module-02.adoc[2. CPU and Memory Overcommit ]
 ** xref:module-02.adoc#cpu[CPU]
