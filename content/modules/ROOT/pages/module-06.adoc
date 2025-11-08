@@ -17,10 +17,14 @@ image::exercise6/06-image-nodehealthcheck.png[title="Create NodeHealthCheck", li
 
 [start=2]
 . Name it workerhealthcheck
+
 image::exercise6/06-image-nodehealthcheck2.png[title="Create NodeHealthCheck", link=self, window=blank, width=100%]
+
 Set Selector Labels to worker
 Change duration to 60s for both Unhealthy Conditions.
+
 image::exercise6/06-image-nodehealthcheck3.png[title="Create NodeHealthCheck", link=self, window=blank, width=100%]
+
 Click create
 
 [start=3]
@@ -84,4 +88,4 @@ Here you can see that self remediation is occurring on the node.
 
 
 [start=11]
-The VM will then proceed through scheduling and be scheduled onto a new node, where it will begin running. Concurrently, the original node will undergo remediation by the Self Node Remediation operator and be restored to a healthy state.
+. The VM will then proceed through scheduling and be scheduled onto a new node, where it will begin running. Concurrently, the original node will undergo remediation by the Self Node Remediation operator and be restored to a healthy state.
