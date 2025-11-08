@@ -19,7 +19,8 @@ Set Selector Labels to worker
 . Create a node health check 
 Installed Operators click Node Health Check Operator
 Click Node health check > create NodeHealthCheck
-image::exercise6/06-image-nodehealhcheck.png[title="Create NodeHealthCheck", link=self, window=blank, width=100%]
+
+image::exercise6/06-image-nodehealthcheck.png[title="Create NodeHealthCheck", link=self, window=blank, width=100%]
 
 [start=4]
 . Name it workerhealthcheck
