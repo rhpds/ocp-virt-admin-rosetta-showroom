@@ -1,22 +1,19 @@
+[#fencing]
 = Fencing and How to Handle Node Failure 
 
 
 
 This lab demonstrates the capabilities of the Node Health Check Operator and the Self Node Remediation Operator. You will simulate a node failure to observe the virtual machine migration process and subsequent node recovery.
 
-[#fencing]
+
 
 [start=1]
-. Install the Node Health Check operator with defaults 
-Operators > OperatorHub
-Search Node Health Check and pick the Red Hat operator
-Install with defaults
-
+ . Navigate to Ecosystem → Installed Operators. Then click Node Health Check → create NodeHealthCheck
 
 [start=2]
-. Operators > OperatorHub
-Search Self Node Remediation operator and pick the Red Hat operator
-Install with defaults
+. Name the NodeHealthCheck workerhealthcheck
+Set Selector Labels to worker
+
 
 [start=3]
 . Create a node health check 
