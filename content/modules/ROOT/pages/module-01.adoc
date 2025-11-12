@@ -43,7 +43,7 @@ Identify the URL for the OpenShift web console
 
 [start=2]
 . Navigate to Virtualization -> Virtual Machines and then click on the virtual machine named vm01.
-Note which worker node the VM is currently running on (example: worker-cluster-s67qr-2).
+Note which node the VM is currently running on. In this example, it is worker-cluster-m2ssq-1, but your worker node will be different.
 
 image::exercise1/01-image-compute-002.png[title="Virtual machine details", link=self, window=blank, width=100%]
 
