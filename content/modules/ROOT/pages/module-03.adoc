@@ -211,7 +211,7 @@ image::exercise3/03-image-nic-004.png[title="Add network interface", link=self, 
 image::exercise3/03-image-nic-005.png[title="View pending changes", link=self, window=blank, width=100%]
 
 [start=6]
-. Although it is possible at this time to simply restart the VM, we are trying to hot plug the NIC, so instead we will initiate a  live migration. During a live migration, the VM will move from one worker node to another while the VM is still running.
+. After the NIC is added, the VM will eventually live migrate to another node in order to complete the hardware addition. However, if you do not want to wait, you can initiate a live migration to complete the hot plug process.
 
 image::exercise3/03-image-nic-006.png[title="Migrate the VM", link=self, window=blank, width=100%]
 
