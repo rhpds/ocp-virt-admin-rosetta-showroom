@@ -11,7 +11,7 @@ In this module, you will perform three tasks:
 In this lab, we will add more CPU and Memory resources to a virtual machine by changing the virtual machine’s Instance Type. To do this, you will start with an existing VM that has a single vCPU and 2 GiB of memory. Using the OpenShift Virtualization console, you will modify the configuration of the VM Instance Type to a type that has 2 vCPU and 4 GiB of memory.
 
 [start=1]
-. Login to the OpenShift console using the credentials provided to you by the lab administrator. Navigate to Virtualization -> Virtual Machines, and select the virtualmachines project. Select the VM named vm01.
+. Login to the OpenShift console using the credentials provided to you by the lab administrator. Navigate to Virtualization -> Virtual Machines, and select the virtualmachines project. Select the VM named hot-plug-vm1.
 Note that the InstanceType of this VM is u1.small. Above the InstanceType, you can see that the CPU | Memory for this VM is 1 CPU | 2GiB Memory. This is the current configuration for this VM.
 
 image::exercise3/03-image-cpu-001.png[title="CPU and Memory before hot plug", link=self, window=blank, width=100%]
@@ -65,9 +65,9 @@ image::exercise3/03-image-cpu-007.png[title="Verify new resources", link=self, w
 In this lab, we will add a new network interface connection (NIC) to an existing VM. To do this, you will start with an existing VM that has a single NIC on the pod network. Using the OpenShift Virtualization console, you will modify the configuration of the VM to include an additional NIC on a new network. You complete the hot plug action by live-migrating the VM to another worker node.
 
 [start=1]
-. Login to the OpenShift console using the credentials provided to you by the lab administrator. Navigate to Virtualization → Virtual Machines, and select the virtualmachines project. Select the VM named vm01.
+. Login to the OpenShift console using the credentials provided to you by the lab administrator. Navigate to Virtualization → Virtual Machines, and select the virtualmachines project. Select the VM named hot-plug-vm1.
 
-image::exercise3/03-image-disk-001.png[title="vm01 details", link=self, window=blank, width=100%]
+image::exercise3/03-image-disk-001.png[title="hot-plug-vm1 details", link=self, window=blank, width=100%]
 
 [start=2]
 . Click on the Configuration tab and select Storage. Note that the VM currently has a single bootable disk. You may also login to the VM via the Console tab and view the storage details from the operating system.
@@ -104,9 +104,9 @@ image::exercise3/03-image-disk-007.png[title="View the new disk from the OS", li
 . The new disk is hot-plugged to the virtual machine by way of a new pod that manages access to the disk. The new pod in the project is called “hp-volume-xxxxx” and runs in addition to the virt-launcher pod for the vm.
 ...
 $ oc get pods -n vmtest
-NAME                            READY   STATUS      RESTARTS   AGE
-hp-volume-mdnjd                 1/1     Running     0          114s
-virt-launcher-vm01-rb6lg        2/2     Running     0          147m
+NAME                                READY   STATUS      RESTARTS   AGE
+hp-volume-mdnjd                     1/1     Running     0          114s
+virt-launcher-hot-plug-vm1-rb6lg    2/2     Running     0          147m
 ...
 
 [start=9]
@@ -117,8 +117,8 @@ virt-launcher-vm01-rb6lg        2/2     Running     0          147m
 
 [start=11]
 . Now you will remove the hot-plugged disk from the virtual machine. If you mounted the hot-plugged disk on your system, make sure to umount it before proceeding.
-Navigate to the vm01 virtual machine and then click on Configuration -> Storage.
-Note the name of the PVC that you will remove (e.g. dv-vm01-data-disk-01-4uvf4o) because you may want it for the Bonus Lab later!
+Navigate to the hot-plug-vm1 virtual machine and then click on Configuration -> Storage.
+Note the name of the PVC that you will remove (e.g. dv-hot-plug-vm1-data-disk-01-um6O11) because you may want it for the Bonus Lab later!
 Click on the three dots on the right side of the hot-plugged disk and select Detach.
 
 image::exercise3/03-image-disk-011.png[title="Detach the disk", link=self, window=blank, width=100%]
@@ -144,7 +144,7 @@ for you to know about converting a hot-plugged disk to a standard disk, which re
 reattach the PVC as a standard disk while the VM is shut down.
 
 [start=2]
-. Navigate to the virtual machine called vm01 and stop it, either by using the square stop button or by pulling down the Actions menu and clicking on Stop.
+. Navigate to the virtual machine called hot-plug-vm1 and stop it, either by using the square stop button or by pulling down the Actions menu and clicking on Stop.
 
 image::exercise3/03-image-disk-persist-002.png[title="Stop the VM", link=self, window=blank, width=100%]
 
@@ -154,7 +154,7 @@ image::exercise3/03-image-disk-persist-002.png[title="Stop the VM", link=self, w
 image::exercise3/03-image-disk-persist-003.png[title="Add a volume", link=self, window=blank, width=100%]
 
 [start=4]
-. Give the disk a name, if desired, and select the previously disconnected PVC name in the PersistentVolumeClaim name menu (e.g. dv-vm01-data-disk-01-um6O11)
+. Give the disk a name, if desired, and select the previously disconnected PVC name in the PersistentVolumeClaim name menu (e.g. dv-hot-plug-vm1-data-disk-01-um6O11)
 
 image::exercise3/03-image-disk-persist-004.png[title="Select the PVC", link=self, window=blank, width=100%]
 
@@ -182,7 +182,7 @@ image::exercise3/03-image-disk-persist-007.png[title="The disk is attached", lin
 In this lab, we will add a new network interface connection (NIC) to an existing VM. To do this, you will start with an existing VM that has a single NIC on the pod network. Using the OpenShift Virtualization console, you will modify the configuration of the VM to include an additional NIC on a new network. You complete the hot plug action by live-migrating the VM to another worker node.
 
 [start=1]
-. Login to the OpenShift console using the credentials provided to you by the lab administrator. Navigate to Virtualization -> Virtual Machines, and select the virtualmachines project. Select the VM named vm01.
+. Login to the OpenShift console using the credentials provided to you by the lab administrator. Navigate to Virtualization -> Virtual Machines, and select the virtualmachines project. Select the VM named hot-plug-vm1.
 
 [start=2]
 . Take note of the worker node on which the VM is running (e.g. worker-cluster-m2ssq-3)
