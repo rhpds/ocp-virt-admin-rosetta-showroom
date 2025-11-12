@@ -42,7 +42,7 @@ Login to the OpenShift console using the credentials provided to you by the lab 
 Identify the URL for the OpenShift web console 
 
 [start=2]
-. Navigate to Virtualization -> Virtual Machines and then click on the virtual machine named `live-migrate`.
+. Navigate to Virtualization -> Virtual Machines and then click on the virtual machine named `live-migrate-vm1`.
 Note which node the VM is currently running on. In this example, it is worker-cluster-m2ssq-1, but your worker node will be different.
 
 image::exercise1/01-image-compute-002.png[title="Virtual machine details", link=self, window=blank, width=100%]
@@ -104,7 +104,7 @@ Login to the OpenShift console using the credentials provided to you by the lab 
 Identify the URL for the OpenShift web console 
 
 [start=2]
-. Navigate to Virtualization -> Virtual Machines and then click on the virtual machine named `live-migrate`.
+. Navigate to Virtualization -> Virtual Machines and then click on the virtual machine named `live-migrate-vm1`.
 Note which worker node the VM is currently running on (example: `worker-cluster-m2ssq-1`. Your cluster will have a different node name).
 
 image::exercise1/01-image-compute-002.png[title="Virtual machine details", link=self, window=blank, width=100%]
@@ -144,7 +144,7 @@ allows the migration of PVCs from one StorageClass to another while the virtual 
 NOTE: This is similar to the VMware Storage vMotion feature for VMs.
 
 [start=1]
-. Login to the OpenShift console using the credentials provided to you by the lab administrator. Navigate to Virtualization -> Virtual Machines, and select the virtualmachines project. Select the VM named `live-migrate`.
+. Login to the OpenShift console using the credentials provided to you by the lab administrator. Navigate to Virtualization -> Virtual Machines, and select the virtualmachines project. Select the VM named `live-migrate-vm1`.
 
 image::exercise1/01-image-storage-001.png[title="Virtual machine details", link=self, window=blank, width=100%]
 
@@ -193,7 +193,7 @@ NOTE: It may take some time for the migration to complete.
 image::exercise1/01-image-storage-009.png[title="Migration is running", link=self, window=blank, width=100%]
 
 [start=10]
-. Once the migration is Complete, navigate back to the virtual machine called `live-migrate` and view the Configuration -> Storage options again.
+. Once the migration is Complete, navigate back to the virtual machine called `live-migrate-vm1` and view the Configuration -> Storage options again.
 Note that the name of the Source has changed and the Storage class has changed to `custom-storage-class`, which is what you selected in the storage migration plan.
 
 image::exercise1/01-image-storage-010.png[title="VM has been migrated", link=self, window=blank, width=100%]
