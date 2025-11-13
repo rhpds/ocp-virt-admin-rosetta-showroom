@@ -122,11 +122,11 @@ oc apply -f https://raw.githubusercontent.com/mmayeras/k8s-stress-test/refs/head
 https://raw.githubusercontent.com/mmayeras/k8s-stress-test/refs/heads/main/stress-deploy.yaml
 ----
 
-==== 5.4 Edit the deployment to use a specific node selector
+==== 5.4 Edit the deployment to use a specific node selector (place it on a node where at least 1 vm is running)
 
 [source,bash]
 ----
-oc patch deployment stress-test -p '{"spec":{"template":{"spec":{"nodeSelector":{"kubernetes.io/hostname":"worker01"}}}}}'
+oc patch deployment stress-test --merge -p '{"spec":{"template":{"spec":{"nodeSelector":{"kubernetes.io/hostname":"worker01"}}}}}'
 ----
 
 ==== 5.5 Verify the deployment
@@ -139,6 +139,12 @@ oc get pods -n stress-test
 [source,bash]
 ----
 oc logs -f -n openshift-kube-descheduler-operator -l app=descheduler
+----
+
+==== 5.7 Edit the kubedescheduler cluster resource to set the deschedulingIntervalSeconds to a lower value for testing purposes.
+[source,bash]
+----
+oc -n openshift-kube-descheduler-operator patch kubedescheduler cluster --type merge -p '{"spec":{"deschedulingIntervalSeconds":600}}'
 ----
 
 You should see logs like the following:
