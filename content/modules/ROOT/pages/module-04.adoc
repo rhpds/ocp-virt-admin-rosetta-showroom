@@ -97,7 +97,7 @@ oc get vmi node-affinity-vm
 ---- 
 
 [#podaffinity]
-=Node Affinity
+= Node Affinity
 We will now demonstrate  pod affinity.
 
 [start=1]
@@ -280,7 +280,7 @@ oc get vmi node-affinity-vm
 . You will now see the the pod-affinity-vm is now running the same location as the node-affinity-vm because of the pod affinity rule.
 
 
-[#Podantiaffinity]
+[#podantiaffinity]
 = Pod Anti-Affinity
 
 [start=1]
