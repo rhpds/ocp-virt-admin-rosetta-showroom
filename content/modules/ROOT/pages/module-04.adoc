@@ -1,0 +1,297 @@
+= Affinity
+
+In this lab, you will be applying Node Affinity, Pod Affinity, and Anti-Pod Affinity to Virtual Machines (VMs). The primary objective is to deepen your understanding of these principles and demonstrate how they can be applied effectively in real-world scenarios.
+
+
+[Node Affinity]
+=Node Affinity
+
+[start=1]
+.  First go to the affinity project
+Home > Project > affinity
+
+[start=2]
+.  Login into your bastion host with credentials provided to you by the lab administrator. You will need this for later steps. You will need this for later steps.
+	
+ssh lab-user@<host> -p 32270
+
+[start=3]
+.  Using the credentials provided by the lab administrator, log in to the OpenShift CLI from your terminal on the bastion host. Be sure to substitute the placeholder password and cluster name with the specific values you were given.
+oc login -u admin -p <password> --server=https://api.cluster-<clustername>.dynamic.redhatworkshops.io:6443
+
+
+[start=4]
+.  Find out what node the node-affinity-vm is running on. 
+To do this you can look at the vm in the affinity project or you can use the openshift CLI.
+oc project affinity
+oc get vmi node-affinity-vm
+
+[start=5]
+. Set an east node label on any work where the node-affinity-vm is currently not running
+oc get nodes
+oc label node <worker where node-affinity-vm is not running>   zone=east
+Alternatively you can use the OpenShift Console by going to Compute > Nodes  and then pick a node where node-affinity-vm is not running. Then click the 3 dots and click edit labels.
+
+[start=6]
+. Make sure the label was applied
+oc get nodes <worker you just labeled> --show-labels | grep -i zone=east
+
+[start=7]
+. Navigate to Virtualization > Virtual Machines > node-affinity-vm > Configuration 
+
+[start=8]
+. Now navigate to Scheduling> Affinity rules
+
+[start=9]
+. Click add affinity rule
+
+[start=10]
+. Change the condition to preferred during scheduling and set the weight to 75.
+. Under Node Labels click Add Expression. Make the key zone and the values east. Your Final Node Affinity rule will look like the picture below. Confirm this is true and click save affinity rule.
+. 
+
+[start=11]
+. Then click apply rules.
+
+[start=12]
+. Now let's take a look at the Node Affinity rule on node-affinity-vm. You can do this by using the GUI and going to YAML on the pod-anti-affinity-vm or you can do it on the CLI.
+oc edit vm pod-anti-affinity-vm 
+:q!
+
+[start=13]
+. To make the vm follow these new affinity rules. You normally would migrate it to the node with the label. However, to show that this affinity rule is working. We are going to power off the vm completely and then power it back on. 
+
+[start=14]
+. Click Action stop.
+
+[start=15]
+. Once the VM completely stops. Click Actions Start.
+
+[start=16]
+. On the GUI you can see that your vm has moved to the node where the label was set. You can also see this on the OCP CLI if you prefer
+oc get vmi node-affinity-vm
+ 
+
+[Pod Affinity]
+=Node Affinity
+We will now demonstrate  pod affinity.
+
+[start=1]
+. First we are going to add a label to node-affinity-vm. So we can make this the vm the pod that we will have node affinity to. On the OpenShift Console we are going to edit the vm and add the app: node-aff
+
+oc edit vmi node-affinity-vm -n affinity
+
+
+apiVersion: kubevirt.io/v1
+kind: VirtualMachineInstance
+metadata:
+  annotations:
+    kubevirt.io/latest-observed-api-version: v1
+    kubevirt.io/storage-observed-api-version: v1
+    kubevirt.io/vm-generation: "3"
+    vm.kubevirt.io/flavor: small
+    vm.kubevirt.io/os: rhel9
+    vm.kubevirt.io/workload: server
+  creationTimestamp: "2025-11-13T13:25:16Z"
+  finalizers:
+  - kubevirt.io/virtualMachineControllerFinalize
+  - foregroundDeleteVirtualMachine
+  generation: 13
+  labels:
+    app: node-affinity-vm  ←—--
+    kubevirt.io/domain: node-affinity-vm
+    kubevirt.io/nodeName: worker-cluster-t96sv-1
+    kubevirt.io/size: small
+    network.kubevirt.io/headlessService: headless
+
+:wq!
+oc edit vm node-affinity-vm -n affinity
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  annotations:
+    kubemacpool.io/transaction-timestamp: "2025-11-12T05:17:34.117234412Z"
+    kubevirt.io/latest-observed-api-version: v1
+    kubevirt.io/storage-observed-api-version: v1
+    vm.kubevirt.io/validations: |
+      [
+        {
+          "name": "minimal-required-memory",
+          "path": "jsonpath::.spec.domain.memory.guest",
+          "rule": "integer",
+          "message": "This VM requires more memory.",
+          "min": 1610612736
+        }
+      ]
+  creationTimestamp: "2025-11-12T02:02:05Z"
+  finalizers:
+  - kubevirt.io/virtualMachineControllerFinalize
+  generation: 3
+  labels:
+    app: node-affinity-vm  ←—- Not here
+    kubevirt.io/dynamic-credentials-support: "true"
+    podaffinity: ""
+    vm.kubevirt.io/template: rhel9-server-small
+    vm.kubevirt.io/template.namespace: openshift
+    vm.kubevirt.io/template.revision: "1"
+    vm.kubevirt.io/template.version: v0.34.1
+  name: node-affinity-vm
+  namespace: affinity
+  resourceVersion: "1485819"
+  uid: 20136774-16cb-46e5-8cb4-417de1712da6
+spec:
+  dataVolumeTemplates:
+  - apiVersion: cdi.kubevirt.io/v1beta1
+    kind: DataVolume
+    metadata:
+      creationTimestamp: null
+      name: node-affinity-vm
+    spec:
+      sourceRef:
+        kind: DataSource
+        name: rhel9
+        namespace: openshift-virtualization-os-images
+      storage:
+        resources:
+          requests:
+            storage: 30Gi
+  runStrategy: RerunOnFailure
+  template:
+    metadata:
+      annotations:
+        vm.kubevirt.io/flavor: small
+        vm.kubevirt.io/os: rhel9
+        vm.kubevirt.io/workload: server
+      creationTimestamp: null
+      labels:
+        app: node-affinity-vm  ←—- insert it here
+        kubevirt.io/domain: node-affinity-vm
+        kubevirt.io/size: small
+        network.kubevirt.io/headlessService: headless
+
+:wq!
+
+[start=2]
+. Click the pod-affinity-vm  
+
+[start=3]
+. See where the pod-affinity-vm is running by looking at OpenShift Console or check on the OpenShift Command line. 
+oc get vmi pod-affinity-vm
+
+[start=4]
+. Click Configure > scheduling
+
+[start=5]
+. Click the Affinity rules
+
+[start=6]
+. Add Affinity rule
+
+[start=7]
+. Change the type to  Workload (pod) Affinity
+
+[start=8]
+. Keep the condition to Required during scheduling.
+
+[start=9]
+. Keep the Topology key they same 
+
+[start=10]
+. Click Add expression under Workload labels
+
+[start=11]
+. We are going to now set a key so this vm will run on the same node as node-affinity-vm. Set the key to app and values to node-affinity-vm. Your Final Pody Affinity rule will look like the picture below. Confirm this is true and click Save affinity rule.
+
+
+[start=12]
+. Click Apply Rules
+
+[start=13]
+. Now let's take a look at the Pod Affinity rule on pod-affinity-vm. You can do this by using the GUI and going to YAML on the pod-anti-affinity-vm or you can do it on the CLI.
+oc edit vm pod-anti-affinity-vm 
+:q!
+
+[start=14]
+. See where the pod-affinity-vm and node-affinity-vm are running by looking at OpenShift Console or check on the OpenShift Command line. 
+oc get vmi pod-affinity-vm
+oc get vmi node-affinity-vm
+
+[start=15]
+. To make the vm follow these new affinity rules. You normally would migrate it to the node with the label. However, to show that this affinity rule is working. We are going to power off the vm completely and then power it back on. 
+
+[start=16]
+. On  Click Action stop.
+
+[start=17]
+. Once the VM completely stops. Click Actions Start.
+
+[start=18]
+. See where the pod-affinity-vm and node-affinity-vm are running by looking at OpenShift Console or check on the OpenShift Command line. 
+oc get vmi pod-affinity-vm
+oc get vmi node-affinity-vm
+
+[start=19]
+. You will now see the the pod-affinity-vm is now running the same location as the node-affinity-vm because of the pod affinity rule.
+
+
+[Pod Anti-Affinity]
+=Pod Anti-affinity
+[start=1]
+. We are going to use the node-affinity-vm and reusing app: node-affinity-vm label  we created last time to create our pod anti affinity rule.
+[start=2]
+. Click the pod-affinity-vm  
+
+[start=3]
+. Click Configure > scheduling
+
+[start=4]
+. Click the Affinity rules
+
+[start=5]
+. Add Affinity rule
+
+[start=6]
+. Change the type to  Workload (pod) Anit-Affinity
+
+[start=7]
+. Keep the condition to Required during scheduling.
+
+[start=8]
+. Keep the Topology key they same 
+
+[start=9]
+. Click Add expression under Workload labels
+
+[start=10]
+. We are going to now set a key so this vm will run on the same node as node-affinity-vm. Set the key to app and values to node-affinity-vm. Your Final Pody Affinity rule will look like the picture below. Confirm this is true and click Save affinity rule.
+
+[start=11]
+. Click Apply Rules
+
+[start=12]
+. Now let's take a look at the Pod Anto Affinity rule on pod-anti-affinity-vm. You can do this by using the GUI and going to YAML on the pod-anti-affinity-vm or you can do it on the CLI.
+oc edit vm pod-anti-affinity-vm 
+:q!
+
+
+[start=13]
+. See where the pod-affinity-vm and node-affinity-vm are running by looking at OpenShift Console or check on the OpenShift Command line. 
+oc get vmi pod-anti-affinity-vm
+oc get vmi node-affinity-vm
+
+[start=14]
+. To make the vm follow these new affinity rules. You normally would migrate it to the node with the label. However, to show that this affinity rule is working. We are going to power off the vm completely and then power it back on.
+
+[start=15]
+. On the oc get vmi pod-anti-affinity-vm Click Action stop.
+
+[start=16]
+. Once the VM completely stops. Click Actions Start.
+
+[start=17]
+. See where the pod-affinity-vm and node-affinity-vm are running by looking at OpenShift Console or check on the OpenShift Command line. 
+oc get vmi pod-anti-affinity-vm
+oc get vmi node-affinity-vm
+
+[start=18]
+. The  pod-anit-affinity-vm will now be running on a different node than node-affinity-vm.  If pod-anit-affinity-vm was not already running on a different node then the node-affinity-vm. 
