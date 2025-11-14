@@ -1,138 +1,205 @@
-= Managing an Application from GitHub
+= Overcommit in OpenShift Virtualization
 
-In the first half of this workshop, we packaged an application into this portable container format manually using rpms.
-In the second half, we will consider that you may want to manage software from GitHub or some kind of software versioning application.
-Rather than installing rpms, we have individual software files and pull them out of that version control into a group of systems.
+== Introduction
 
-== Install RHEL 8 UBI
 
-In this lab, we will be using a different Red Hat Enterprise Linux version in my container. 
+*Overcommit* occurs when the total virtual resources allocated to VMs exceed the physical resources available on the host, enabling higher workload density by leveraging the fact that VMs rarely use their full allocated capacity simultaneously.
 
-. Verify the host system release 
+[#cpu]
+== CPU Overcommit
 
+In OpenShift Virtualization, compute resources assigned to virtual machines (VMs) are backed by either *guaranteed CPUs* or *time-sliced CPU shares*.
+
+*Guaranteed CPUs*, also known as CPU reservation, dedicate CPU cores or threads to a specific workload, making them unavailable to any other workload. Assigning guaranteed CPUs to a VM ensures sole access to a reserved physical CPU. You enable dedicated resources for VMs to use guaranteed CPUs.
+
+*Time-sliced CPUs* dedicate a slice of time on a shared physical CPU to each workload. You can specify the slice size during VM creation or when the VM is offline. By default, each vCPU receives 100 milliseconds (1/10 of a second) of physical CPU time.
+
+With time-sliced CPUs, the Linux kernel's *Completely Fair Scheduler (CFS)* manages how VMs share physical CPU cores. CFS rotates VMs through available cores, giving each VM a proportional slice of CPU time based on its configured CPU requests.
+
+
+To allow for CPU overcommit, which is set to 10:1 by default, each VM’s virt-launcher pod will define “100m” total CPU requests, which is 1/10th of a host CPU from a Kubernetes resource and scheduling perspective, per vCPU.
+
+However this default 10:1 CPU overcommit ratio can be configured to the desired overcommit level by changing the cluster CPU Allocation Ratio. Changing this ratio will influence the amount of cpu requests each vCPU is allocated by default, which enforces a max level of CPU overcommit through Kubernetes requests scheduling.
+
+NOTE: Note that resource assignments are made at virt-launcher pod scheduling time, so any VMs will need to be stopped and restarted to change CPU allocation behavior after a ratio change.
+
+=== Instructions
+
+[start=1]
+. Login into your bastion host with credentials provided to you by the lab administrator. You will need this for later steps.
+
+[source,bash]
+----	
+ssh lab-user@<host> -p 32270
+----
+
+[start=2]
+. Using the credentials provided by the lab administrator, log in to the OpenShift CLI from your terminal on the bastion host. Be sure to substitute the placeholder password and cluster name with the specific values you were given.
+
+[source,bash]
+----
+oc login -u admin -p <password> --server=https://api.cluster-<clustername>.dynamic.redhatworkshops.io:6443
+oc login whoami --show-console
+----
+
+[start=3]
+
+. To understand CPU overcommit, you must first identify how many physical CPU cores are available on your worker nodes.
+
+List all worker nodes in your cluster:
+
+[source,bash]
+----
+oc get nodes -l node-role.kubernetes.io/worker=
+----
+
+View detailed CPU information for a specific node:
+
+[source,bash]
+----
+oc describe node <node_name> | grep -A 5 "Capacity:"
+----
+
+This command displays output similar to:
+
+[source,text]
+----
+Capacity:
+  cpu:                            16
+  devices.kubevirt.io/kvm:        1k
+  devices.kubevirt.io/tun:        1k
+  devices.kubevirt.io/vhost-net:  1k
+  ephemeral-storage:              104266732Ki
+  hugepages-1Gi:                  0
+  hugepages-2Mi:                  0
+  memory:                         65836964Ki
+  pods:                           250
+----
+
+The `cpu` value shows the number of physical CPU cores (or threads if hyperthreading is enabled) available on the node.
+
+Alternatively, check CPU allocatable resources (physical CPUs minus system reservations):
+
+[source,bash]
+----
+oc get node <node_name> -o jsonpath='{.status.allocatable.cpu}{"\n"}'
+----
+
+[start=4]
+. Viewing VM vCPU Allocations
+
+List all running VMs and their vCPU counts:
+
+[source,bash]
+----
+oc get vms -n overcommit -o custom-columns=\
+NAMESPACE:.metadata.namespace,\
+NAME:.metadata.name,\
+vCPUs:.spec.template.spec.domain.cpu.cores,\
+STATUS:.status.printableStatus
+----
+
+For a specific VM, check the vCPU configuration:
+
+[source,bash]
+----
+oc get vm overcommit-vm-1 -n overcommit -o jsonpath='{.spec.template.spec.domain.cpu.cores}{"\n"}'
+----
+
+View CPU requests and limits for a running VM:
+
+[source,bash]
+----
+oc get vmi overcommit-vm-1 -n overcommit -o jsonpath='{.spec.domain.cpu}{"\n"}'
+----
+
+[start=5]
+. Calculating CPU Overcommit Ratio
+
+To calculate the overcommit ratio on a specific node:
+
+. Identify all VMs running on the node:
 +
 [source,bash]
 ----
-cat /etc/redhat-release
+oc get vmi -A -o wide | grep <node_name>
 ----
-+ 
-NOTE: The `bastion` system is Red Hat Enterprise Linux 9, and when you built the previous container, you used the UBI9 image. This means both the image and the container were built off the same Red Hat Enterprise Linux packages. 
 
-. As we did previously in this lab, Use `buildah from` to pull down the Red Hat Enterprise Linux 8 UBI.
-
+. Sum the vCPUs for all VMs on that node:
 +
 [source,bash]
 ----
-buildah from registry.access.redhat.com/ubi8/ubi
+oc get vmi -A -o json | \
+jq -r --arg NODE "<node_name>" \
+'.items[] | select(.status.nodeName == $NODE) | 
+{
+  name: .metadata.name,
+  total_vcpus: ((.spec.domain.cpu.sockets // 1) * (.spec.domain.cpu.cores // 1) * (.spec.domain.cpu.threads // 1))
+}' | \
+jq -s 'map(.total_vcpus) | add'
 ----
 
-NOTE: Because you already pulled one image named `ubi-working-container` this one is called `ubi-working-container-1`. 
-
-[#prerequisites]
-== Install Prerequisites
-
-Now that you have a working container, you will use the same process as before installing all the prerequisites, changing config files, and manipulating the contents of this container to be in the desired state.
-
-The software you will install is a JavaScript-based game that runs on a web browser. As before in the lab, use dnf to install software inside the container. 
-
-. Use `buildah run` and install Apache (`httpd`) into the `ubi-working-container-1` container. 
+. Calculate the overcommit ratio:
 +
+[source,text]
+----
+Overcommit Ratio = Total vCPUs allocated / Physical CPU cores
+
+Example:
+- Physical CPU cores: 16
+- Total vCPUs allocated: 48
+- Overcommit ratio: 48 / 16 = 3:1
+----
+
+
+[start=6]
+. Understanding the Default 10:1 CPU Overcommit Ratio
+
+OpenShift Virtualization applies a default *10:1 CPU overcommit ratio* when you don't explicitly specify CPU requests. This means that if a VM has multiple vCPUs, the actual CPU request on the virt-launcher pod is only 1/10th of the total vCPUs.
+
+. Check virt-launcher Pod CPU Requests
+
+To see the actual CPU requests made by the virt-launcher pod (which runs the VM):
+
 [source,bash]
 ----
-buildah run ubi-working-container-1 -- dnf -y install httpd
+oc get pods -n overcommit -l vm.kubevirt.io/name=overcommit-vm-1
 ----
 
-== Enable Service
+View the pod's CPU requests:
 
-The next thing to do is to use a systemctl to enable the service. The ubi-init provides full systemd service to the container.
-This will start up any of the services that are enabled. 
-
-. Enable the `httpd` service using `buildah run`
-
-+
 [source,bash]
 ----
-buildah run ubi-working-container-1 -- systemctl enable httpd
+oc get pod -n overcommit <pod_name> \
+-o jsonpath='{.spec.containers[?(@.name=="compute")].resources}{"\n"}' | jq
+
+{
+  "limits": {
+    "devices.kubevirt.io/kvm": "1",
+    "devices.kubevirt.io/tun": "1",
+    "devices.kubevirt.io/vhost-net": "1"
+  },
+  "requests": {
+    "cpu": "4800m",
+    "devices.kubevirt.io/kvm": "1",
+    "devices.kubevirt.io/tun": "1",
+    "devices.kubevirt.io/vhost-net": "1",
+    "ephemeral-storage": "50M",
+    "memory": "2696Mi"
+  }
+}
 ----
 
-NOTE: The UBI standard image doesn't have systemd installed on it by default. The `ubi-init` container image does include systemd. Plan accordingly to which image you use to build applications.  
 
-== Explore Source Materials
+*Key observation*: A VM with 48 vCPUs only requests `4800m` (0.1 * 48 = 4.8 CPU) by default!
 
-A GitHub repository has already been synchronized to `/home/devops/clumsy-bird/` This repository contains the configurations for your application.
 
-. Verify the repository is cloned inside the `/home/devops/` directory
-+
-[source,bash]
-----
-cd /home/devops/
-----
 
-+
-[source,bash]
-----
-git clone https://github.com/ellisonleao/clumsy-bird
-----
-+
-NOTE: The output states that the software has already been checked out. 
-+
-. Explore the JavaScript contents, index files, and everything else that we need for this web-based JavaScript software.
-+
-[source,bash,role=execute]
-----
-ls clumsy-bird
-----
+[#memory]
+== Memory Overcommit
 
-== Add Source Materials to Container
+By design, Kubernetes, and hence OpenShift and OpenShift Virtualization, does not allow use of swap.
 
-. Now that you have verified the source materials exist, you will put the software inside of my container image using the `buildah copy` command.
-+
-[source,bash]
-----
-buildah copy ubi-working-container-1 clumsy-bird /var/www/html
-----
+Memory oversubscription without use of swap is hazardous because if the amount of memory required by processes running on a node exceeds the amount of RAM available, processes will be killed. That's not desirable in any event, but particularly not for VMs where the workloads running on VMs will be taken down if the VMs are killed. 
 
-[#container]
-== Enable Container in Background
-
-In the previous section of this lab, you ran the game natively through interactive mode. Because you are now building a web application you will need to run the container in the background and access it through a web address. 
-
-. Execute `buildah config` to specify a port and initialize the container. 
-
-+
-[source,bash]
-----
-buildah config --port 80 --cmd "/usr/sbin/init" ubi-working-container-1
-----
-
-NOTE: The command makes a configuration change to this container. I'm configuring this container to accept connections to its port 80. When the container starts up, it should run the init command, which, in this case, is going to be the Apache daemon right from earlier when I enabled it.
-
-== Commit Container and Deploy
-
-. Now that we have a container in a working configured state, it is time to make that permanent by committing it to a container image called `clumsy-bird`
-+
-[source,bash]
-----
-buildah commit ubi-working-container-1 clumsy-bird
-----
-
-. Verify that the image was created with `podman`
-+
-[source,bash]
-----
-podman images
-----
-+
-. Run the container Now it's time to run the container. 
-+
-[source,bash]
-----
-podman run -d -p 8500:80 clumsy-bird
-----
-
-== Verify Application
-
-Verify that the application is running by navigating to
-
-http://bastion.{guid}.example.opentlc.com:8500
 
