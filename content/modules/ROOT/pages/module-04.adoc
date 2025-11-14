@@ -9,7 +9,7 @@ In this lab, you will be applying Node Affinity, Pod Affinity, and Anti-Pod Affi
 = Node Affinity
 
 [start=1]
-. First go to the affinity project
+. First navigate to the affinity project.
 Home → Project → affinity
 
 [start=2]
@@ -42,10 +42,12 @@ oc get vmi node-affinity-vm
 [source,bash]
 ----
 oc get nodes
-oc label node <worker where node-affinity-vm is not running>   zone=east
+oc label node <worker where node-affinity-vm is not running> zone=east
 ----
 
-Alternatively you can use the OpenShift Console by going to Compute > Nodes  and then pick a node where node-affinity-vm is not running. Then click the 3 dots and click edit labels.
+image::exercise6/04-image-affinity.png[title="Label Nodes", link=self, window=blank, width=100%]
+
+Alternatively you can use the OpenShift Console by going to Compute → Nodes  and then pick a node where node-affinity-vm is not running. Then click the 3 dots and click edit labels.
 
 [start=6]
 . Make sure the label was applied
@@ -57,8 +59,12 @@ oc get nodes <worker you just labeled> --show-labels | grep -i zone=east
 [start=7]
 . Navigate to Virtualization → Virtual Machines → node-affinity-vm → Configuration 
 
+image::exercise6/04-image-affinity01.png[title="Node Affinity Navigation", link=self, window=blank, width=100%]
+
+
 [start=8]
-. Now navigate to Scheduling →Affinity rules
+. Now navigate to Scheduling → Affinity rules
+image::exercise6/04-image-affinity02.png[title="Node Affinity add rule", link=self, window=blank, width=100%]
 
 [start=9]
 . Click add affinity rule
@@ -66,7 +72,8 @@ oc get nodes <worker you just labeled> --show-labels | grep -i zone=east
 [start=10]
 . Change the condition to preferred during scheduling and set the weight to 75.
 . Under Node Labels click Add Expression. Make the key zone and the values east. Your Final Node Affinity rule will look like the picture below. Confirm this is true and click save affinity rule.
-. 
+
+image::exercise6/04-image-affinity03.png[title="Node Affinity Rule", link=self, window=blank, width=100%]
 
 [start=11]
 . Then click apply rules.
