@@ -43,18 +43,17 @@ oc login whoami --show-console
 ----
 
 [start=3]
-
 . To understand CPU overcommit, you must first identify how many physical CPU cores are available on your worker nodes.
 
-List all worker nodes in your cluster:
+.. List all worker nodes in your cluster:
 
 [source,bash]
 ----
 oc get nodes -l node-role.kubernetes.io/worker=
 ----
 
-View detailed CPU information for a specific node:
-
+.. View detailed CPU information for a specific node:
++
 [source,bash]
 ----
 oc describe node <node_name> | grep -A 5 "Capacity:"
@@ -78,7 +77,7 @@ Capacity:
 
 The `cpu` value shows the number of physical CPU cores (or threads if hyperthreading is enabled) available on the node.
 
-Alternatively, check CPU allocatable resources (physical CPUs minus system reservations):
+.. Alternatively, check CPU allocatable resources (physical CPUs minus system reservations):
 
 [source,bash]
 ----
@@ -114,18 +113,32 @@ oc get vmi overcommit-vm-1 -n overcommit -o jsonpath='{.spec.domain.cpu}{"\n"}'
 ----
 
 [start=5]
+. Confirm the number of CPUs inside the guest
+
+From the web console, login into the VM and run the following command to verify the number of CPUs:
+[source,bash]
+----
+nproc
+48
+----
+
+image::exercise2/overcommit-nproc.png[title="Confirm number of CPUs", link=self, window=blank, width=100%]
+
+
+
+[start=6]
 . Calculating CPU Overcommit Ratio
 
 To calculate the overcommit ratio on a specific node:
 
-. Identify all VMs running on the node:
+.. Identify all VMs running on the node:
 +
 [source,bash]
 ----
 oc get vmi -A -o wide | grep <node_name>
 ----
 
-. Sum the vCPUs for all VMs on that node:
+.. Sum the vCPUs for all VMs on that node:
 +
 [source,bash]
 ----
@@ -139,7 +152,7 @@ jq -r --arg NODE "<node_name>" \
 jq -s 'map(.total_vcpus) | add'
 ----
 
-. Calculate the overcommit ratio:
+.. Calculate the overcommit ratio:
 +
 [source,text]
 ----
@@ -152,12 +165,12 @@ Example:
 ----
 
 
-[start=6]
+[start=7]
 . Understanding the Default 10:1 CPU Overcommit Ratio
 
 OpenShift Virtualization applies a default *10:1 CPU overcommit ratio* when you don't explicitly specify CPU requests. This means that if a VM has multiple vCPUs, the actual CPU request on the virt-launcher pod is only 1/10th of the total vCPUs.
 
-. Check virt-launcher Pod CPU Requests
+.. Check virt-launcher Pod CPU Requests
 
 To see the actual CPU requests made by the virt-launcher pod (which runs the VM):
 
