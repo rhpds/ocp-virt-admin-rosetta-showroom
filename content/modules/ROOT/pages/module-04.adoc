@@ -190,7 +190,7 @@ metadata:
   - kubevirt.io/virtualMachineControllerFinalize
   generation: 3
   labels:
-    app: node-affinity-vm  ←—- Not here
+    app: node-affinity-vm  ←-- This will already exist
     kubevirt.io/dynamic-credentials-support: "true"
     podaffinity: ""
     vm.kubevirt.io/template: rhel9-server-small
@@ -226,7 +226,7 @@ spec:
         vm.kubevirt.io/workload: server
       creationTimestamp: null
       labels:
-        app: node-affinity-vm  ←—- insert it here
+        app: node-affinity-vm  ←—- Put label here
         kubevirt.io/domain: node-affinity-vm
         kubevirt.io/size: small
         network.kubevirt.io/headlessService: headless
