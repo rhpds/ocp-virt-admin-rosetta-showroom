@@ -65,7 +65,7 @@ oc get nodes < worker from step 5> -w
 
 [start=8]
 . On the second new terminal you opened. We are going to use this to monitor you vm.
-Here you can see that self remediation is occurring on the node
+Here you can see that self remediation is occurring on the node.
 
 [source,bash]
 ----
