@@ -58,7 +58,7 @@ image::exercise1/01-image-compute-003.png[title="Initiate migration", link=self,
 image::exercise1/01-image-compute-004.png[title="Configure migration", link=self, window=blank, width=100%]
 
 [start=5]
-. Change the selection to Specific Node and then check the box next to a node (e.g. `worker-cluster-s67qr-1`. Your lab will have a different node name).
+. Change the selection to Specific Node and then check the box next to a node (e.g. `worker-cluster-m2ssq-1`. Your lab will have a different node name).
 
 image::exercise1/01-image-compute-005.png[title="Select worker node", link=self, window=blank, width=100%]
 
@@ -69,7 +69,7 @@ image::exercise1/01-image-compute-006.png[title="VM is migrating", link=self, wi
 
 [start=7]
 . A few moments after that, the Virtual Machine status will return to `Running`.
-Note that the worker node is now on the new worker node (e.g. `worker-cluster-s67qr-1`).
+Note that the worker node is now on the new worker node (e.g. `worker-cluster-m2ssq-1`).
 
 image::exercise1/01-image-compute-007.png[title="VM is running", link=self, window=blank, width=100%]
 
@@ -127,7 +127,7 @@ image::exercise1/01-image-compute-006.png[title="VM is migrating", link=self, wi
 
 [start=7]
 . A few moments after that, the Virtual Machine status will return to `Running`.
-Note that the worker node has changed (e.g. worker-cluster-s67qr-3).
+Note that the worker node has changed (e.g. worker-cluster-m2ssq-3).
 
 image::exercise1/01-image-compute-007.png[title="VM is running", link=self, window=blank, width=100%]
 
