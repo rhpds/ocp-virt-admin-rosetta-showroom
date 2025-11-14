@@ -98,7 +98,7 @@ List all running VMs and their vCPU counts:
 
 [source,bash]
 ----
-oc get vms -n overcommit -o custom-columns=\
+oc get vms -n over-commit -o custom-columns=\
 NAMESPACE:.metadata.namespace,\
 NAME:.metadata.name,\
 vCPUs:.spec.template.spec.domain.cpu.cores,\
@@ -109,14 +109,14 @@ For a specific VM, check the vCPU configuration:
 
 [source,bash]
 ----
-oc get vm overcommit-vm-1 -n overcommit -o jsonpath='{.spec.template.spec.domain.cpu.cores}{"\n"}'
+oc get vm overcommit-vm-1 -n over-commit -o jsonpath='{.spec.template.spec.domain.cpu.cores}{"\n"}'
 ----
 
 View CPU requests and limits for a running VM:
 
 [source,bash]
 ----
-oc get vmi overcommit-vm-1 -n overcommit -o jsonpath='{.spec.domain.cpu}{"\n"}'
+oc get vmi overcommit-vm-1 -n over-commit -o jsonpath='{.spec.domain.cpu}{"\n"}'
 ----
 
 **Using the OpenShift Console:**
@@ -188,14 +188,14 @@ To see the actual CPU requests made by the virt-launcher pod (which runs the VM)
 
 [source,bash]
 ----
-oc get pods -n overcommit -l vm.kubevirt.io/name=overcommit-vm-1
+oc get pods -n over-commit -l vm.kubevirt.io/name=overcommit-vm-1
 ----
 
 View the pod's CPU requests:
 
 [source,bash]
 ----
-oc get pod -n overcommit <pod_name> \
+oc get pod -n over-commit <pod_name> \
 -o jsonpath='{.spec.containers[?(@.name=="compute")].resources}{"\n"}' | jq
 
 {
