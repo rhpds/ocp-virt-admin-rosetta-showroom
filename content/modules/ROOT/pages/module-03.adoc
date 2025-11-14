@@ -54,7 +54,7 @@ To validate that the VM now has 4GiB of memory, run the command:
 ----
   $ free -m
 ----
-You will see that the VM has 3669 MiB of total memory.
+You will see that the VM has approximately 4 GiB of total memory.
 
 NOTE: This VM image has kdump enabled, which reserves some memory for the kernel. This is why the memory amount appears to be less than 4 GiB. In fact, 4 GiB of memory is configured for the VM, but the operating system sees a lower number. If kdump were disabled, the total memory would be 4 GiB.
 
