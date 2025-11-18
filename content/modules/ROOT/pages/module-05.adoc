@@ -28,8 +28,6 @@ In this module, we will guide you through the process of configuring Reschedulin
 * The `KubeVirtRelieveAndMigrate` profile requires PSI metrics to be enabled on all worker nodes. For your convenience, this is already enabled in this lab.
 
 == Instructions
-
-
 . Login into your bastion host with credentials provided to you by the lab administrator. You will need this for later steps.
 +
 
@@ -50,30 +48,27 @@ oc login whoami --show-console
 . Check which virtual machines are running in the `dynamic-schedule` namespace
 +
 
-
 ----
 oc get vmi -n dynamic-schedule
 ----
-
++
 You should see the following output:
-
++
 ----
 NAME     AGE     PHASE     IP             NODENAME
 dynamic-schedule-vm1    10m     Running   10.129.2.111   worker01
 dynamic-schedule-vm2    10m     Running   10.129.2.112   worker02
 ----
 
-[start=3]
+[start=4]
 . Configure the Descheduler Operator
 +
-
-
 ----
 oc -n openshift-kube-descheduler-operator edit kubedescheduler cluster
 ----
-
++
 You should see the following output:
-
++
 [source,yaml]
 ----
 apiVersion: operator.openshift.io/v1
@@ -98,17 +93,17 @@ spec:
   deschedulingIntervalSeconds: 3600 
   managementState: Managed     
 ----
-
 NOTE: Notice the mode is set to Predictive. By default, the descheduler does not evict pods. To evict pods, set mode to Automatic.
-
-[start=4]
++
+[start=5]
 . Ensure the descheduler pod is running and check the logs in the openshift-kube-descheduler-operator namespace
++
 
 ----
 oc logs -n openshift-kube-descheduler-operator -l app=descheduler
 ----
 
-[start=5]
+[start=6]
 . Deploy a stress test pod to validate the descheduler functionality
 
 
@@ -142,9 +137,9 @@ oc logs -f -n openshift-kube-descheduler-operator -l app=descheduler
 ----
 oc -n openshift-kube-descheduler-operator patch kubedescheduler cluster --type merge -p '{"spec":{"deschedulingIntervalSeconds":600}}'
 ----
-
++
 You should see logs like the following:
-
++
 [source,text]
 ----
 I1113 15:24:57.371043       1 lownodeutilization.go:261] "Number of overutilized nodes" totalNumber=1
@@ -153,31 +148,32 @@ I1113 15:24:57.371273       1 nodeutilization.go:189] "Pods on node" node="worke
 I1113 15:30:00.673653       1 nodeutilization.go:205] "Evicting pods based on priority, if they have same priority, they'll be evicted based on QoS tiers"
 I1113 15:30:00.673755       1 evictions.go:551] "Evicted pod in dry run mode" pod="dynamic-schedule/virt-launcher-vm01" reason="" strategy="LowNodeUtilization" node="worker01" profile="DevKubeVirtRelieveAndMigrate"
 ----
-
-
++
 NOTE: Notice the mode is set to Predictive so the eviction is in dry run mode. To evict pods, set mode to Automatic.
 
-[start=6]
+[start=7]
 . Turn on the descheduler mode to Automatic
++
 ----
 oc -n openshift-kube-descheduler-operator patch kubedescheduler cluster --type merge -p '{"spec":{"mode":"Automatic"}}'
 ----
 
-[start=7]
+[start=8]
 . Verify the descheduler pod logs in the openshift-kube-descheduler-operator namespace
++
 ----
 oc logs -f -n openshift-kube-descheduler-operator -l app=descheduler
 ----
 
-[start=8]
+[start=9]
 . Confirm the pods are evicted and rescheduled on another node
-
++
 ----
 oc get pods -n dynamic-schedule -o wide
 ----
-
++
 You should now see the two vms running on the same node: 
-
++
 [source,text]
 ----
 NAME                     READY   STATUS    RESTARTS   AGE     IP             NODE       NOMINATED NODE   READINESS GATES
@@ -185,13 +181,13 @@ virt-launcher-vm01       1/1     Running   0          10m     10.129.2.111   wor
 virt-launcher-vm02       1/1     Running   0          10m     10.129.2.112   worker02   <none>           <none>
 ----
 
-[start=9]
+[start=10]
 . You can confirm the eivtion is working by placing the stress test pod on the node where the VMs are running and confirm they are evicted and rescheduled on another node
-
++
 ----
 oc -n dynamic-schedule patch deployment stress-test --merge -p '{"spec":{"template":{"spec":{"nodeSelector":{"kubernetes.io/hostname":"worker02"}}}}}'
 ----
-
++
 ----
 oc get pods -n dynamic-schedule -o wide
 ----
