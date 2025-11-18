@@ -28,7 +28,6 @@ NOTE: Note that resource assignments are made at virt-launcher pod scheduling ti
 [start=1]
 . Login into your bastion host with credentials provided to you by the lab administrator. You will need this for later steps.
 
-[source,bash]
 ----	
 ssh lab-user@<host> -p 32270
 ----
@@ -36,7 +35,6 @@ ssh lab-user@<host> -p 32270
 [start=2]
 . Using the credentials provided by the lab administrator, log in to the OpenShift CLI from your terminal on the bastion host. Be sure to substitute the placeholder password and cluster name with the specific values you were given.
 
-[source,bash]
 ----
 oc login -u admin -p <password> --server=https://api.cluster-<clustername>.dynamic.redhatworkshops.io:6443
 oc login whoami --show-console
@@ -50,7 +48,6 @@ oc login whoami --show-console
 
 **Using the CLI:**
 
-[source,bash]
 ----
 oc get nodes -l node-role.kubernetes.io/worker=
 NAME                     STATUS   ROLES    AGE     VERSION
@@ -60,7 +57,6 @@ worker-cluster-pg8lt-3   Ready    worker   4h58m   v1.33.5
 ----
 
 
-[source,bash]
 ----
 oc describe node <node_name> | grep -A 5 "Capacity:"
 ----
@@ -86,7 +82,6 @@ The `cpu` value shows the number of physical CPU cores (or threads if hyperthrea
 
 * Alternatively, check CPU allocatable resources (physical CPUs minus system reservations):
 
-[source,bash]
 ----
 oc get node <node_name> -o jsonpath='{.status.allocatable.cpu}{"\n"}'
 15500m
@@ -103,7 +98,6 @@ image::exercise2/node-details.png[title="Confirm number of CPUs", link=self, win
 **Using the CLI:**
 List all running VMs and their vCPU counts:
 
-[source,bash]
 ----
 oc get vms -n over-commit -o custom-columns=\
 NAMESPACE:.metadata.namespace,\
@@ -116,7 +110,6 @@ over-commit   overcommit-vm-1   24      Running
 
 For a specific VM, check the vCPU configuration:
 
-[source,bash]
 ----
 oc get vm overcommit-vm-1 -n over-commit -o jsonpath='{.spec.template.spec.domain.cpu.cores}{"\n"}'
 24
@@ -124,7 +117,6 @@ oc get vm overcommit-vm-1 -n over-commit -o jsonpath='{.spec.template.spec.domai
 
 View CPU requests and limits for a running VM:
 
-[source,bash]
 ----
 oc get vmi overcommit-vm-1 -n over-commit -o jsonpath='{.spec.domain.cpu}{"\n"}'
 {"cores":24,"maxSockets":8,"model":"host-model","sockets":2,"threads":1}
@@ -139,7 +131,6 @@ image::exercise2/vm-details.png[title="Confirm number of CPUs", link=self, windo
 . Confirm the number of CPUs inside the guest
 
 From the web console, login into the VM and run the following command to verify the number of CPUs:
-[source,bash]
 ----
 nproc
 48
@@ -156,7 +147,6 @@ To calculate the overcommit ratio on a specific node:
 
 * Identify all VMs running on the node:
 
-[source,bash]
 ----
 oc get vmi -A -o wide | grep <node_name>
 affinity           pod-anti-affinity-vm    4h19m   Running   10.133.2.11   worker-cluster-pg8lt-3   True    True
@@ -165,7 +155,6 @@ over-commit        overcommit-vm-1         47m     Running   10.133.2.25   worke
 
 * Sum the vCPUs for all VMs on that node:
 
-[source,bash]
 ----
 oc get vmi -A -o json | \
 jq -r --arg NODE "<node_name>" \
@@ -200,7 +189,6 @@ OpenShift Virtualization applies a default *10:1 CPU overcommit ratio* when you 
 
 To see the actual CPU requests made by the virt-launcher pod (which runs the VM):
 
-[source,bash]
 ----
 oc get pods -n over-commit -l vm.kubevirt.io/name=overcommit-vm-1
 NAME                                  READY   STATUS    RESTARTS   AGE
@@ -209,7 +197,6 @@ virt-launcher-overcommit-vm-1-rtspw   2/2     Running   0          47m
 
 View the pod's CPU requests:
 
-[source,bash]
 ----
 oc get pod -n over-commit <pod_name> \
 -o jsonpath='{.spec.containers[?(@.name=="compute")].resources}{"\n"}' | jq
@@ -268,7 +255,6 @@ Observe the memory requests for the virt-launcher pod compared to the memory all
 image::exercise2/vm-memory-assigned.png[title="VM Memory Assigned", link=self, window=blank, width=100%]
 
 
-[source,bash]
 ----
 oc get vm  overcommit-vm-1 -o json | jq .spec.template.spec.domain.memory
 {
@@ -278,7 +264,6 @@ oc get vm  overcommit-vm-1 -o json | jq .spec.template.spec.domain.memory
 
 image::exercise2/virt-launcher-memory-request.png[title="Virt-Launcher Memory Request", link=self, window=blank, width=100%]
 
-[source,bash]
 ----
 oc get pod -l vm.kubevirt.io/name=overcommit-vm-1 -o json | jq .items[0].spec.containers[0].resources.requests.memory
 "2696Mi"
@@ -299,7 +284,6 @@ image::exercise2/enable-memory-overcommit.png[title="Enable Memory Overcommit", 
 
 You can confirm using the CLI :
 
-[source,bash]
 ----
 oc get hyperconverged -n openshift-cnv kubevirt-hyperconverged -o json | jq '.spec.higherWorkloadDensity.memoryOvercommitPercentage'
 150
@@ -327,7 +311,6 @@ This is less than the 2048MiB requested by the VM. This is because the memory ov
 
 
 
-[source,bash]
 ----
 oc patch hyperconverged -n openshift-cnv kubevirt-hyperconverged --type merge -p '{"spec":{"higherWorkloadDensity":{"memoryOvercommitPercentage":200}}}'
 hyperconverged.hco.kubevirt.io/kubevirt-hyperconverged patched
@@ -340,7 +323,6 @@ This means that the memory overcommit ratio is now 200%.
 
 Live migrate (or stop and restart) the VM to apply the new setting, then observe the memory requests for the virt-launcher pod from the web console or from the CLI:
 
-[source,bash]
 ----
 oc get pod -l vm.kubevirt.io/name=overcommit-vm-1 -o json | jq .items[0].spec.containers[0].resources.requests.memory
 "1670Mi"
