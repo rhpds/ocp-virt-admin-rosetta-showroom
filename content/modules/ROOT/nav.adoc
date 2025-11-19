@@ -26,3 +26,6 @@
 ** xref:module-06.adoc#fencing[Fencing]
 
 * xref:module-07.adoc[7. BONUS LAB! Decentralized Live Migration]
+** xref:module-07.adoc#howdeclm[How does it work?]
+** xref:module-07.adoc#decmlrequirements[Requirements]
+

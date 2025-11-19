@@ -1,22 +1,32 @@
-[#fencing]
 = Decentralized Live Migration
 
-Decentralized live migration is a variation of storage live migration that allows you to migrate a `VirtualMachine` between namespaces or between different clusters.
+A decentralized live migration is a variation of a storage live migration that allows you to migrate a running `VirtualMachine` between namespaces and clusters.
 
-This can be useful for a variety of reasons including:
+This can be useful to:
 
-Balancing Workload: Distributing virtual machines between clusters helps optimize resource utilization. If one cluster is heavily loaded while another is idle, rebalancing can significantly improve operational efficiency.
+*Balance Workloads*: Distributing virtual machines between clusters helps optimize resource utilization. If one cluster is heavily loaded while another is idle, rebalancing can significantly improve operational efficiency.
 
-Facilitating Maintenance: For environments with multiple clusters, virtual machine migration allows for seamless maintenance. You can move virtual machines off a cluster slated for upgrades or shutdown, ensuring zero downtime for your services.
+*Facilitate Maintenance*: For environments with multiple clusters, virtual machine migration allows for seamless maintenance. You can move virtual machines off a cluster slated for upgrades or shutdown, ensuring zero downtime for your services.
 
-Expediting Restores: Instant restore capabilities from backup vendors, particularly when coupled with namespace migration, can drastically speed up recovery times. virtual machines can be quickly restored to a temporary location and then migrated to their original namespace and storage.
+*Expedite Restores*: Instant restore capabilities from backup vendors, particularly when coupled with namespace migration, can drastically speed up recovery times. virtual machines can be quickly restored to a temporary location and then migrated to their original namespace and storage.
 
 This lab demonstrates the forthcoming Tech Preview capabilities of Decentralized Live Migration. In this lab, we will walk through the live migration of a `VirtualMachine` from one `Namespace` to another. The process of live migrating between namespaces follows the same process as if you were to migrate a `VirtualMachine` between 2 clusters.
 
-The migration involves two `VirtualMachineInstances` and two `VirtualMachineInstanceMigration` objects. Like a storage live migration, disk contents are copied over the network to the receiving `VirtualMachine`. The key difference is that the receiving virtual machine has a completely separate `VirtualMachineInstance`. In order to coordinate the migration, the status of the source and target `VirtualMachineInstance` has to be synchronized. A dedicated synchronization controller, running in the `openshift-cnv` namespace facilitates communication between the source and target `VirtualMachineInstances`.
 
 [NOTE]
 =====
 The UI based workflow is not fully functional yet. During this lab we will introduce you to the UI workflow, but perform the migration through the CLI.
 =====
 
+[#howdeclm]
+== How does it work?
+
+The migration involves two `VirtualMachineInstances` and two `VirtualMachineInstanceMigration` objects. Like a storage live migration, disk contents are copied over the network to the receiving `VirtualMachine`. The key difference is that the receiving virtual machine has a completely separate `VirtualMachineInstance`. In order to coordinate the migration, the status of the source and target `VirtualMachineInstance` has to be synchronized. A dedicated synchronization controller, running in the `openshift-cnv` namespace facilitates communication between the source and target `VirtualMachineInstances`.
+
+[#decmlrequirements]
+== Requirements
+
+These requirements have already been enabled on your cluster, they are noted for your reference.
+
+* The `Migration Toolkit for Virtualization (MTV)` Operator must be installed with the feature `feature_ocp_live_migration` set to `true` when creating the `ForkliftController` CR
+* You must enable the `DecentralizedLiveMigration` `featureGate` on the `KubeVirt` CR
