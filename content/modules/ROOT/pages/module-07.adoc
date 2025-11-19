@@ -26,7 +26,9 @@ The migration involves two `VirtualMachineInstances` and two `VirtualMachineInst
 [#decmlrequirements]
 == Requirements
 
-These requirements have already been enabled on your cluster, they are noted for your reference.
+These requirements have already been enabled on your cluster and are noted for your reference.
 
 * The `Migration Toolkit for Virtualization (MTV)` Operator must be installed with the feature `feature_ocp_live_migration` set to `true` when creating the `ForkliftController` CR
 * You must enable the `DecentralizedLiveMigration` `featureGate` on the `KubeVirt` CR
+
+
