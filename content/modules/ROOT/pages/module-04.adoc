@@ -101,6 +101,7 @@ image::exercise4/04-image-affinity.png[title="Label Nodes", link=self, window=bl
 
 [start=6]
 . Make sure the label was applied.
+
 [source,text,role=execute]
 .Find node with the assigned label
 ----
