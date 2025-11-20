@@ -363,7 +363,7 @@ oc get vmim -A -w
 +
 [NOTE]
 =====
-Using `-w` to apply a watch, you will see the `Migration` progress from `Scheduling` through to `Succeeded`.
+Using `-w` to apply a watch, you will see the `Migration` progress through a number of `PHASEs` from `Scheduling` through to `Succeeded`.
 =====
 
 +
