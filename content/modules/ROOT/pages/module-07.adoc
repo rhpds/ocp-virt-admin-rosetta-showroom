@@ -37,29 +37,34 @@ These requirements have already been enabled on your cluster and are noted for y
 . Using the credentials provided by the lab administrator, log in to the OpenShift CLI from your terminal on the bastion host. Be sure to substitute the placeholder password and cluster name with the specific values you were given.
 
 . Verify the source `VirtualMachineInstance` is running.
-
++
 [.wrap,console,role=execute]
 ----
 oc get vmi -n vm-live-migration-source
 ----
-
++
 The output will look similar to the following, with a different `IP` and `NODENAME`:
 
++
 [source,console]
 ----
 NAME                     AGE  PHASE    IP          NODENAME               READY
 vm-migration-ns-ns-live  28m  Running  10.233.2.16 worker-cluster-hflz6-3 True
 ----
 
++
 Now let's migrate our `VirtualMachine` `vm-migration-ns-ns-live` from the `Namespace` `vm-live-migration-source` to a new `Namespace` `vm-live-migration-destination`.
 
 [start=3]
-. As we noted above, the migration requires two `VirtualMachineInstances`. +
+. As we noted above, the migration requires two `VirtualMachineInstances`.
 
++ 
 The first step is to create an empty `DataVolume` for the receiver `VirtualMachine` in the destination `Namespace`. +
 
++ 
 Execute the following command to create the destination `DataVolume`:
 
++ 
 [.wrap,yaml,role=execute]
 ----
 cat <<EOF | oc apply -f -
@@ -81,53 +86,66 @@ spec:
 EOF
 ----
 
++ 
 Confirm the `DataVolume` and associated `PersistentVolumeClaim` have been created by executing the following 2 commands:
 
++ 
 [.wrap,console,role=execute]
 ----
 oc get DataVolume -n vm-live-migration-destination
 ----
 
++ 
 [source,console]
 ----
 NAME                     PHASE              PROGRESS  RESTARTS  AGE
 vm-migration-ns-ns-live  PendingPopulation  N/A                 107s
 ----
 
++ 
 [.wrap,console,role=execute]
 ----
 oc get PersistentVolumeClaim -n vm-live-migration-destination
 ----
 
++ 
 [source,console]
 ----
 NAME                     STATUS   VOLUME  CAPACITY  ACCESS MODES  STORAGECLASS                          VOLUMEATTRIBUTESCLASS  AGE
 vm-migration-ns-ns-live  Pending                                  ocs-external-storagecluster-ceph-rbd  <unset>                2m5s
 ----
++ 
 
 [start=4]
-. Next, create the receiver `VirtualMachine` in the destination `Namespace`. +
+. Next, create the receiver `VirtualMachine` in the destination `Namespace`
 
++ 
 The destination `VirtualMachine` is same as the source `VirtualMachine` except for 2 key differences: 
 
++
 [loweralpha]
-. The destination `VirtualMachine` has an `annotation` to set the post live migration `runStrategy`
+.. The destination `VirtualMachine` has an `annotation` to set the post live migration `runStrategy`
 
++ 
 [source,yaml]
 ----
     kubevirt.io/restore-run-strategy: Always
 ----
 
++ 
 [loweralpha,start=2]
-. The destination `VirtualMachine` has different `spec.runStrategy` 
+.. The destination `VirtualMachine` has different `spec.runStrategy` 
 
++ 
 [source,yaml]
 ----
   runStrategy: WaitAsReceiver
 ----
 
-Execute the following command to create the destination `VirtualMachine`:
++ 
+. Execute the following command to create the destination `VirtualMachine`:
 
++
 [.wrap,yaml,role=execute]
 ----
 cat <<EOF | oc apply -f -
@@ -204,35 +222,43 @@ spec:
 EOF
 ----
 
++
 Confirm the `VirtualMachine` and associated `VirtualMachineInstance` have been created by executing the following 2 commands:
 
++
 [.wrap,console,role=execute]
 ----
 oc get VirtualMachine
 ----
 
++
 [source,console]
 ----
 NAME                      AGE     STATUS               READY
 vm-migration-ns-ns-live   5m51s   WaitingForReceiver   False
 ----
 
++
 [.wrap,console,role=execute]
 ----
 oc get VirtualMachineInstance
 ----
 
++
 [source,console]
 ----
 NAME                      AGE     PHASE            IP    NODENAME   READY
 vm-migration-ns-ns-live   5m55s   WaitingForSync                    False
 ----
 
++
 You will notice that the `VirtualMachine` and `VirtualMachineInstance` have a unique `PHASE`, `WaitingForReceiver` and `WaitingForSync`. This indicates the `VirtualMachine` is waiting for the migration to start as a receiver and the `VirtualMachineInstance` is waiting for data to be synchronized from the source `VirtualMachine`.
 
-[start=5]
++
+[start=6]
 . With the destination `VirtualMachine` and `VirtualMachineInstance` waiting, create the destination `VirtualMachineInstanceMigration` by executing the following command:
 
++ 
 [.wrap,yaml,role=execute]
 ----
 cat <<EOF | oc apply -f -
@@ -248,52 +274,64 @@ spec:
 EOF
 ----
 
++
 Confirm the destination `VirtualMachineInstanceMigration` has been created by executing the following command:
 
++ 
 [.wrap,console,role=execute]
 ----
 oc get VirtualMachineInstanceMigration
 ----
 
++ 
 [source,console]
 ----
 NAME                                              PHASE            VMI
 ns-to-ns-vm-live-migration-instance-destination   WaitingForSync   vm-migration-ns-ns-live
 ----
 
-[start=5]
+[start=7]
 . With the destination `VirtualMachineInstanceMigration` waiting, the final step is to create the source `VirtualMachineInstanceMigration`.
 
++
 To create the source `VirtualMachineInstanceMigration`, we need the `IP address` of the leader `virt-synchronization-controller`.
 
++
 [loweralpha]
-. Find the leader `virt-synchronization-controller` by looking at the lease holder:
+.. Find the leader `virt-synchronization-controller` by looking at the lease holder:
 
++
 [.wrap,console,role=execute]
 ----
 oc get leases -n openshift-cnv | grep virt-synchronization-controller
 ----
 
++
 [source,console]
 ----
 virt-synchronization-controller     virt-synchronization-controller-65c7b9d5bd-f4rbg        147m
 ----
 
++
 [loweralpha,start=2]
-. Find the `IP address` of the leader `virt-synchronization-controller` using the `Pod` name from the previous command:
+.. Find the `IP address` of the leader `virt-synchronization-controller` using the `Pod` name from the previous command:
 
++
 [.wrap,console,role=execute]
 ----
 oc get pods -o wide -n openshift-cnv | grep 'virt-synchronization-controller-65c7b9d5bd-f4rbg'
 ----
 
++
 [source,console]
 ----
 virt-synchronization-controller-65c7b9d5bd-f4rbg     1/1   Running  0    150m   10.233.0.222   control-plane-cluster-hflz6-1  <none>   <none>
 ----
 
-Take the `Pod` `IP address` from the previous command output (`10.233.0.222` in the example) and replace `<leader_sync_controller_ip>` in the `VirtualMachineInstanceMigration` YAML below. Take care that you do not remove the port `:9185`
++
+. Take the `Pod` `IP address` from the previous command output (`10.233.0.222` in the example) and replace `<leader_sync_controller_ip>` in the `VirtualMachineInstanceMigration` YAML below. Take care that you do not remove the port `:9185`
 
++
 [.wrap,yaml,role=execute]
 ----
 cat <<EOF | oc apply -f -
@@ -310,19 +348,27 @@ spec:
 EOF
 ----
 
-[start=6]
++
+[start=9]
 . When the source `VirtualMachineInstanceMigration` above is created, the `Migration` will start. You can monitor the `Migration` through a few different lenses:
 
++
 [loweralpha]
-. Using the CLI
+.. *Using the CLI*
 
++
 [.wrap,console,role=execute]
 ----
 oc get vmim -A -w
 ----
 
++
+[NOTE]
+=====
 Using `-w` to apply a watch, you will see the `Migration` progress from `Scheduling` through to `Succeeded`.
+=====
 
++
 [source,console]
 ----
 NAMESPACE                       NAME                                              PHASE        VMI
@@ -339,18 +385,58 @@ vm-live-migration-destination   ns-to-ns-vm-live-migration-instance-destination 
 vm-live-migration-destination   ns-to-ns-vm-live-migration-instance-destination   Succeeded         vm-migration-ns-ns-live
 ----
 
++
 [.wrap,console,role=execute]
 ----
 oc get vm
 ----
 
++
 The `VirtualMachine` will show you it is `Migrating`.
 
++
 [source,console]
 ----
 NAME                      AGE    STATUS      READY
 vm-migration-ns-ns-live   7m1s   Migrating   False
 ----
 
++
 [loweralpha,start=2]
-. Using the Console
+.. *Using the Console*
+
++
+Login to the OpenShift console using the credentials provided to you by the lab administrator.
+
++
+From the left hand menu, navigate to `Virtualization` -> `Virtual Machines`, click the `Namespace` `vm-live-migration-source` to expand it and click on the virtual machine named `vm-migration-ns-ns-live`.
+
++
+image::exercise7/image1-ui-src-vm-running.png[title="Source Virtual Machine Details - Running", link=self, window=blank, width=100%]
+
++
+
+image::exercise7/image2-ui-dest-waiting.png[title="Destination Virtual Machine Details - WaitingForReceiver", link=self, window=blank, width=100%]
+
++
+image::exercise7/image3-ui-dest-starting.png[title="Destination Virtual Machine Details - Running", link=self, window=blank, width=100%]
+
++
+image::exercise7/image4-ui-dest-migrating.png[title="Destination Virtual Machine Details - Migrating", link=self, window=blank, width=100%]
+
++
+image::exercise7/image5-ui-migrating-overview-panel.png[title="Destination Virtual Machine - Migration Pop-up Panel", link=self, window=blank, width=100%]
+
++
+image::exercise7/image6-ui-dest-migrating-metrics.png[title="Destination Virtual Machine - Migration Metrics", link=self, window=blank, width=100%]
+
++
+image::exercise7/image7-ui-dest-migrating-metrics2.png[title="Destination Virtual Machine - Migration Metrics", link=self, window=blank, width=100%]
+
++
+image::exercise7/image8-ui-dest-migrating-progress-bar.png[title="Destination Virtual Machine - Migration Progress Bar", link=self, window=blank, width=100%]
+
++
+image::exercise7/image9-ui-dest-running-src-stopped.png[title="Destination Virtual Machine - Running & Source Virtual Machine - Stopped, link=self, window=blank, width=100%]
+
++
