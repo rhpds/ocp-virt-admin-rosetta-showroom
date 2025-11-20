@@ -62,14 +62,14 @@ $ oc get nodes <worker from step 5> -w
 ----
 
 [start=8]
-. In the second new terminal you opened, you will monitor the status of your virtual machine, `fencing-vm1`.
+. In your orginal terminal you opened, you will monitor the status of your virtual machine, `fencing-vm1`.
 Here you will see that self remediation is occurring on the node.
 +
 ----
 $ oc get -n fencing vmi -w
 ----
 
-[start=9]
+[start=8]
 . Using the original terminal you created, you will force the worker from step 5 to go into an unhealthy state by stopping the kubelet service.
 +
 ----
@@ -78,6 +78,14 @@ $ oc debug node/<worker from step 5>
 # systemctl stop kubelet
 
 Removing debug pod ...
+----
+
+[start=9]
+. In your orginal terminal you opened, you will monitor the status of your virtual machine, `fencing-vm1`.
+Here you will see that self remediation is occurring on the node.
++
+----
+$ oc get -n fencing vmi -w
 ----
 
 [start=10]
