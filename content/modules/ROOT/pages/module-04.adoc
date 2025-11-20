@@ -108,7 +108,6 @@ image::exercise4/04-image-affinity.png[title="Label Nodes", link=self, window=bl
 $ oc get nodes <worker you just labeled> --show-labels | grep -i zone=east
 ----
 
-+
 Alternatively you can use the OpenShift Console by going to Compute → Nodes and then pick a node you just label. Then click the 3 dots and click *Edit labels*. Once finished looking click *Save*.
 
 [start=7]
