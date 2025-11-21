@@ -19,15 +19,14 @@ In this lab, we will introduce and walk you through how to explain and demonstra
 
 You will walk away with the understanding, knowledge, and experience to showcase:
 
-* *Live Migration of Workloads :* Move VMs seamlessly between hosts with zero downtime
-* *CPU and Memory Overcommit :* Optimize resource utilization across your cluster
-* *Hot Plugging of CPU, Memory, and Disk Resources :* Scale VM resources without restarts
-* *Fencing and How to Handle Node Failure :* Ensure workload resilience during infrastructure disruptions
-* *Dynamic Rescheduling of Workloads :* Let the platform automatically optimize VM placement
-* *Affinity and Anti-Affinity for VM Placement :* Control where VMs run for performance and availability
-* *VM Isolation and Security :* Control where VMs run for performance and availability
-
-
+* *Live Migration of Workloads:* Move VMs seamlessly between hosts with zero downtime
+* *CPU and Memory Overcommit:* Optimize resource utilization across your cluster
+* *Hot Plugging of CPU, Memory, and Disk Resources:* Scale VM resources without restarts
+* *Affinity and Anti-Affinity for VM Placement:* Control where VMs run for performance and availability
+* *Dynamic Rescheduling of Workloads:* Let the platform automatically optimize VM placement
+* *Fencing and How to Handle Node Failure:* Ensure workload resilience during infrastructure disruptions
+* *Decentralized Live Migration:* How to migrate workloads between namespaces and clusters
+* *VM Isolation and Security:* Control where VMs run for performance and availability
 
 image::virt-icon-large.png[virt-icon-large,55%,55%,align="left"]
 
@@ -37,14 +36,15 @@ image::virt-icon-large.png[virt-icon-large,55%,55%,align="left"]
 The terminal window to your right is *already* logged into the lab environment as the `{ssh_user}` user via `ssh`.
 All steps of this lab are to be completed as the `{ssh_user}` user.
 
-
 The lab environment is a Red Hat OpenShift 4.20 cluster with all the operators required for your assignement pre-installed : 
 
 * OpenShift Virtualization
+* OpenShift Data Foundations
 * Node Health Check Operator
 * Self Node Remediation Operator
 * Kube Descheduler Operator
-
+* Migration Toolkit for Containers
+* Migration Toolkit for Virtualization
 
 The cluster Web Console is accessible at https://console-openshift-console.apps.ocp4.example.com.
 The username is `admin` and the password is `redhatocp`.

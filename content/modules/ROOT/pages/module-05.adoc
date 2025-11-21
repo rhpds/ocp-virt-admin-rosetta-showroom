@@ -1,3 +1,6 @@
+= Dynamic Rescheduling of Workloads
+
+[#dynamicreschintro]
 == Introduction
 
 
@@ -11,7 +14,7 @@ You can benefit from descheduling running pods in situations such as the followi
 * New nodes are added to clusters.
 * Pods have been restarted too many times.
 
-
+[#dynamicreschobj]
 == Objectives
 
 In this module, we will guide you through the process of configuring Rescheduling Strategies with this profile:
@@ -22,6 +25,7 @@ In this module, we will guide you through the process of configuring Reschedulin
   *** Resource utilization: Increased resource pressure raises the overhead for running applications.
   *** Node maintenance: A higher number of containers on a node increases resource consumption and maintenance costs.
 
+[#dynamicreschreq]
 == Requirements
 
 * Descheduler Operator must be installed
@@ -29,6 +33,7 @@ In this module, we will guide you through the process of configuring Reschedulin
 
 NOTE: PSI (Pressure Stall Information) is a Linux kernel feature that measures and reports the time tasks spend waiting for CPU, memory, or I/O resources, providing visibility into resource contention and saturation. It quantifies how much time processes are stalled waiting for resources, helping identify performance bottlenecks by showing what percentage of time your system is under pressure from insufficient resources.
 
+[#dynamicreschinstructions]
 == Instructions
 . Login into your bastion host with credentials provided to you by the lab administrator. You will need this for later steps.
 +
