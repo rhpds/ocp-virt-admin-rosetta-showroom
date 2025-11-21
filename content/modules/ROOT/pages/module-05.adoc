@@ -64,7 +64,6 @@ oc get vmi -n dynamic-schedule
 ----
 NAME     AGE     PHASE     IP             NODENAME
 dynamic-schedule-vm1    10m     Running   10.129.2.111   worker01
-dynamic-schedule-vm2    10m     Running   10.129.2.112   worker02
 ----
 
 . Configure the Descheduler Operator
