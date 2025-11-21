@@ -407,32 +407,64 @@ vm-migration-ns-ns-live   7m1s   Migrating   False
 Login to the OpenShift console using the credentials provided to you by the lab administrator.
 
 +
-From the left hand menu, navigate to `Virtualization` -> `Virtual Machines`, click the `Namespace` `vm-live-migration-source` to expand it and click on the virtual machine named `vm-migration-ns-ns-live`.
+From the left hand menu, navigate to `Virtualization`, click `Virtual Machines`, followed by the `Namespace` `vm-live-migration-source` to expand it and click on the virtual machine named `vm-migration-ns-ns-live`.
+
++
+On the `Virtual machine details` page, you will see the the `Source` VM is `Running`.
 
 +
 image::exercise7/image1-ui-src-vm-running.png[title="Source Virtual Machine Details - Running", link=self, window=blank, width=100%]
 
 +
+To view the `Destination` VM, select by the `Namespace` `vm-live-migration-destination` to expand it and click on the virtual machine named `vm-migration-ns-ns-live`.
 
++
+On the `Virtual machine details` page, you will see the the `Destination` VM. If the `Migration` has not started, it will have a status of `WaitingForReceiver`.
+
++
 image::exercise7/image2-ui-dest-waiting.png[title="Destination Virtual Machine Details - WaitingForReceiver", link=self, window=blank, width=100%]
 
 +
-image::exercise7/image3-ui-dest-starting.png[title="Destination Virtual Machine Details - Running", link=self, window=blank, width=100%]
+If the `Migration` has started and is in the early stages, the VM will a status of `Starting`.
 
 +
+image::exercise7/image3-ui-dest-starting.png[title="Destination Virtual Machine Details - Starting", link=self, window=blank, width=100%]
+
++
+When the `Source` and `Destination` are ready, the status of the `Destination` VM will change to `Migrating`.
+  
++
 image::exercise7/image4-ui-dest-migrating.png[title="Destination Virtual Machine Details - Migrating", link=self, window=blank, width=100%]
+
++
+Once the `Destination` VM starts `Migrating`, you can click on the `Migrating` status which will display a pop-up panel with information about the state of the migration.
 
 +
 image::exercise7/image5-ui-migrating-overview-panel.png[title="Destination Virtual Machine - Migration Pop-up Panel", link=self, window=blank, width=100%]
 
 +
+From the `Migrating` pop-up panel, there is a link `Migration metrics`. Clicking that link will take you to the `Metrics` tab with detailed information about the VM and the migration.
+
++
 image::exercise7/image6-ui-dest-migrating-metrics.png[title="Destination Virtual Machine - Migration Metrics", link=self, window=blank, width=100%]
+
++
+Scrolling down on the `Metrics` page, you will see more migration metrics and a `LiveMigration progress` bar.
 
 +
 image::exercise7/image7-ui-dest-migrating-metrics2.png[title="Destination Virtual Machine - Migration Metrics", link=self, window=blank, width=100%]
 
 +
+As the migration progresses, you will see the `LiveMigration progress` bar move until it reaches `100%` and displays a `Complete time`.
+
++
 image::exercise7/image8-ui-dest-migrating-progress-bar.png[title="Destination Virtual Machine - Migration Progress Bar", link=self, window=blank, width=100%]
+
++
+Navigating back to the `Overview` tab, you will see that the `Destination` VM is now in a `Running` state. You can also see, in the `Projects` sidebar, that the `Source` VM is now `Stopped`.
+
++
+This marks the successful completion of the `Namespace` to `Namespace` live migration.
 
 +
 image::exercise7/image9-ui-dest-running-src-stopped.png[title="Destination Virtual Machine - Running & Source Virtual Machine - Stopped, link=self, window=blank, width=100%]
@@ -533,7 +565,7 @@ Click `Create plan`
 +
 image::exercise7/ui/image11-review-create.png[title="Review and Create", link=self, window=blank, width=100%]
 
-. When the `Plan` is created, you will be taken to the `Plan details` page when you can monitor the status and progress of your migration. 
+. When the `Plan` is created, you will be taken to the `Plan details` page where you can monitor the status and progress of your migration. 
 
 +
 [NOTE]
