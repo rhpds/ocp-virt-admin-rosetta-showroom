@@ -50,9 +50,9 @@ Web Console: {openshift_cluster_console_url}[{openshift_cluster_console_url},win
 ----
 
 .CLI Login:
-[.wrap,console,role=execute,subs="attributes"]
+[.wrap,console,role=execute,subs="attributes,macros"]
 ----
-oc login -u {openshift_cluster_admin_username} -p {openshift_cluster_admin_password} --server={openshift_api_server_url}
+*oc login -u {openshift_cluster_admin_username} -p {openshift_cluster_admin_password} --server={openshift_api_server_url}*
 ----
 
 
