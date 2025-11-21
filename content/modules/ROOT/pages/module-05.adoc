@@ -29,7 +29,7 @@ In this module, we will guide you through the process of configuring Reschedulin
 == Requirements
 
 * Descheduler Operator must be installed
-* The `KubeVirtRelieveAndMigrate` profile requires PSI metrics to be enabled on all worker nodes. For your convenience, this is already enabled in this lab.
+* The *KubeVirtRelieveAndMigrate* profile requires PSI metrics to be enabled on all worker nodes. For your convenience, this is already enabled in this lab.
 
 NOTE: PSI (Pressure Stall Information) is a Linux kernel feature that measures and reports the time tasks spend waiting for CPU, memory, or I/O resources, providing visibility into resource contention and saturation. It quantifies how much time processes are stalled waiting for resources, helping identify performance bottlenecks by showing what percentage of time your system is under pressure from insufficient resources.
 
@@ -52,7 +52,7 @@ oc login -u {openshift_cluster_admin_username} -p {openshift_cluster_admin_passw
 oc login whoami --show-console
 ----
 +
-. Check which virtual machines are running in the `dynamic-schedule` namespace
+. Check which virtual machines are running in the *dynamic-schedule* namespace
 +
 [,shell,role=execute,subs="attributes"]
 ----
@@ -101,7 +101,7 @@ spec:
 NOTE: Notice the mode is set to Predictive. By default, the descheduler does not evict pods. To evict pods, set mode to Automatic.
 
 
-. Ensure the descheduler pod is running and check the logs in the `openshift-kube-descheduler-operator` namespace
+. Ensure the descheduler pod is running and check the logs in the *openshift-kube-descheduler-operator* namespace
 +
 [,shell,role=execute,subs="attributes"]
 ----
@@ -112,7 +112,7 @@ oc logs -n openshift-kube-descheduler-operator -l app=descheduler
 . Deploy a stress test pod to validate the descheduler functionality
 
 
-.. Edit the existing `stress-test` deployment to use a specific node selector (place it on a node where at least 1 vm is running)
+.. Edit the existing *stress-test* deployment to use a specific node selector (place it on a node where at least 1 vm is running)
 +
 
 [,shell,role=execute,subs="attributes"]
@@ -134,14 +134,14 @@ oc -n dynamic-schedule-stress-test scale deployment stress-test --replicas=1
 oc get pods -n dynamic-schedule-stress-test
 ----
 
-. Observe the descheduler pod logs in the `openshift-kube-descheduler-operator` namespace
+. Observe the descheduler pod logs in the *openshift-kube-descheduler-operator* namespace
 +
 [,shell,role=execute,subs="attributes"]
 ----
 oc logs -f -n openshift-kube-descheduler-operator -l app=descheduler
 ----
 
-. Edit the kubedescheduler cluster resource to set the `deschedulingIntervalSeconds` to a lower value for testing purposes.
+. Edit the kubedescheduler cluster resource to set the *deschedulingIntervalSeconds* to a lower value for testing purposes.
 +
 [,shell,role=execute,subs="attributes"]
 ----
