@@ -43,7 +43,7 @@ To do this you can look at the vm in the affinity project or you can use the ope
 [source,text,role=execute]
 .Change to affinity project
 ----
-$ oc project affinity
+oc project affinity
 ----
 +
 .Output
@@ -54,7 +54,7 @@ Now using project "affinity" on server "https://api.cluster-k66tl.dynamic.redhat
 [source,text,role=execute]
 .Get VM information
 ----
-$ oc get vmi node-affinity-vm
+oc get vmi node-affinity-vm
 ----
 +
 .Output
@@ -69,7 +69,7 @@ node-affinity-vm   78m   Running   10.235.0.25   worker-cluster-k66tl-1   True
 [source,text,role=execute]
 .Get node list
 ----
-$ oc get nodes
+oc get nodes
 ----
 +
 .Output
@@ -86,7 +86,7 @@ worker-cluster-k66tl-3          Ready    worker                        86m     v
 [source,text,role=execute]
 .Label node
 ----
-$ oc label node <worker where node-affinity-vm is not running> zone=east
+oc label node <worker where node-affinity-vm is not running> zone=east
 ----
 +
 .Output
@@ -105,7 +105,7 @@ image::exercise4/04-image-affinity.png[title="Label Nodes", link=self, window=bl
 [source,text,role=execute]
 .Find node with the assigned label
 ----
-$ oc get nodes <worker you just labeled> --show-labels | grep -i zone=east
+oc get nodes <worker you just labeled> --show-labels | grep -i zone=east
 ----
 
 Alternatively you can use the OpenShift Console by going to Compute → Nodes and then pick a node you just label. Then click the 3 dots and click *Edit labels*. Once finished looking click *Save*.
@@ -143,7 +143,7 @@ image::exercise4/04-image-affinity03a.png[title="Node Affinity Rule", link=self,
 [source,text,role=execute]
 .View the VM definition
 ----
-$ oc -n affinity get vm/node-affinity-vm -o jsonpath='{.spec.template.spec.affinity}'
+oc -n affinity get vm/node-affinity-vm -o jsonpath='{.spec.template.spec.affinity}'
 ----
 +
 .Output
@@ -166,7 +166,7 @@ $ oc -n affinity get vm/node-affinity-vm -o jsonpath='{.spec.template.spec.affin
 [source,text,role=execute]
 .Get VMI information
 ----
-$ oc get vmi node-affinity-vm
+oc get vmi node-affinity-vm
 ---- 
 +
 .Output
@@ -189,7 +189,7 @@ This lab will illustrate the setup and function of Pod Affinity.
 [source,text,role=execute]
 .Modify the VMI
 ----
-$ oc edit vmi node-affinity-vm -n affinity
+oc edit vmi node-affinity-vm -n affinity
 ----
 +
 [source,yaml,role=execute]
@@ -224,7 +224,7 @@ metadata:
 +
 [source,text,role=execute]
 ----
-$ oc edit vm node-affinity-vm -n affinity
+oc edit vm node-affinity-vm -n affinity
 ----
 +
 [source,yaml,role=execute]
@@ -307,7 +307,7 @@ spec:
 [source,text,role=execute]
 .Get VMI information
 ----
-$ oc get vmi pod-affinity-vm
+oc get vmi pod-affinity-vm
 ----
 
 [start=4]
@@ -346,7 +346,7 @@ image::exercise4/04-image-affinity05.png[title="Pod Affinity Rule", link=self, w
 +
 [source,text,role=execute]
 ----
-$ oc edit vm pod-anti-affinity-vm 
+oc edit vm pod-anti-affinity-vm 
 ---- 
 +
 [source,text,role=execute]
@@ -359,8 +359,8 @@ $ oc edit vm pod-anti-affinity-vm
 +
 [source,text,role=execute]
 ----
-$ oc get vmi pod-affinity-vm
-$ oc get vmi node-affinity-vm
+oc get vmi pod-affinity-vm
+oc get vmi node-affinity-vm
 ----
 
 [start=15]
@@ -377,8 +377,8 @@ $ oc get vmi node-affinity-vm
 +
 [source,text,role=execute]
 ----
-$ oc get vmi pod-affinity-vm
-$ oc get vmi node-affinity-vm
+oc get vmi pod-affinity-vm
+oc get vmi node-affinity-vm
 ----
 
 [start=19]
@@ -438,7 +438,7 @@ image::exercise4/04-image-affinity07.png[title="Add Pod Anti-Affinity Rule", lin
 +
 [source,text,role=execute]
 ----
-$ oc edit vm pod-anti-affinity-vm 
+oc edit vm pod-anti-affinity-vm 
 ----
 +
 [source,text,role=execute]
@@ -451,8 +451,8 @@ $ oc edit vm pod-anti-affinity-vm
 +
 [source,text,role=execute]
 ----
-$ oc get vmi pod-anti-affinity-vm
-$ oc get vmi node-affinity-vm
+oc get vmi pod-anti-affinity-vm
+oc get vmi node-affinity-vm
 ----
 
 [start=14]
@@ -469,8 +469,8 @@ $ oc get vmi node-affinity-vm
 +
 [source,text,role=execute]
 ----
-$ oc get vmi pod-anti-affinity-vm
-$ oc get vmi node-affinity-vm
+oc get vmi pod-anti-affinity-vm
+oc get vmi node-affinity-vm
 ----
 
 [start=18]

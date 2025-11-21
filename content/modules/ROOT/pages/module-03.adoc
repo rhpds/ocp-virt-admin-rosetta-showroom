@@ -50,7 +50,7 @@ image::exercise3/03-image-cpu-006.png[title="Login to VM", link=self, window=bla
 .Get the number of processors
 [source,text,role=execute]
 ----
-  $ nproc
+nproc
 ----
 +
 You will see that two processors exist.
@@ -115,7 +115,7 @@ image::exercise3/03-image-disk-007.png[title="View the new disk from the OS", li
 .Get a list of pods
 [source,text,role=execute]
 ----
-$ oc get pods -n vmtest
+oc get pods -n vmtest
 ----
 +
 .Output

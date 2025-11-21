@@ -34,7 +34,7 @@ ssh {ssh_user}@{ssh_password} -p 32270
 [,shell,role=execute,subs="attributes"]
 ----
 oc login -u {openshift_cluster_admin_username} -p {openshift_cluster_admin_password} --server={openshift_api_server_url}
-$ oc login whoami --show-console
+oc login whoami --show-console
 ----
 +
 . To understand CPU overcommit, you must first identify how many physical CPU cores are available on your worker nodes.
@@ -58,7 +58,7 @@ worker-cluster-pg8lt-3   Ready    worker   4h58m   v1.33.5
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-oc describe node <node_name> | grep -A 5 "Capacity:"
+oc describe node <node_name> | grep -A 10 "Capacity:"
 ----
 +
 [,shell,role=wrap,subs="attributes"]
@@ -81,7 +81,7 @@ The `cpu` value shows the number of physical CPU cores (or threads if hyperthrea
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-oc get node <node_name> -o jsonpath='{.status.allocatable.cpu}{"\n"}'
+oc get node "node_name" -o jsonpath='{.status.allocatable.cpu}{"\n"}'
 ----
 +
 
@@ -301,7 +301,7 @@ image::exercise2/vm-memory-assigned.png[title="VM Memory Assigned", link=self, w
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-oc get vm  overcommit-vm-1 -o json | jq .spec.template.spec.domain.memory
+oc get vm -v over-commit overcommit-vm-1 -o json | jq .spec.template.spec.domain.memory
 ----
 +
 [,text,role=wrap,subs="attributes"]
@@ -319,7 +319,7 @@ image::exercise2/virt-launcher-memory-request.png[title="Virt-Launcher Memory Re
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-oc get pod -l vm.kubevirt.io/name=overcommit-vm-1 -o json | jq .items[0].spec.containers[0].resources.requests.memory
+oc get pod -n over-commit -l vm.kubevirt.io/name=overcommit-vm-1 -o json | jq .items[0].spec.containers[0].resources.requests.memory
 ----
 +
 [,text,role=wrap,subs="attributes"]
@@ -336,7 +336,7 @@ IMPORTANT: This overhead is necessary and expected - it ensures the VM has enoug
 . Enable the memory overcommit feature
 +
 **Using the OpenShift Console:**
-Navigate to Virtualization → Overview → Settings → Cluster → General Settings and Enable "Enable memory density"
+Navigate to Virtualization → Overview → Settings → Cluster → General Settings and Enable "Memory density"
 +
 image::exercise2/enable-memory-overcommit.png[title="Enable Memory Overcommit", link=self, window=blank, width=100%]
 +

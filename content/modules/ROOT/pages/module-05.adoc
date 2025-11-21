@@ -49,7 +49,7 @@ ssh {ssh_user}@{ssh_password} -p 32270
 [,shell,role=execute,subs="attributes"]
 ----
 oc login -u {openshift_cluster_admin_username} -p {openshift_cluster_admin_password} --server={openshift_api_server_url}
-$ oc login whoami --show-console
+oc login whoami --show-console
 ----
 +
 . Check which virtual machines are running in the `dynamic-schedule` namespace

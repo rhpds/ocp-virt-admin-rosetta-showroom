@@ -48,7 +48,7 @@ oc login -u {openshift_cluster_admin_username} -p {openshift_cluster_admin_passw
 [source,text,role=execute]
 .Get VM info
 ----
-$ oc get vmi -n fencing
+oc get vmi -n fencing
 ----
 Output:
 +
@@ -68,7 +68,7 @@ To monitor the process, open one additional terminal sessions and SSH into the b
 [source,text,role=execute]
 .Monitor the worker nodes
 ----
-$ oc get nodes <worker from step 5> -w
+oc get nodes <worker from step 5> -w
 ----
 
 
@@ -78,7 +78,7 @@ $ oc get nodes <worker from step 5> -w
 [source,text,role=execute]
 .Force the node into a unhealthy state
 ----
-$ oc debug node/<worker from step 5>
+oc debug node/<worker from step 5>
 # chroot /host
 # systemctl stop kubelet
 ----
@@ -96,7 +96,7 @@ Here you will see that self remediation is occurring on the node.
 [source,text,role=execute]
 .Get VM info
 ----
-$ oc get -n fencing vmi -w
+oc get -n fencing vmi -w
 ----
 
 [start=10]
@@ -111,7 +111,7 @@ image::exercise6/06-image-nodehealthcheck4.png[title="Node remediation running",
 The node will be rebooted:
 +
 ----
-$ oc get nodes worker-cluster-r2k68-1 -w
+oc get nodes worker-cluster-r2k68-1 -w
 NAME                     STATUS                        ROLES    AGE     VERSION
 worker-cluster-r2k68-1   Ready                         worker   4h15m   v1.33.5
 worker-cluster-r2k68-1   Ready                         worker   4h16m   v1.33.5
@@ -129,7 +129,7 @@ worker-cluster-r2k68-1   Ready                         worker   4h18m   v1.33.5
 The VM will also be restarted on another node:
 +
 ----
-$ oc get -n fencing vmi -w
+oc get -n fencing vmi -w
 NAME          AGE   PHASE        IP            NODENAME                 READY
 fencing-vm1   36m   Running      10.235.0.14   worker-cluster-r2k68-1   True
 fencing-vm1   37m   Running      10.235.0.14   worker-cluster-r2k68-1   False
