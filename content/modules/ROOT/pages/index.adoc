@@ -44,7 +44,7 @@ The lab environment is a Red Hat OpenShift 4.20 cluster with all the operators r
 Web Console: {openshift_cluster_console_url}[{openshift_cluster_console_url},window=_blank]
 
 .Web Console:
-[.wrap,console,role=execute,subs="attributes"]
+[.wrap,console,role=execute,subs="attributes,macros+"]
 ----
 {openshift_cluster_console_url}[{openshift_cluster_console_url},window=_blank]
 ----
@@ -52,7 +52,7 @@ Web Console: {openshift_cluster_console_url}[{openshift_cluster_console_url},win
 .CLI Login:
 [.wrap,console,role=execute,subs="attributes"]
 ----
-oc login -u {openshift_cluster_admin_username} -p `{openshift_cluster_admin_password}` --server=`{ocp_api_url}`
+oc login -u {openshift_cluster_admin_username} -p {openshift_cluster_admin_password} --server={openshift_api_server_url}
 ----
 
 
