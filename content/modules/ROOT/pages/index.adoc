@@ -26,7 +26,7 @@ You will walk away with the understanding, knowledge, and experience to showcase
 image::virt-icon-large.png[virt-icon-large,55%,55%,align="left"]
 
 
-== Lab Environement
+== Lab Environment
 
 The terminal window to your right is *already* logged into the lab environment as the *{ssh_user}* user via *ssh*.
 All steps of this lab are to be completed as the *{ssh_user}* user.
