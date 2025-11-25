@@ -5,17 +5,17 @@ Migrating workloads between compute nodes and storage types is a crucial feature
 In this lab, you will start by migrating the virtual machine compute from one node to another. 
 Then, you will migrate the VM's storage from one StorageClass to another.
 
-#Objectives
-#
-#* <<compute,Live migration of a virtual machine from one node to another specific node>>
-#
-* <<computerand,Live migration of a virtual machine from one node to another random node>>
-#
+////
+Objectives
+
+* <<compute,Live migration of a virtual machine from one node to another specific node>>
+
+ <<computerand,Live migration of a virtual machine from one node to another random node>>
+
 * <<storage,Live migration of virtual machine storage from one StorageClass to another.>>
+////
 
 include::lab-access.adoc[]
-
-include::bastion-access.adoc[]
 
 [#compute]
 == Compute Migration to a specific node
@@ -43,7 +43,7 @@ determine its current node, and then move it to another node.
 === Instructions
 
 [start=1]
-. Ensure you are <<labaccess,logged in to the OpenShift Console as the *admin* user>> and continue to the next step.
+. Ensure you are <<labaccess,logged in to the OpenShift Console as the *admin* user>> from your *web browser* and continue to the next step.
 
 . Navigate to Virtualization -> Virtual Machines and then click on the virtual machine named *live-migrate-vm1*.
 Note which node the VM is currently running on. In this example, it is *worker-cluster-m2ssq-1*, but your worker node will be different.
