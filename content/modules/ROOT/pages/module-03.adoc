@@ -6,6 +6,8 @@ In this module, you will perform three tasks:
 * <<disk,Add a virtual disk to a running VM and then make it persistent>>
 * <<nic,Add a network interface (NIC) to a virtual machine>>
 
+include::lab-access.adoc[]
+
 [#cpu]
 == Adding CPU and Memory to a Running VM
 In this lab, we will add more CPU and Memory resources to a virtual machine by changing the virtual machine’s Instance Type. To do this, you will start with an existing VM that has a single vCPU and 2 GiB of memory. Using the OpenShift Virtualization console, you will modify the configuration of the VM Instance Type to a type that has 2 vCPU and 4 GiB of memory.
