@@ -140,7 +140,7 @@ image::exercise4/04-image-affinity03a.png[title="Node Affinity Rule", link=self,
 [source,text,role=execute]
 .View the VM definition
 ----
-oc -n affinity get vm/node-affinity-vm -o jsonpath='{.spec.template.spec.affinity}'
+oc get vm node-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinity}'
 ----
 
 +
@@ -329,7 +329,7 @@ image::exercise4/04-image-affinity05.png[title="Pod Affinity Rule", link=self, w
 +
 [source,text,role=execute]
 ----
-oc get vm pod-affinity-vm  -o jsonpath='{.spec.template.spec.affinity}'
+oc get vm pod-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinity}'
 ---- 
 
 +
@@ -431,7 +431,7 @@ image::exercise4/04-image-affinity07.png[title="Add Pod Anti-Affinity Rule", lin
 +
 [source,text,role=execute]
 ----
-oc get vm pod-anti-affinity-vm  -o jsonpath='{.spec.template.spec.affinity}'
+oc get vm pod-anti-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinity}'
 ----
 +
 [source,text,role=execute]
