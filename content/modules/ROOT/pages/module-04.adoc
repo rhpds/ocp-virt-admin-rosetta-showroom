@@ -155,7 +155,7 @@ oc get vm node-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinit
 [source,text,role=execute]
 .Get VM information
 ----
-oc get vmi node-affinity-vm
+oc get vmi node-affinity-vm -n affinity
 ----
 
 +
