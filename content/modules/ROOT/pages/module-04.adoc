@@ -49,7 +49,7 @@ node-affinity-vm   78m   Running   10.235.0.25   worker-cluster-t96sv-1   True
 ----
 
 +
-. Set an east node label on any work where the node-affinity-vm is currently not running.
+. Set an east node label on any work where the *node-affinity-vm* is currently not running.
 
 +
 [source,text,role=execute]
@@ -152,7 +152,7 @@ oc get vm node-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinit
 . To make the VM follow these new affinity rules, you could migrate it to the node with the label. However, to show that this affinity rule is working we are going to power off the VM completely and then power it back on. 
 
 +
-. Click *Actions → Stop*.
+. Using the node-affinity-vm VM, Click on *Action → Stop*.
 
 +
 . Once the VM completely stops. Click *Actions → Start*.
@@ -164,7 +164,7 @@ oc get vm node-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinit
 [source,text,role=execute]
 .Get VMI information
 ----
-oc get vmi node-affinity-vm
+oc get vmi node-affinity-vm -n affinity
 ---- 
 
 +
@@ -188,7 +188,7 @@ This lab will illustrate the setup and function of Pod Affinity.
 . Ensure you are <<labaccess,logged in to both the OpenShift Console and CLI as the *admin* user>> from your *web browser* and the *terminal* window on the right side of your screen and continue to the next step.
 
 +
-. To begin, we need to apply a label to the *node-affinity-vm*. This will enable it to serve as the VM that our pod will have pod affinity to. The label can be added by editing the VM within the OpenShift CLI and including app: fedora
+. To begin, we need to apply a label to the *node-affinity-vm*. This will enable it to serve as the VM that our pod will have pod affinity to. The label can be added by editing the VM within the OpenShift CLI and including 'app: fedora'
 
 +
 [source,text,role=execute]
@@ -215,7 +215,7 @@ metadata:
   - kubevirt.io/virtualMachineControllerFinalize
   generation: 2
   labels:
-    app.kubernetes.io/instance: module-affinity  <--- Do not put the label here
+    app.kubernetes.io/instance: module-affinity <--- Do not put the label here
   name: node-affinity-vm
   namespace: affinity
   resourceVersion: "328565"
@@ -258,13 +258,13 @@ spec:
 . To make the label get applied to the vmi of the node-affinity-vm. We will reboot it.
 
 +
-. Using the pod-affinity-vm VM, Click on *Action → Stop*.
+. Using the node-affinity-vm VM, Click on *Action → Stop*.
 
 +
 . Once the VM completely stops. Click *Actions → Start*.
 
 +
-. Click the pod-affinity-vm  
+. Click the *pod-affinity-vm*  
 
 +
 . See where the pod-affinity-vm is running by looking at OpenShift Console or check on the OpenShift Command line. 
@@ -273,7 +273,7 @@ spec:
 [source,text,role=execute]
 .Get VMI information
 ----
-oc get vmi pod-affinity-vm
+oc get vmi pod-affinity-vm -n affinity
 ----
 
 +
@@ -329,8 +329,8 @@ oc get vm pod-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinity
 +
 [source,text,role=execute]
 ----
-oc get vmi pod-affinity-vm
-oc get vmi node-affinity-vm
+oc get vmi pod-affinity-vm -n affinity
+oc get vmi node-affinity-vm -n affinity
 ----
 
 +
@@ -348,8 +348,8 @@ oc get vmi node-affinity-vm
 +
 [source,text,role=execute]
 ----
-oc get vmi pod-affinity-vm
-oc get vmi node-affinity-vm
+oc get vmi pod-affinity-vm -n affinity
+oc get vmi node-affinity-vm -n affinity
 ----
 
 +
@@ -372,7 +372,7 @@ This lab will guide you through setting up and demonstrating the functionality o
 . Ensure you are <<labaccess,logged in to both the OpenShift Console and CLI as the *admin* user>> from your *web browser* and the *terminal* window on the right side of your screen and continue to the next step.
 
 +
-. We will be reusing the *app: fedora* label we created last time to create our pod anti-affinity rule. This rule will ensure pod anti-affinity with *node-affinity-vm*.
+. We will be reusing the 'app: fedora' label we created last time to create our pod anti-affinity rule. This rule will ensure pod anti-affinity with *node-affinity-vm*.
 
 +
 . Click the *pod-anti-affinity-vm*  
@@ -429,8 +429,8 @@ oc get vm pod-anti-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.aff
 +
 [source,text,role=execute]
 ----
-oc get vmi pod-anti-affinity-vm
-oc get vmi node-affinity-vm
+oc get vmi pod-anti-affinity-vm -n affinity
+oc get vmi node-affinity-vm -n affinity
 ----
 
 +
@@ -448,8 +448,8 @@ oc get vmi node-affinity-vm
 +
 [source,text,role=execute]
 ----
-oc get vmi pod-anti-affinity-vm
-oc get vmi node-affinity-vm
+oc get vmi pod-anti-affinity-vm -n affinity
+oc get vmi node-affinity-vm -n affinity
 ----
 
 +
