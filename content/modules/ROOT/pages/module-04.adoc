@@ -20,7 +20,7 @@ This lab will demonstrate how Node Affinity is set up and how it functions.
 . Ensure you are <<labaccess,logged in to both the OpenShift Console and CLI as the *admin* user>> from your *web browser* and the *terminal* window on the right side of your screen and continue to the next step.
 
 +
-. See where the the node-affinity-vm is running by looking at OpenShift Console and navigating to *Virtualization →  Projects → affinity* or check on the OpenShift Command line.
+. See where the the *node-affinity-vm* is running by looking at OpenShift Console and navigating to *Virtualization →  VirtualMachines → affinity* or check on the OpenShift Command line.
 
 +
 [source,text,role=execute]
@@ -49,7 +49,7 @@ node-affinity-vm   78m   Running   10.235.0.25   worker-cluster-t96sv-1   True
 ----
 
 +
-. Set an east node label on any work where the *node-affinity-vm* is currently not running.
+. Set an east node label on any worker where the *node-affinity-vm* is currently not running.
 
 +
 [source,text,role=execute]
@@ -149,16 +149,26 @@ oc get vm node-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinit
 ----
 
 +
+. Before we make *node-affinity-vm* move because of our new Node Affinity rule. Let's check its current location by looking at OpenShift Console and navigating to *Virtualization →  VirtualMachines → affinity* or check on the OpenShift Command line.
+
++
+[source,text,role=execute]
+.Get VM information
+----
+oc get vmi node-affinity-vm
+----
+
++
 . To make the VM follow these new affinity rules, you could migrate it to the node with the label. However, to show that this affinity rule is working we are going to power off the VM completely and then power it back on. 
 
 +
-. Using the node-affinity-vm VM, Click on *Action → Stop*.
+. Using the *node-affinity-vm* VM, Click on *Action → Stop*.
 
 +
 . Once the VM completely stops. Click *Actions → Start*.
 
 +
-. The VM's relocation to the node with the assigned label is visible via the GUI. Alternatively, you can verify this change using the OCP CLI.
+. The VM's relocation to the node with the assigned label is visible via the GUI by navigating to *node-affinity-vm → Overview*. Alternatively, you can verify this change using the OCP CLI.
 
 +
 [source,text,role=execute]
@@ -215,7 +225,7 @@ metadata:
   - kubevirt.io/virtualMachineControllerFinalize
   generation: 2
   labels:
-    app.kubernetes.io/instance: module-affinity <--- Do not put the label here
+    app.kubernetes.io/instance: module-affinity <---Do not put the label here
   name: node-affinity-vm
   namespace: affinity
   resourceVersion: "328565"
@@ -245,7 +255,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: fedora   <--- Put the label here
+        app: fedora   <---Put the label here
         network.kubevirt.io/headlessService: headless
 ----
 +
@@ -255,26 +265,16 @@ spec:
 ----
 
 +
-. To make the label get applied to the vmi of the node-affinity-vm. We will reboot it.
+. To make the label get applied to the vmi of the *node-affinity-vm*. We will reboot it.
 
 +
-. Using the node-affinity-vm VM, Click on *Action → Stop*.
+. Using the *node-affinity-vm* VM, Click on *Action → Stop*.
 
 +
 . Once the VM completely stops. Click *Actions → Start*.
 
 +
 . Click the *pod-affinity-vm*  
-
-+
-. See where the pod-affinity-vm is running by looking at OpenShift Console or check on the OpenShift Command line. 
-
-+
-[source,text,role=execute]
-.Get VMI information
-----
-oc get vmi pod-affinity-vm -n affinity
-----
 
 +
 . Click *Configure → Scheduling*.
