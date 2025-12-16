@@ -461,7 +461,7 @@ node-affinity-vm   13m   Running   10.233.0.46   worker-cluster-t96sv-2   True
 . To make the VM follow these new Pod Anti-Affinity rules. You normally would migrate it to the node with the label. However, to show that this Pod Anti-Affinity rule is working. We are going to power off the vm completely and then power it back on.
 
 +
-. Stop the *pod-anti-affinity-vm* VM by Clicking *Action → Stop*.
+. Stop the *pod-anti-affinity-vm* VM by clicking *Action → Stop*.
 
 +
 . Once the VM completely stops. Click *Actions → Start*.
