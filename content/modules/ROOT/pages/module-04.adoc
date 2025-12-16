@@ -47,7 +47,7 @@ oc get vmi node-affinity-vm
 .Output
 ----
 NAME               AGE   PHASE     IP            NODENAME                 READY
-node-affinity-vm   78m   Running   10.235.0.25   worker-cluster-t96sv-3   True
+node-affinity-vm   30m   Running   10.233.0.46   worker-cluster-t96sv-3   True
 ----
 
 +
@@ -174,7 +174,7 @@ oc get vmi node-affinity-vm -n affinity
 .Output
 ----
 NAME               AGE   PHASE     IP            NODENAME                 READY
-node-affinity-vm   58s   Running   10.233.2.20   worker-cluster-t96sv-2   True
+node-affinity-vm   58s   Running   10.233.0.46   worker-cluster-t96sv-2   True
 ----
 
 [#podaffinity]
@@ -331,7 +331,7 @@ oc get vmi pod-affinity-vm node-affinity-vm -n affinity
 .Output
 ----
 NAME               AGE   PHASE     IP            NODENAME                 READY
-pod-affinity-vm    30m   Running   10.235.0.54   worker-cluster-t96sv-3   True
+pod-affinity-vm    30m   Running   10.233.0.54   worker-cluster-t96sv-3   True
 node-affinity-vm    3m   Running   10.233.0.46   worker-cluster-t96sv-2   True
 ----
 
@@ -357,7 +357,7 @@ oc get vmi pod-affinity-vm node-affinity-vm -n affinity
 .Output
 ----
 NAME               AGE   PHASE     IP            NODENAME                 READY
-pod-affinity-vm     1m   Running   10.235.0.54   worker-cluster-t96sv-2   True
+pod-affinity-vm     1m   Running   10.233.0.54   worker-cluster-t96sv-2   True
 node-affinity-vm    4m   Running   10.233.0.46   worker-cluster-t96sv-2   True
 ----
 
