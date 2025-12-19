@@ -179,6 +179,7 @@ spec:
         pod: {}
       domain:
         cpu:
+          model: EPYC
           cores: 1
           sockets: 1
           threads: 1
@@ -279,7 +280,7 @@ EOF
 +
 [NOTE]
 =====
-The *migrationID* field in the YAML above does not necessarily refer to anything specific. You may use any unique text in that field.
+The *migrationID* field in the YAML above does not refer to anything specific, but must be unique across all migrations. You may use any unique text in that field, but both the source and destination *VirtualMachineInstanceMigration* objects must use the same *migrationID* for a migration.
 =====
 +
 Confirm the destination *VirtualMachineInstanceMigration* has been created by executing the following command:
@@ -305,38 +306,22 @@ To create the source *VirtualMachineInstanceMigration*, we need the *IP address*
 
 +
 [loweralpha]
-.. Find the leader *virt-synchronization-controller* by looking at the lease holder:
+.. Find the IP address of the *virt-synchronization-controller* lease holder:
 
 +
 [.wrap,console,role=execute]
 ----
-oc get leases -n openshift-cnv | grep virt-synchronization-controller
+oc get pods $(oc get leases virt-synchronization-controller -n openshift-cnv -o json | jq -r '.spec.holderIdentity') -o json -n openshift-cnv | jq -r '.status.podIP'
 ----
 
 +
 [source,console]
 ----
-virt-synchronization-controller     virt-synchronization-controller-65c7b9d5bd-f4rbg        147m
+10.232.1.136
 ----
 
 +
-[loweralpha,start=2]
-.. Find the *IP address* of the leader *virt-synchronization-controller* using the *Pod* name from the previous command:
-
-+
-[.wrap,console,role=execute]
-----
-oc get pods -o wide -n openshift-cnv | grep 'virt-synchronization-controller-65c7b9d5bd-f4rbg'
-----
-
-+
-[source,console]
-----
-virt-synchronization-controller-65c7b9d5bd-f4rbg     1/1   Running  0    150m   10.233.0.222   control-plane-cluster-hflz6-1  <none>   <none>
-----
-
-+
-. Take the *Pod* *IP address* from the previous command output (*10.233.0.222* in the example) and replace *<leader_sync_controller_ip>* in the *VirtualMachineInstanceMigration* YAML below. Take care that you do not remove the port *:9185*
+. Take the *pod* *IP address* from the previous command output (*10.232.1.136* in the example) and replace *<leader_sync_controller_ip>* in the *VirtualMachineInstanceMigration* YAML below. Take care that you do not remove the port *:9185*
 
 +
 [.wrap,yaml,role=execute]
