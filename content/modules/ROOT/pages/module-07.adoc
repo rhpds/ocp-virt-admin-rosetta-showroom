@@ -232,7 +232,7 @@ Confirm the *VirtualMachine* and associated *VirtualMachineInstance* have been c
 +
 [.wrap,console,role=execute]
 ----
-oc get VirtualMachine -n vm-migration-ns-ns-live
+oc get VirtualMachine -n vm-migration-ns-ns-destination
 ----
 
 +
@@ -245,7 +245,7 @@ vm-migration-ns-ns-live   5m51s   WaitingForReceiver   False
 +
 [.wrap,console,role=execute]
 ----
-oc get VirtualMachineInstance -n vm-migration-ns-ns-live
+oc get VirtualMachineInstance -n vm-migration-ns-ns-destination
 ----
 
 +
@@ -288,7 +288,7 @@ Confirm the destination *VirtualMachineInstanceMigration* has been created by ex
 + 
 [.wrap,console,role=execute]
 ----
-oc get VirtualMachineInstanceMigration
+oc get VirtualMachineInstanceMigration -n vm-migration-ns-ns-destination
 ----
 
 + 
@@ -380,7 +380,7 @@ vm-live-migration-destination   ns-to-ns-vm-live-migration-instance-destination 
 +
 [.wrap,console,role=execute]
 ----
-oc get vm -n vm-migration-ns-ns-live
+oc get vm -n vm-migration-ns-ns-source
 ----
 
 +
