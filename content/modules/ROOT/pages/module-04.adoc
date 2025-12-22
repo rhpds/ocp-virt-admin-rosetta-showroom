@@ -65,11 +65,8 @@ oc get nodes
 ----
 NAME                            STATUS   ROLES                         AGE     VERSION
 control-plane-cluster-t96sv-1   Ready    control-plane,master,worker   4h38m   v1.33.5
-control-plane-cluster-t96sv-2   Ready    control-plane,master,worker   4h23m   v1.33.5
-control-plane-cluster-t96sv-3   Ready    control-plane,master,worker   4h37m   v1.33.5
 worker-cluster-t96sv-1          Ready    worker                        88m     v1.33.5
 worker-cluster-t96sv-2          Ready    worker                        87m     v1.33.5
-worker-cluster-t96sv-3          Ready    worker                        86m     v1.33.5
 ----
 
 +
