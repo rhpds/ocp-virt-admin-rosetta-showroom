@@ -39,8 +39,13 @@ include::lab-access.adoc[]
 
 . Ensure you are <<labaccess,logged in to the OpenShift CLI as the *admin* user>> from the *terminal* window on the right side of your screen and continue to the next step.
 
++ 
+. Start the dynamic-schedule-vm1 Virtual Machine
 +
-. Check which virtual machines are running in the *dynamic-schedule* namespace
+image::exercise5/start-vm.png[title="Start VM", link=self, window=blank, width=100%]
+
++
+. Check which virtual machine is running in the *dynamic-schedule* namespace
 
 +
 [.wrap,console,role=execute,subs="attributes"]
@@ -51,8 +56,8 @@ oc get vmi -n dynamic-schedule
 +
 [source,console]
 ----
-NAME                    AGE     PHASE     IP             NODENAME
-dynamic-schedule-vm1    10m     Running   10.129.2.111   worker01
+NAME                    AGE     PHASE     IP             NODENAME                        READY
+dynamic-schedule-vm-1   2m41s   Running   10.232.0.240   control-plane-cluster-jlkcx-1   True
 ----
 
 +
@@ -74,7 +79,7 @@ metadata:
   namespace: openshift-kube-descheduler-operator
 spec:
   logLevel: Normal
-  mode: Predictive <1>
+  mode: Predictive 
   operatorLogLevel: Normal
   profileCustomizations:
     devEnableSoftTainter: true
@@ -88,7 +93,7 @@ spec:
 ----
 
 +
-NOTE: Notice the mode is set to Predictive. By default, the descheduler does not evict pods. To evict pods, set mode to Automatic.
+NOTE: The mode is set to Predictive. By default, the descheduler does not evict pods. To evict pods, set mode to Automatic.
 
 +
 . Ensure the descheduler pod is running and check the logs in the *openshift-kube-descheduler-operator* namespace
@@ -98,17 +103,32 @@ NOTE: Notice the mode is set to Predictive. By default, the descheduler does not
 ----
 oc logs -n openshift-kube-descheduler-operator -l app=descheduler
 ----
++
+[,shell,role=wrap,subs="attributes"]
+.Output
+----
+I0102 13:57:26.543545       1 lownodeutilization.go:210] "Node has been classified" category="underutilized" node="worker-cluster-jlkcx-2" usage={"MetricResource":"4"} usagePercentage={"MetricResource":4}
+I0102 13:57:26.543656       1 lownodeutilization.go:210] "Node has been classified" category="underutilized" node="worker-cluster-jlkcx-1" usage={"MetricResource":"5"} usagePercentage={"MetricResource":5}
+I0102 13:57:26.543667       1 lownodeutilization.go:236] "Node is appropriately utilized" node="control-plane-cluster-jlkcx-1" usage={"MetricResource":"13"} usagePercentage={"MetricResource":13}
+I0102 13:57:26.543674       1 lownodeutilization.go:248] "Criteria for a node under utilization" MetricResource="0.00%"
+I0102 13:57:26.543687       1 lownodeutilization.go:249] "Number of underutilized nodes" totalNumber=2
+I0102 13:57:26.543694       1 lownodeutilization.go:250] "Criteria for a node above target utilization" MetricResource="10.00%"
+I0102 13:57:26.543704       1 lownodeutilization.go:251] "Number of overutilized nodes" totalNumber=0
+I0102 13:57:26.543709       1 lownodeutilization.go:275] "All nodes are under target utilization, nothing to do here"
+I0102 13:57:26.543786       1 profile.go:376] "Total number of evictions/requests" extension point="Balance" evictedPods=0 evictionRequests=0
+I0102 13:57:26.543827       1 descheduler.go:403] "Number of evictions/requests" totalEvicted=0 evictionRequests=0
+----
 
 +
 . Deploy a stress test pod to validate the descheduler functionality
 
 +
-.. Edit the existing *stress-test* deployment to use a specific node selector (place it on a node where at least 1 vm is running)
+.. Edit the existing *stress-test* deployment to use a specific node selector (place it on the node where at the vm is running)
 +
 
 [.wrap,console,role=execute,subs="attributes"]
 ----
-oc -n dynamic-schedule-stress-test patch deployment stress-test --type merge -p '{"spec":{"template":{"spec":{"nodeSelector":{"kubernetes.io/hostname":"worker01"}}}}}'
+oc -n dynamic-schedule-stress-test patch deployment stress-test --type merge -p '{"spec":{"template":{"spec":{"nodeSelector":{"kubernetes.io/hostname":"worker-cluster-jlkcx-1"}}}}}'
 ----
 
 +
@@ -128,6 +148,15 @@ oc -n dynamic-schedule-stress-test scale deployment stress-test --replicas=1
 oc get pods -n dynamic-schedule-stress-test
 ----
 
+
+. Edit the kubedescheduler cluster resource to set the *deschedulingIntervalSeconds* to a lower value for testing purposes.
+
++
+[.wrap,console,role=execute,subs="attributes"]
+----
+oc -n openshift-kube-descheduler-operator patch kubedescheduler cluster --type merge -p '{"spec":{"deschedulingIntervalSeconds":5}}'
+----
+
 +
 . Observe the descheduler pod logs in the *openshift-kube-descheduler-operator* namespace
 
@@ -136,15 +165,6 @@ oc get pods -n dynamic-schedule-stress-test
 ----
 oc logs -f -n openshift-kube-descheduler-operator -l app=descheduler
 ----
-
-. Edit the kubedescheduler cluster resource to set the *deschedulingIntervalSeconds* to a lower value for testing purposes.
-
-+
-[.wrap,console,role=execute,subs="attributes"]
-----
-oc -n openshift-kube-descheduler-operator patch kubedescheduler cluster --type merge -p '{"spec":{"deschedulingIntervalSeconds":600}}'
-----
-
 +
 [source,console]
 ----
@@ -152,10 +172,10 @@ I1113 15:24:57.371043       1 lownodeutilization.go:261] "Number of overutilized
 I1113 15:24:57.371052       1 nodeutilization.go:174] "Total capacity to be moved" MetricResource=143
 I1113 15:24:57.371273       1 nodeutilization.go:189] "Pods on node" node="worker01" allPods=72 nonRemovablePods=45 removablePods=27
 I1113 15:30:00.673653       1 nodeutilization.go:205] "Evicting pods based on priority, if they have same priority, they'll be evicted based on QoS tiers"
-I1113 15:30:00.673755       1 evictions.go:551] "Evicted pod in dry run mode" pod="dynamic-schedule/virt-launcher-vm01" reason="" strategy="LowNodeUtilization" node="worker01" profile="DevKubeVirtRelieveAndMigrate"
+I1113 15:30:00.673755       1 evictions.go:551] "Evicted pod in dry run mode" pod="dynamic-schedule/virt-launcher-dynamic-schedule-vm-1-lltlv" reason="" strategy="LowNodeUtilization" node="worker01" profile="DevKubeVirtRelieveAndMigrate"
 ----
 +
-NOTE: Notice the mode is set to Predictive so the eviction is in dry run mode. To evict pods, set mode to Automatic.
+NOTE: We can observe the virt-launcher-dynamic-schedule-vm-1-lltlv pod would have been evicted but the mode is set to Predictive so the eviction is in dry run mode. To evict pods, set mode to Automatic.
 
 +
 . Switch the descheduler mode to Automatic
@@ -176,6 +196,24 @@ oc logs -f -n openshift-kube-descheduler-operator -l app=descheduler
 ----
 
 +
+[,shell,role=wrap,subs="attributes"]
+.Output
+----
+I0102 14:53:47.976452       1 lownodeutilization.go:251] "Number of overutilized nodes" totalNumber=1
+I0102 14:53:47.976473       1 nodeutilization.go:185] "Total capacity to be moved" MetricResource=79
+I0102 14:53:47.976924       1 nodeutilization.go:200] "Pods on node" node="worker-cluster-jlkcx-2" allPods=44 nonRemovablePods=31 removablePods=13
+I0102 14:53:47.976946       1 nodeutilization.go:216] "Evicting pods based on priority, if they have same priority, they'll be evicted based on QoS tiers"
+I0102 14:53:47.977036       1 profile.go:376] "Total number of evictions/requests" extension point="Balance" evictedPods=0 evictionRequests=0
+I0102 14:53:47.977065       1 descheduler.go:403] "Number of evictions/requests" totalEvicted=0 evictionRequests=0
+I0102 14:53:52.963035       1 lownodeutilization.go:210] "Node has been classified" category="underutilized" node="control-plane-cluster-jlkcx-1" usage={"MetricResource":"10"} usagePercentage={"MetricResource":10}
+I0102 14:53:52.963113       1 lownodeutilization.go:210] "Node has been classified" category="underutilized" node="worker-cluster-jlkcx-1" usage={"MetricResource":"7"} usagePercentage={"MetricResource":7}
+I0102 14:53:52.963143       1 lownodeutilization.go:210] "Node has been classified" category="overutilized" node="worker-cluster-jlkcx-2" usage={"MetricResource":"100"} usagePercentage={"MetricResource":100}
+----
+
++
+NOTE: We can observe we have one overutilized node
+
++
 . Confirm the pods are evicted and rescheduled on another node
 
 +
@@ -187,22 +225,32 @@ oc get pods -n dynamic-schedule -o wide
 +
 [source,console]
 ----
-NAME                     READY   STATUS    RESTARTS   AGE     IP             NODE       NOMINATED NODE   READINESS GATES
-virt-launcher-vm01       1/1     Running   0          10m     10.129.2.111   worker02   <none>           <none>
-virt-launcher-vm02       1/1     Running   0          10m     10.129.2.112   worker02   <none>           <none>
+oc get pods -n dynamic-schedule -o wide
+NAME                                        READY   STATUS      RESTARTS   AGE     IP             NODE                            NOMINATED NODE   READINESS GATES
+virt-launcher-dynamic-schedule-vm-1-lltlv   0/2     Completed   0          31m     10.232.0.240   control-plane-cluster-jlkcx-1   <none>           1/1
+virt-launcher-dynamic-schedule-vm-1-n6ct7   2/2     Running     0          2m37s   10.234.0.84    worker-cluster-jlkcx-2          <none>           1/1
 ----
 
 +
-. You can confirm the eviction is working by placing the stress test pod on the node where the VMs are running and confirm they are evicted and rescheduled on another node
+. You can confirm the eviction is working by moving the stress test pod on the node where the VM is running and confirm the VM is rescheduled on another node.
 
 +
 [.wrap,console,role="execute",subs="attributes"]
 ----
-oc -n dynamic-schedule patch deployment stress-test --type merge -p '{"spec":{"template":{"spec":{"nodeSelector":{"kubernetes.io/hostname":"worker02"}}}}}'
+oc -n dynamic-schedule-stress-test patch deployment stress-test --type merge -p '{"spec":{"template":{"spec":{"nodeSelector":{"kubernetes.io/hostname":"worker-cluster-jlkcx-2"}}}}}'
 ----
 
 +
 [.wrap,console,role="execute",subs="attributes"]
 ----
 oc get pods -n dynamic-schedule -o wide
+----
+
++
+[,shell,role=wrap,subs="attributes"]
+.Output
+----
+NAME                                        READY   STATUS      RESTARTS   AGE     IP             NODE                            NOMINATED NODE   READINESS GATES
+virt-launcher-dynamic-schedule-vm-1-4qhnq   2/2     Running     0          4m28s   10.232.1.70    control-plane-cluster-jlkcx-1   <none>           1/1
+virt-launcher-dynamic-schedule-vm-1-n6ct7   0/2     Completed   0          9m49s   10.234.0.84    worker-cluster-jlkcx-2          <none>           1/1
 ----

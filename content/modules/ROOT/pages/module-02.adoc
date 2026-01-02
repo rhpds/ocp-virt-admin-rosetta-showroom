@@ -257,7 +257,7 @@ Example:
 +
 OpenShift Virtualization applies a default *10:1 CPU overcommit ratio* when you don't explicitly specify CPU requests. This means that if a VM has multiple vCPUs, the actual CPU request on the virt-launcher pod is only 1/10th of the total vCPUs.
 
-.. Check virt-launcher Pod CPU Requests
+. Check virt-launcher Pod CPU Requests
 
 +
 [,shell,role="execute wrap",subs="attributes"]
