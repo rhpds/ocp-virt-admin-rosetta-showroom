@@ -3,6 +3,7 @@
 [#dynamicreschintro]
 == Introduction
 
+
 You can use the descheduler to evict pods based on specific strategies so that the pods can be rescheduled onto more appropriate nodes.
 
 You can benefit from descheduling running pods in situations such as the following:
@@ -12,6 +13,8 @@ You can benefit from descheduling running pods in situations such as the followi
 * Node failure requires pods to be moved.
 * New nodes are added to clusters.
 * Pods have been restarted too many times.
+
+NOTE: This is similar to VMware DRS (Distributed Resource Scheduler)
 
 [#dynamicreschobj]
 == Objectives
