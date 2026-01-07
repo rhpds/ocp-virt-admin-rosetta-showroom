@@ -5,7 +5,7 @@ Fencing is a vital mechanism, particularly in high-availability (HA) cluster con
 
 This lab demonstrates the capabilities of the Node Health Check Operator and the Self Node Remediation Operator. You will simulate a node failure to observe the virtual machine migration process and subsequent node recovery.
 
-NOTE: Fencing and Self Node Remediation are very similar to VMware Infrastructure HA and Node Failure.
+NOTE: Fencing and Self Node Remediation are similar to VMware Infrastructure HA and Node Failure.
 
 include::lab-access.adoc[]
 
