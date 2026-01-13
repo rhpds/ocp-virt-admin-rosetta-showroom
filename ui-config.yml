@@ -14,9 +14,13 @@ tabs:
   - name: Terminal 1
     path: /terminal/
     port: 443
-    secondary_name: Terminal 2
-    secondary_path: /terminal/
-    secondary_port: 443
+    # secondary_name: Terminal 2
+    # secondary_path: /terminal/
+    # secondary_port: 443
+
+  - name: Terminal 2
+    path: /terminal/
+    port: 443
 
   # # External page
   # - name: Llamastack Docs
