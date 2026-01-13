@@ -7,9 +7,9 @@ default_width: 40
 persist_url_state: true
 
 tabs:
-  # OCP Console
-  - name: OCP Console
-    url: 'https://console-openshift-console.${DOMAIN}'
+  # OCP Console - turned off until route problem is fixed
+  # - name: OCP Console
+  #   url: 'https://console-openshift-console.${DOMAIN}'
 
   - name: Terminal 1
     path: /terminal/
