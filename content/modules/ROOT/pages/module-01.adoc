@@ -17,6 +17,61 @@ Objectives
 
 include::lab-access.adoc[]
 
+[#computerand]
+== Compute Migration to a random node
+During maintenance or troubleshooting, you might need to migrate a VM to a different node.
+Live migration is the process of moving a running Virtual Machine Instance (VMI) to a different node without disruption.
+
+NOTE: This is similar to the VMware vMotion feature for VMs.
+
+In this lab, you will be performing a live migration of a virtual machine
+from one compute node to another. To do this, you will access a running VM,
+determine its current node, and then move it to another node.
+
+[#computerandrequirements]
+=== Requirements
+
+* The underlying PVC must use ReadWriteMany (RWX) access mode
+
+* The pod network must not be configured with the bridge binding type.
+
+* Ports 49152 and 49153 must be available in the VM's virt-launcher pod; live migration fails if these ports are specified in a masquerade network interface.
+
+* CPU model must match on the source and destination node
+
+[#computerandinstructions]
+=== Instructions
+
+[start=1]
+. Ensure you are <<labaccess,logged in to the OpenShift Console as the *admin* user>> and continue to the next step.
+
+. Navigate to *Virtualization -> Virtual Machines* and then click on the virtual machine named *live-migrate-vm1*.
+Note which worker node the VM is currently running on (example: *worker-cluster-m2ssq-1*. Your cluster will have a different node name).
++
+image::exercise1/01-image-compute-002.png[title="Virtual machine details", link=self, window=blank, width=100%]
+
+. To migrate the VM to another worker node, click on the Actions menu, hover over Migration, and then click on Compute.
++
+image::exercise1/01-image-compute-003.png[title="Initiate migration", link=self, window=blank, width=100%]
+
+. You will be presented with a window that asks if you would like to select the target worker node Automatically or to select a Specific Node.
+Leave the selection at the default, which is to migrate to an Automatically selected Node
++
+image::exercise1/01-image-compute-004.png[title="Configure migration", link=self, window=blank, width=100%]
+
+. Wait a few moments and you will see that the Virtual Machine status changes from *Running* to *Migrating*.
++
+image::exercise1/01-image-compute-006.png[title="VM is migrating", link=self, window=blank, width=100%]
+
+. A few moments after that, the Virtual Machine status will return to *Running*.
+Note that the worker node has changed (e.g. *worker-cluster-m2ssq-3*).
++
+image::exercise1/01-image-compute-007.png[title="VM is running", link=self, window=blank, width=100%]
+
+. The VM has migrated to a new worker node while still running.
+Note that you will use this live migration process again later in this lab.
+
+
 [#compute]
 == Compute Migration to a specific node
 During maintenance or troubleshooting, you might need to migrate a VM to a different node.
@@ -74,59 +129,6 @@ image::exercise1/01-image-compute-007.png[title="VM is running", link=self, wind
 . The VM has migrated to a new worker node while still running.
 Note that you will use this live migration process again later in this lab.
 
-[#computerand]
-== Compute Migration to a random node
-During maintenance or troubleshooting, you might need to migrate a VM to a different node.
-Live migration is the process of moving a running Virtual Machine Instance (VMI) to a different node without disruption.
-
-NOTE: This is similar to the VMware vMotion feature for VMs.
-
-In this lab, you will be performing a live migration of a virtual machine
-from one compute node to another. To do this, you will access a running VM,
-determine its current node, and then move it to another node.
-
-[#computerandrequirements]
-=== Requirements
-
-* The underlying PVC must use ReadWriteMany (RWX) access mode
-
-* The pod network must not be configured with the bridge binding type.
-
-* Ports 49152 and 49153 must be available in the VM's virt-launcher pod; live migration fails if these ports are specified in a masquerade network interface.
-
-* CPU model must match on the source and destination node
-
-[#computerandinstructions]
-=== Instructions
-
-[start=1]
-. Ensure you are <<labaccess,logged in to the OpenShift Console as the *admin* user>> and continue to the next step.
-
-. Navigate to *Virtualization -> Virtual Machines* and then click on the virtual machine named *live-migrate-vm1*.
-Note which worker node the VM is currently running on (example: *worker-cluster-m2ssq-1*. Your cluster will have a different node name).
-+
-image::exercise1/01-image-compute-002.png[title="Virtual machine details", link=self, window=blank, width=100%]
-
-. To migrate the VM to another worker node, click on the Actions menu, hover over Migration, and then click on Compute.
-+
-image::exercise1/01-image-compute-003.png[title="Initiate migration", link=self, window=blank, width=100%]
-
-. You will be presented with a window that asks if you would like to select the target worker node Automatically or to select a Specific Node.
-Leave the selection at the default, which is to migrate to an Automatically selected Node
-+
-image::exercise1/01-image-compute-004.png[title="Configure migration", link=self, window=blank, width=100%]
-
-. Wait a few moments and you will see that the Virtual Machine status changes from *Running* to *Migrating*.
-+
-image::exercise1/01-image-compute-006.png[title="VM is migrating", link=self, window=blank, width=100%]
-
-. A few moments after that, the Virtual Machine status will return to *Running*.
-Note that the worker node has changed (e.g. *worker-cluster-m2ssq-3*).
-+
-image::exercise1/01-image-compute-007.png[title="VM is running", link=self, window=blank, width=100%]
-
-. The VM has migrated to a new worker node while still running.
-Note that you will use this live migration process again later in this lab.
 
 [#storage]
 == Storage Migration
