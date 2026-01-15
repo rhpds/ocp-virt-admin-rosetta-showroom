@@ -190,7 +190,10 @@ oc get vmi overcommit-vm-1 -n over-commit -o jsonpath='{.spec.domain.cpu}{"\n"}'
 ----
 
 +
-.. Using the *OpenShift Console*, navigate to *Virtualization → Virtual Machines*. Under *All projects*, select the *over-commit* namespace and select the *overcommit-vm-1* VM to view the *CPU/Memory* allocation.
+.. Using the *OpenShift Console*, navigate to *Virtualization → Virtual Machines*.
+
++
+Under *All projects*, select the *over-commit* namespace and select the *overcommit-vm-1* VM to view the *CPU/Memory* allocation.
 
 +
 image::exercise2/vm-details.png[title="Confirm number of CPUs", link=self, window=blank, width=100%]
@@ -345,7 +348,10 @@ oc get pods -n over-commit -l vm.kubevirt.io/name=overcommit-vm-1 \
 ----
 
 +
-Using the *OpenShift Console*, navigate to *Workloads → Pods*. From the *Project:* dropdown and select the *over-commit* namespace to see the *virt-launcher* pod for the VM.
+Using the *OpenShift Console*, navigate to *Workloads → Pods*. 
+
++
+From the *Project:* dropdown and select the *over-commit* namespace to see the *virt-launcher* pod for the VM.
 
 +
 Click on the *virt-launcher* pod and to go the *YAML* tab to see the *cpu requests* value.
@@ -405,7 +411,10 @@ See the section on https://docs.redhat.com/en/documentation/openshift_container_
 
 +
 
-Using the *OpenShift Console*, navigate to *Virtualization → Virtual Machines*. Under *All projects*, select the *over-commit* namespace and select the *overcommit-vm-1* VM to view the *CPU/Memory* allocation.
+Using the *OpenShift Console*, navigate to *Virtualization → Virtual Machines*. 
+
++
+Under *All projects*, select the *over-commit* namespace and select the *overcommit-vm-1* VM to view the *CPU/Memory* allocation.
 
 +
 image::exercise2/vm-memory-assigned.png[title="VM Memory Assigned", link=self, window=blank, width=100%]
@@ -426,7 +435,10 @@ oc get vm -n over-commit overcommit-vm-1 -o json | jq .spec.template.spec.domain
 ----
 
 +
-Using the *OpenShift Console*, navigate to *Workloads → Pods*. From the *Project:* dropdown and select the *over-commit* namespace to see the *virt-launcher* pod for the VM.
+Using the *OpenShift Console*, navigate to *Workloads → Pods*. 
+
++
+From the *Project:* dropdown and select the *over-commit* namespace to see the *virt-launcher* pod for the VM.
 
 +
 Click on the *virt-launcher* pod and to go the *YAML* tab to see the *memory requests* value.
@@ -452,22 +464,22 @@ oc get pod -n over-commit -l vm.kubevirt.io/name=overcommit-vm-1 -o json | jq '.
 +
 NOTE: The virt-launcher pod is requesting 2564Mi which is 2048Mi + **overhead**.
 
-
-
 +
 IMPORTANT: This overhead is necessary and expected - it ensures the VM has enough resources to run properly.
 
-. Enable the memory overcommit feature
+. Enable Memory Overcommit
 
 +
-**Using the OpenShift Console:**
-Navigate to Virtualization → Overview → Settings → Cluster → General Settings and Enable "Memory density"
+Using the *OpenShift Console*, navigate to *Virtualization → Overview → Settings → Cluster → General Settings*
+
++
+Click the *Toggle Switch* to "Enable Memory Density"
 
 +
 image::exercise2/enable-memory-overcommit.png[title="Enable Memory Overcommit", link=self, window=blank, width=100%]
 
 +
-You can confirm using the CLI :
+You can confirm memory overcommit is enabled by checking the *hyperconverged* CR using the CLI:
 
 +
 [,shell,role="execute wrap",subs="attributes"]
@@ -486,10 +498,29 @@ oc get hyperconverged -n openshift-cnv kubevirt-hyperconverged -o json | jq '.sp
 NOTE: This means that the memory overcommit ratio is _150%_ which is _1.5:1_.
 
 +
-. Observe the memory requests for the virt-launcher pod compared to the memory allocated to the VM.
+. Now let's restart the VM and observe the memory request on the *virt-launcher* pod compared to the memory allocated to the VM.
 
 +
-Live Migrate the VM (or stop and restart it) to apply the new setting, then observe the memory requests for the virt-launcher pod :
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl restart overcommit-vm-1 -n over-commit
+----
+
++
+[,shell,role=wrap,subs="attributes"]
+.Output
+----
+VM overcommit-vm-1 was scheduled to restart
+----
+
++
+Using the *OpenShift Console*, navigate to *Workloads → Pods*.
+
++
+From the *Project:* dropdown and select the *over-commit* namespace to see the *virt-launcher* pod for the VM.
+
++
+Click on the *virt-launcher* pod and to go the *YAML* tab to see the *memory requests* value.
 
 +
 image::exercise2/virt-launcher-memory-request-overcommit.png[title="Virt-Launcher Memory Request 1.5x", link=self, window=blank, width=100%]
@@ -501,10 +532,7 @@ The virt-launcher pod is requesting _1972720981_ bytes which is ~ _1972Mi_  ~ _1
 NOTE: This is less than the _2048MiB_ requested by the VM. This is because the memory overcommit ratio is _150%_.
 
 +
-. Increase the memory overcommit ratio to _200%_.
-
-+
-.. Patch the hyperconverged custom resource to set the memory overcommit ratio to 200%.
+. Increase the memory overcommit ratio to _200%_ by patching the *hyperconverged* Custom Resource.
 
 +
 [,shell,role="execute wrap",subs="attributes"]
@@ -533,10 +561,26 @@ oc get hyperconverged -n openshift-cnv kubevirt-hyperconverged -o json | jq '.sp
 ----
 
 +
-NOTE: This means that the memory overcommit ratio is now _200%_ which is _2:1_.
+[NOTE]
+====
+This means that the memory overcommit ratio is now _200%_ which is _2:1_.
+====
 
 +
-.. Live migrate (or stop and restart) the VM to apply the new setting, then observe the memory requests for the virt-launcher pod from the web console or from the CLI:
+. Restart the VM and observe the memory request on the *virt-launcher* pod compared to the 2GiB allocated to the VM.
+
++
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl restart overcommit-vm-1 -n over-commit
+----
+
++
+[,shell,role=wrap,subs="attributes"]
+.Output
+----
+VM overcommit-vm-1 was scheduled to restart
+----
 
 +
 [,shell,role="execute wrap",subs="attributes"]
@@ -552,8 +596,13 @@ oc get pod -n over-commit -l vm.kubevirt.io/name=overcommit-vm-1 -o json | jq '.
 ----
 
 +
-NOTE: The virt-launcher pod is now requesting _1540Mi_ which is ~ _1.54GiB_.
+[NOTE]
+====
+The *virt-launcher* pod is now requesting _1540Mi_ which is ~ _1.54GiB_.
+
+Calculated as:
+
+2 * (100/200) = 1GiB + VM overhead
+====
 
 +
-
-
