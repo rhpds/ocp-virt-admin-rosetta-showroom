@@ -74,7 +74,7 @@ image::exercise1/01-image-compute-002.png[title="Virtual machine details", link=
 image::exercise1/01-image-compute-003.png[title="Initiate migration", link=self, window=blank, width=100%]
 +
 
-Leave the default selection, which is to *Automatically* migrate to any *Node*.
+. Leave the default selection, which is to *Automatically* migrate to any *Node*.
 
 +
 image::exercise1/01-image-compute-004.png[title="Configure migration", link=self, window=blank, width=100%]
@@ -84,7 +84,7 @@ image::exercise1/01-image-compute-004.png[title="Configure migration", link=self
 +
 image::exercise1/01-image-compute-006.png[title="VM is migrating", link=self, window=blank, width=100%]
 
-. A few moments after that, the Virtual Machine status will return to *Running*.
+. A few moments after that, the Virtual Machine will return to a *Running* state.
 +
 
 [NOTE]
@@ -191,7 +191,7 @@ Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* wi
 image::exercise1/01-image-storage-console-001.png[title="Access the Console", link=self, window=blank, width=100%]
 
 +
-Run a command, such as `top` or `ping`, that will continue running as we perform the remainder of this exercise.
+. Run a command, such as `top` or `ping`, that will continue running as we perform the remainder of this exercise.
 
 +
 image::exercise1/01-image-storage-003-v2.png[title="Run command on console", link=self, window=blank, width=100%]
