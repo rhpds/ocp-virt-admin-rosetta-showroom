@@ -1,26 +1,28 @@
 = Overcommit in OpenShift Virtualization
 
-*Overcommit* occurs when the total virtual resources allocated to VMs exceed the physical resources available on the host, enabling higher workload density by leveraging the fact that VMs rarely use their full allocated capacity simultaneously.
+*Overcommit* occurs when the allocated virtual resources exceed the physical resources available on the host. Overcommit allows users to enable higher workload density by leveraging the fact that Virtual Machines (VMs) rarely use their full allocated capacity simultaneously.
 
 include::lab-access.adoc[]
 
 [#cpu]
 == CPU Overcommit
 
-In OpenShift Virtualization, compute resources assigned to virtual machines (VMs) are backed by either *guaranteed CPUs* or *time-sliced CPU shares*.
+In OpenShift Virtualization, compute resources assigned to Virtual Machines (VMs) are backed by either *Guaranteed CPUs* or *time-sliced CPU shares*.
 
-*Guaranteed CPUs*, also known as CPU reservation, dedicate CPU cores or threads to a specific workload, making them unavailable to any other workload. Assigning guaranteed CPUs to a VM ensures sole access to a reserved physical CPU. You enable dedicated resources for VMs to use guaranteed CPUs.
+*Guaranteed CPUs*, also known as CPU reservations, dedicate CPU cores or threads to a specific workload, making them unavailable to any other workload. Assigning guaranteed CPUs to a VM ensures sole access to a reserved physical CPU. You enable dedicated resources for VMs to use guaranteed CPUs.
 
 *Time-sliced CPUs* dedicate a slice of time on a shared physical CPU to each workload. You can specify the slice size during VM creation or when the VM is offline. By default, each vCPU receives 100 milliseconds (1/10 of a second) of physical CPU time.
 
 With time-sliced CPUs, the Linux kernel's *Completely Fair Scheduler (CFS)* manages how VMs share physical CPU cores. CFS rotates VMs through available cores, giving each VM a proportional slice of CPU time based on its configured CPU requests.
 
+By default OpenShift Virtualization has a 10:1 overcommit ratio. To achieve CPU overcommit, each VM’s virt-launcher pod will define _100m_ of CPU requests or _1/10th_ of a CPU from a Kubernetes resource and scheduling perspective, per vCPU requested by the VM.
 
-To allow for CPU overcommit, which is set to 10:1 by default, each VM’s virt-launcher pod will define _100m_ total CPU requests, which is _1/10th_ of a host CPU from a Kubernetes resource and scheduling perspective, per vCPU.
+The default _10:1_ overcommit ratio can be configured to the desired overcommit level by changing the *cpuAllocationRatio* on the *KubeVirt* Custom Resource. Changing this ratio will influence the CPU requests for each vCPU that is allocated by default, which enforces the maximum level of CPU overcommit through Kubernetes based request scheduling.
 
-However this default _10:1_ CPU overcommit ratio can be configured to the desired overcommit level by changing the cluster CPU Allocation Ratio. Changing this ratio will influence the amount of cpu requests each vCPU is allocated by default, which enforces a max level of CPU overcommit through Kubernetes requests scheduling.
-
-NOTE: Note that resource assignments are made at virt-launcher pod scheduling time, so any VMs will need to be live migrated stopped and restarted to change CPU allocation behavior after a ratio change.
+[NOTE]
+====
+Resource assignments are made at virt-launcher pod scheduling time, so any VMs will need to be live migrated stopped and restarted to change CPU allocation behavior after a ratio change.
+====
 
 [#cpuinstructions]
 === Instructions
@@ -54,8 +56,7 @@ worker-cluster-jlkcx-2          Ready    worker                        52m   v1.
 +
 [,text,role="execute wrap",subs="attributes"]
 ----
-NODE=worker-cluster-jlkcx-1
-oc describe node $NODE | grep -A 10 "Capacity:"
+oc describe node <pick_a_worker_from_above> | grep -A 10 "Capacity:"
 ----
 
 +
@@ -81,7 +82,7 @@ The `cpu` value shows the number of physical CPU cores (or threads if hyperthrea
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-oc get node $NODE -o jsonpath='{.status.allocatable.cpu}{"\n"}'
+oc get node <pick_a_worker_from_above> -o jsonpath='{.status.allocatable.cpu}{"\n"}'
 ----
 
 +
@@ -92,8 +93,7 @@ oc get node $NODE -o jsonpath='{.status.allocatable.cpu}{"\n"}'
 ----
 
 +
-**Using the OpenShift Console:**
-Navigate to Compute → Nodes
+.. Using the *OpenShift Console*, you can navigate to *Compute → Nodes* to view their key specifications.
 
 +
 image::exercise2/node-details.png[title="Confirm number of CPUs", link=self, window=blank, width=100%]
@@ -138,9 +138,40 @@ oc get vm overcommit-vm-1 -n over-commit -o jsonpath='{.spec.template.spec.domai
 ----
 
 + 
-.. Start the overcommit-vm-1 Virtual Machine
+.. Start the *overcommit-vm-1* Virtual Machine
+
+... You can do this via the *Console*
 +
 image::exercise2/start-vm.png[title="Start VM", link=self, window=blank, width=100%]
+
++
+... Or you can use *virtctl* to start it from your *Terminal* window
+
++
+[,shell,role="execute wrap",subs="attributes"]
+----
+oc project over-commit
+----
+
++
+[,shell,role=wrap,subs="attributes"]
+.Output
+----
+Now using project "over-commit" on server ...
+----
+
++
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl start overcommit-vm-1
+----
+
++
+[,shell,role=wrap,subs="attributes"]
+.Output
+----
+VM overcommit-vm-1 was scheduled to start
+----
 
 +
 .. View CPU requests and limits for the running VM:
@@ -159,19 +190,22 @@ oc get vmi overcommit-vm-1 -n over-commit -o jsonpath='{.spec.domain.cpu}{"\n"}'
 ----
 
 +
-**Using the OpenShift Console:**
-
-+
-Navigate to Virtualization → Virtual Machines and select the overcommit-vm-1 VM.
+.. Using the *OpenShift Console*, navigate to *Virtualization → Virtual Machines* and select the *overcommit-vm-1* VM to view the *CPU/Memory* allocation.
 
 +
 image::exercise2/vm-details.png[title="Confirm number of CPUs", link=self, window=blank, width=100%]
 
 +
-. Confirm the number of CPUs inside the guest
+.. Confirm the number of CPUs inside the guest
 
 +
-From the web console, login into the VM and run the following command to verify the number of CPUs:
+.. Click on the *Console* tab, select *Serial console* from the drop down. If necessary, click the blue *Connect* button.
+
++
+Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* with the *User name* and *Password* credentials from above the console window.
+
++
+From the console, run the following command to verify the number of CPUs:
 
 +
 [,shell,role="execute wrap",subs="attributes"]
@@ -189,6 +223,7 @@ nproc
 +
 image::exercise2/overcommit-nproc.png[title="Confirm number of CPUs", link=self, window=blank, width=100%]
 
++
 . Calculating CPU Overcommit Ratio
 
 +
@@ -197,12 +232,12 @@ To calculate the overcommit ratio on a specific node:
 .. Identify all VMs running on the node:
 
 +
-IMPORTANT: In the following step, you need to replace "node_name" with the actual node name.
+IMPORTANT: In the following step, you need to replace "node_name" with an actual node from your cluster.
 
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-NODE="node_name" # Replace with the actual node name
+NODE="node_name"
 oc get vmi -A -o wide | grep "$NODE"
 ----
 
@@ -255,9 +290,9 @@ Example:
 . Understanding the Default 10:1 CPU Overcommit Ratio
 
 +
-OpenShift Virtualization applies a default *10:1 CPU overcommit ratio* when you don't explicitly specify CPU requests. This means that if a VM has multiple vCPUs, the actual CPU request on the virt-launcher pod is only 1/10th of the total vCPUs.
+OpenShift Virtualization applies a default *10:1 CPU overcommit ratio* when you don't explicitly specify CPU requests. This means that if a VM has multiple vCPUs, the actual CPU request on the *virt-launcher* pod will be 1/10th of the total vCPUs of the VM.
 
-. Check virt-launcher Pod CPU Requests
+. Check *virt-launcher* pod CPU Requests
 
 +
 [,shell,role="execute wrap",subs="attributes"]
@@ -302,8 +337,7 @@ oc get pods -n over-commit -l vm.kubevirt.io/name=overcommit-vm-1 \
 ----
 
 +
-**Using the OpenShift Console:**
-Navigate to Workloads → Pods and select the virt-launcher pod.
+Using the *OpenShift Console*, navigate to *Workloads → Pods* and select the *virt-launcher* pod for the VM.
 
 +
 image::exercise2/pod-cpu-details.png[title="Confirm number of CPUs", link=self, window=blank, width=100%]
