@@ -2,6 +2,11 @@
 
 *Overcommit* occurs when the allocated virtual resources exceed the physical resources available on the host. Overcommit allows users to enable higher workload density by leveraging the fact that Virtual Machines (VMs) rarely use their full allocated capacity simultaneously.
 
+In this module, you will perform two overcommit tasks:
+
+* <<cpu,Understand and Overcommit CPU on a Virtual Machine>>
+* <<memory,Understand, Enable and Overcommit Memory on a Virtual Machine>>
+
 include::lab-access.adoc[]
 
 [#cpu]
