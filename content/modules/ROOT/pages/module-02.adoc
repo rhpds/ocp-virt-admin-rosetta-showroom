@@ -150,20 +150,7 @@ image::exercise2/start-vm.png[title="Start VM", link=self, window=blank, width=1
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-oc project over-commit
-----
-
-+
-[,shell,role=wrap,subs="attributes"]
-.Output
-----
-Now using project "over-commit" on server ...
-----
-
-+
-[,shell,role="execute wrap",subs="attributes"]
-----
-virtctl start overcommit-vm-1
+virtctl start overcommit-vm-1 -n over-commit
 ----
 
 +
