@@ -183,7 +183,7 @@ oc -n dynamic-schedule-stress-test scale deployment stress-test --replicas=1
 +
 [.wrap,console,role=execute,subs="attributes"]
 ----
-oc get pods -n dynamic-schedule-stress-test
+oc get pods -n dynamic-schedule-stress-test -o wide
 ----
 
 . Edit the kubedescheduler cluster resource to set the *deschedulingIntervalSeconds* to a lower value for testing purposes.
@@ -304,4 +304,13 @@ oc get pods -n dynamic-schedule -o wide -w
 NAME                                        READY   STATUS      RESTARTS   AGE     IP             NODE                            NOMINATED NODE   READINESS GATES
 virt-launcher-dynamic-schedule-vm-1-4qhnq   2/2     Running     0          4m28s   10.232.1.70    control-plane-cluster-jlkcx-1   <none>           1/1
 virt-launcher-dynamic-schedule-vm-1-n6ct7   0/2     Completed   0          9m49s   10.234.0.84    worker-cluster-jlkcx-2          <none>           1/1
+----
+
++
+. Scale the stress test deployment down to free up the resources
+
++
+[.wrap,console,role=execute,subs="attributes"]
+----
+oc -n dynamic-schedule-stress-test scale deployment stress-test --replicas=0
 ----
