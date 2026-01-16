@@ -228,20 +228,44 @@ node-affinity-vm   58s   Running   10.233.0.46   worker-cluster-t96sv-2   True
 
 [#podaffinity]
 == Pod Affinity
-Pod Affinity is a scheduling rule that co-locates a VM Pod and an existing Pod (or another VM Pod) with a specific label onto the same node.
+Pod Affinity is a scheduling rule that co-locates a VMs (or pods) with a specific labels onto the same node.
 
-The primary benefit of using pod affinity is to improve performance for dependent VMs or services that require low-latency communication by guaranteeing their placement on the same worker node.
+The primary benefit of using pod affinity is to improve performance for dependent VMs or services that require low-latency communication by guaranteeing their placement on the same node.
 
-This lab will illustrate the setup and function of Pod Affinity.
+This lab will demonstrate the setup and usage of Pod Affinity.
 
 [#podaffinityinstructions]
 === Instructions
 
-[start=1]
 . Ensure you are <<labaccess,logged in to both the OpenShift Console and CLI as the *admin* user>> from your *web browser* and the *terminal* window on the right side of your screen and continue to the next step.
 
 +
-. To begin, we need to apply a label to the *node-affinity-vm*. This will enable it to serve as the VM that our pod will have Pod Affinity to. The label can be added by editing the VM within the OpenShift CLI and including `app: fedora`
+. To begin, we are going to leverage our existing *node-affinity-vm* from the previous lab. This will serve as 1 of the 2 VMs we use to demonstract Affinity. 
+
++
+There are 2 ways to add label:
+
++
+.. Editing the VM YAML from the CLI or Console
+
++
+.. Using *oc label*
+
++
+Both methods have benefits and drawbacks. In many production use cases, they will be used together.
+
++
+[loweralpha, start=1]
+... Editing the VM YAML requires a restart of the VM for the new labels to take effect. This is because the label on the VM must get passed down to the *virt-launcher* pod and that only happenes on restart.
+
++
+... Using *oc label* is ephemeral and is lost after a VM restart. This is because the label is applied directly to the *virt-laucnher* pod, with immediate effect, but not set on the VM object.
+
++
+. To make things premenant, use the OpenShift CLI to set a label `app: fedora` on the *node-affinity-vm*.
+
++
+Add the label under *spec.template.metadata.labels* NOT *metadata.labels* at the top of the YAML:
 
 +
 [source,text,role=execute]
@@ -250,29 +274,20 @@ This lab will illustrate the setup and function of Pod Affinity.
 oc edit vm node-affinity-vm -n affinity
 ----
 +
-[source,yaml,role=execute]
+[source,yaml]
 ----
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-    argocd.argoproj.io/sync-wave: "10"
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"kubevirt.io/v1","kind":"VirtualMachine","metadata":{"annotations":{"argocd.argoproj.io/sync-options":"SkipDryRunOnMissingResource=true","argocd.argoproj.io/sync-wave":"10"},"labels":{"app.kubernetes.io/instance":"module-affinity"},"name":"node-affinity-vm","namespace":"affinity"},"spec":{"dataVolumeTemplates":[{"metadata":{"name":"node-affinity-vm-volume"},"spec":{"sourceRef":{"kind":"DataSource","name":"rhel10","namespace":"openshift-virtualization-os-images"},"storage":{"resources":{"requests":{"storage":"30Gi"}}}}}],"instancetype":{"name":"u1.small"},"preference":{"name":"rhel.10"},"runStrategy":"Manual","template":{"metadata":{"labels":{"network.kubevirt.io/headlessService":"headless"}},"spec":{"domain":{"devices":{"autoattachPodInterface":false,"disks":[{"disk":{"bus":"virtio"},"name":"cloudinitdisk"}],"interfaces":[{"masquerade":{},"name":"default"}]}},"networks":[{"name":"default","pod":{}}],"subdomain":"headless","volumes":[{"dataVolume":{"name":"node-affinity-vm-volume"},"name":"rootdisk"},{"cloudInitNoCloud":{"userData":"#cloud-config\nchpasswd:\n  expire: false\npassword: redhat\nuser: rhel\n"},"name":"cloudinitdisk"}]}}}}
-    kubemacpool.io/transaction-timestamp: "2025-12-13T00:21:52.599027397Z"
-    kubevirt.io/latest-observed-api-version: v1
-    kubevirt.io/storage-observed-api-version: v1
-  creationTimestamp: "2025-12-12T20:44:59Z"
-  finalizers:
-  - kubevirt.io/virtualMachineControllerFinalize
-  generation: 2
+    kubemacpool.io/transaction-timestamp: "2026-01-16T18:46:28.5004163Z"
+  generation: 3
   labels:
-    app.kubernetes.io/instance: module-affinity <---Do not put the label here
+    app.kubernetes.io/instance: module-affinity  <---Do not put the label here
   name: node-affinity-vm
   namespace: affinity
-  resourceVersion: "328565"
-  uid: 6e05ce41-019f-498a-a07f-ef4e9c93ddd3
+  resourceVersion: "714752"
+  uid: 5cf5a3d2-203c-41cb-8da2-d696acd9e71a
 spec:
   dataVolumeTemplates:
   - metadata:
@@ -298,23 +313,85 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: fedora   <---Put the label here
+        app: fedora <---Put the label here
         network.kubevirt.io/headlessService: headless
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: zone
+                operator: In
+                values:
+                - east
+            weight: 75
+      architecture: amd64
+      domain:
+        devices:
+          autoattachPodInterface: false
+          disks:
+          - disk:
+              bus: virtio
+            name: cloudinitdisk
+          interfaces:
+          - macAddress: 02:f9:4a:ad:c3:06
+            masquerade: {}
+            name: default
+        firmware:
+          serial: 212f42c0-c2ac-4581-96e2-5297e2436a8d
+          uuid: ad3a3d79-9539-4585-826e-9cca5a71f775
+        machine:
+          type: pc-q35-rhel9.6.0
+        resources: {}
+      networks:
+      - name: default
+        pod: {}
+      subdomain: headless
+      volumes:
+      - dataVolume:
+          name: node-affinity-vm-volume
+        name: rootdisk
+      - cloudInitNoCloud:
+          userData: |
+            chpasswd:
+              expire: false
+            password: redhat
+            user: rhel
+        name: cloudinitdisk
 ----
+
+
 +
-[source,text,role=execute]
+.Save and Exit
+[source,console]
 ----
 :wq!
 ----
 
 +
-. A reboot is required for the *node-affinity-vm* in order to apply the label to its vmi.
+Make sure the VM was edited successful and did not fail for any reason.
 
 +
-. Stop the *node-affinity-vm* VM by clicking on *Action → Stop*.
+[source,console]
+----
+virtualmachine.kubevirt.io/node-affinity-vm edited
+----
 
 +
-. Once the VM completely stops. Click *Actions → Start*.
+. Restart the *node-affinity-vm* so the label is applied to the *virt-laucnher* pod.
+
++
+[.wrap,console,role=execute]
+----
+virtctl restart node-affinity-vm -n affinity
+----
+
++
+[source,console]
+----
+VM node-affinity-vm was scheduled to restart
+----
 
 +
 . Click the *pod-affinity-vm*  
