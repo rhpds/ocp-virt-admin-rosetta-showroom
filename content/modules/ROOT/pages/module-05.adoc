@@ -154,20 +154,13 @@ I0102 13:57:26.543827       1 descheduler.go:403] "Number of evictions/requests"
 . Deploy a stress test pod to show the descheduler functionality
 
 +
-.. Patch the existing *stress-test* deployment to use a node selector so that is runs on the node where at the VM is running.
+.. Patch the existing *stress-test* deployment to use a *nodeSelector* so that the pod runs on the node where at the VM is running.
 
 +
-We do this dynamically by:
+We do this by setting the *nodeSelector* key *kubernetes.io/hostname* dynamically by:
 
 ... Getting all of the nodes
-
-+
-`oc get nodes -o custom-columns=":metadata.name" --no-headers`
-
-... Grep the specific node where the *dynamic-schedule-vm-1* VM is running
-
-+
-`grep $(oc get vmi dynamic-schedule-vm-1 -n dynamic-schedule -o json | jq -r '.status.nodeName')`
+... Filter the result on the specific node where the *dynamic-schedule-vm-1* VM is running
 
 +
 [.wrap,console,role=execute,subs="attributes"]
