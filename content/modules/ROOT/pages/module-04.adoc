@@ -1,116 +1,134 @@
 = Affinity and Anti-Affinity for VM Placement
 
-This lab is designed to enhance your proficiency in applying Node Affinity, Pod Affinity, and Anti-Pod Affinity specifically to Virtual Machines. The core purpose is to illustrate the practical application of these principles in real-world scenarios and solidify your conceptual understanding.
+This lab showcases how to use and apply Node Affinity, Pod Affinity, and Pod-Anti Affinity to Virtual Machines. The lab focuses on the practical application of these principles in real-world scenarios and strengthens your technical understanding of how they work.
 
-NOTE: Affinity and Anti-Affinity are similar to VMware Adaptive Resource Scheduling and Rebalancing.
+[NOTE]
+====
+This feature is similar to VMWare's Virtual Machine Affinity Rules without DRS.
+
+You can combine this feature, with the *Descheduler* using the *AffinityAndTaints* profile to create a similar *Virtual Machine Affinity Rules* with *DRS* experience.
+====
 
 include::lab-access.adoc[]
 
 [#nodeaffinity]
 == Node Affinity
 
-Node Affinity defines rules that guide the scheduler to attract a Virtual Machine Pod to a specific node or group of nodes. These rules rely on matching labels applied to the nodes.
+Node Affinity is a set of rules that guide the scheduler to attract a Virtual Machine to a specific node or group of nodes. These rules rely on matching labels that are applied to the nodes.
 
-The core use case for Node Affinity is to ensure that a VM runs only on nodes that possess specific hardware features, such as a particular GPU model or a high amount of RAM, by matching the corresponding labels on the node.
+The core use case for Node Affinity is to ensure that a VM runs only on nodes that possess specific features or needs, such as a particular GPU model or a high amount of RAM, by matching the corresponding labels on the node.
 
 This lab will demonstrate how Node Affinity is set up and how it functions.
 
 [#nodeaffinityinstructions]
 === Instructions
 
-[start=1]
 . Ensure you are <<labaccess,logged in to both the OpenShift Console and CLI as the *admin* user>> from your *web browser* and the *terminal* window on the right side of your screen and continue to the next step.
 
 +
-. See where the the *node-affinity-vm* is running by looking at OpenShift Console and navigating to *Virtualization →  VirtualMachines → affinity* or check on the OpenShift Command line.
+
+. Start the *node-affinity-vm* Virtual Machine
+
++
+[.wrap,console,role=execute]
+----
+virtctl start node-affinity-vm -n affinity
+----
+
++
+[source,console]
+----
+VM node-affinity-vm was scheduled to start
+----
+
++
+. Verify the *VirtualMachineInstance* is running and see what node it is running on.
++
+[.wrap,console,role=execute]
+----
+oc get vmi -n affinity
+----
+
++
+The output will look similar to the following, with a different *IP* and *NODENAME*:
+
++
+[source,console]
+----
+NAME               AGE   PHASE     IP             NODENAME                        READY
+node-affinity-vm   57s   Running   10.232.1.153   control-plane-cluster-dvddt-1   True
+----
+
++
+. Set a label `zone=east` on any node where the *node-affinity-vm* is currently *not* running.
+
++
+The following command returns the name of 1 node where the *node-affinity-vm* VM is not running and labels it:
+
++
+... Gets a list of all of nodes (*oc get nodes -o name*) 
+
++
+... Does an inverted-match to select non-matching lines and returns 1 result (*grep -v -m 1*) 
+
++
+... With the *nodeName* where the *node-affinity-vm* VM is currently running (*oc get vmi node-affinity-vm -n affinity -o json | jq -r '.status.nodeName'*) 
 
 +
 [source,text,role=execute]
-.Change to affinity project
+.Set the label
 ----
-oc project affinity
-----
-
-+
-[.wrap,console,subs="attributes"]
-.Output
-----
-Now using project "affinity" on server {openshift_api_server_url}.
-----
-
-+
-[source,text,role=execute]
-.Get VM information
-----
-oc get vmi node-affinity-vm
+oc label $(oc get nodes -o name | grep -v -m 1 $(oc get vmi node-affinity-vm -n affinity -o json | jq -r '.status.nodeName')) zone=east
 ----
 
 +
 .Output
 ----
-NAME               AGE   PHASE     IP            NODENAME                 READY
-node-affinity-vm   30m   Running   10.233.0.46   worker-cluster-t96sv-3   True
+node/worker-cluster-dvddt-1 labeled
 ----
 
 +
-. Set a label `zone=east` on any worker where the *node-affinity-vm* is currently not running.
+Alternatively, using the OpenShift Console, from the left side panel, navigate to *Compute → Nodes*, pick a node where the *node-affinity-vm* is not running, click the 3 dots and select *Edit labels*.
 
 +
-[source,text,role=execute]
-.Get node list
-----
-oc get nodes
-----
+image::exercise4/04-image-affinity-v2.png[title="Edit Node Labels", link=self, window=blank, width=100%]
 
 +
-.Output
-----
-NAME                            STATUS   ROLES                         AGE     VERSION
-control-plane-cluster-t96sv-1   Ready    control-plane,master,worker   4h38m   v1.33.5
-worker-cluster-t96sv-1          Ready    worker                        88m     v1.33.5
-worker-cluster-t96sv-2          Ready    worker                        87m     v1.33.5
-----
+In the new window, enter *zone=east* and click *Save*
 
 +
-[source,text,role=execute]
-.Label node
-----
-oc label node <worker where node-affinity-vm is not running> zone=east
-----
-
-+
-.Output
-----
-node/worker-cluster-t96sv-2 labeled
-----
-
-+
-Alternatively you can use the OpenShift Console by going to *Compute → Nodes* and then pick a node where *node-affinity-vm* is not running. Then click the 3 dots and click *Edit labels*. Once finished adding the label click *Save*.
-
-+
-image::exercise4/04-image-affinity.png[title="Label Nodes", link=self, window=blank, width=100%]
+image::exercise4/04-image-affinity-labels.png[title="Add Label", link=self, window=blank, width=100%]
 
 +
 . Make sure the label was applied.
 
 +
 [source,text,role=execute]
-.Find label
+.Check the label
 ----
 oc get nodes <worker you just labeled> --show-labels | grep -i zone=east
 ----
 
 +
-Alternatively you can use the OpenShift Console by going to *Compute → Nodes* and then pick a node you just label. Then click the 3 dots and click *Edit labels*. Once finished looking click *Save*.
+Alternatively, using the OpenShift Console, from the left side panel, navigate to *Compute → Nodes*, select the node where you added the label, click the *Details* tab and check the *Labels* section for *zone=east*.
 
 +
-. Navigate to *Virtualization → VirtualMachines → node-affinity-vm → Configuration* 
+image::exercise4/04-image-affinity-check-labels.png[title="Check the Label", link=self, window=blank, width=100%]
+
++
+. Using the OpenShift Console, from the left side panel, navigate to *Virtualization → VirtualMachines*.
+
++
+Under *All projects*, select the *affinity* namespace and click on the Virtual Machine named *node-affinity-vm*. → Configuration* 
+
++
+. Click on the *Configuration* tab.
 
 +
 image::exercise4/04-image-affinity01.png[title="Node Affinity Navigation", link=self, window=blank, width=100%]
 
 +
-. Now navigate to *Scheduling → Affinity* rules
+. From the *Configuration* tab, select *Scheduling* and click the *blue pencil* icon under *Affinity rules* to add a new one.
 
 +
 image::exercise4/04-image-affinity02.png[title="Node Affinity add rule", link=self, window=blank, width=100%]
@@ -123,23 +141,40 @@ image::exercise4/04-image-affinity02a.png[title="Node Affinity add rule", link=s
 
 +
 . Change the *Condition* to *Preferred during scheduling* and set the *weight* to *75*.
-Then, under *Node Labels* click *Add Expression*. Set the *Key* field to `zone` and the *Values* field to `east` and click *add*. These are the same label applied to the node earler. Your Final Node Affinity rule will look like the picture below. Confirm this is true and click *Save affinity rule*.
+
++
+Under *Node Labels* click *Add Expression*.
+
++
+Set the *Key* field to `zone` and the *Values* field to `east` and click *Add*.
+
++
+This is the same label applied to the node earler.
+
++
+Your Final Node Affinity rule will look like the picture below.
+
++
+Confirm this is true and click *Save affinity rule*.
 
 +
 image::exercise4/04-image-affinity03.png[title="Node Affinity Rule", link=self, window=blank, width=100%]
 
 +
-. Then click *Apply rules*.
+. Click *Apply rules*.
 
 +
 image::exercise4/04-image-affinity03a.png[title="Node Affinity Rule", link=self, window=blank, width=100%]
 
 +
-. Now let's take a look at the Node Affinity rule on *node-affinity-vm*. You can view this information either through the GUI by navigating to *node-affinity-vm → YAML*, or by using the CLI.
+. Let's take a look at the Node Affinity rule on *node-affinity-vm*.
+
++
+You can view this information through the GUI by inspecting the *node-affinity-vm* *YAML*, or using the CLI.
 
 +
 [source,text,role=execute]
-.View the VM definition
+.View the VM affinity definition
 ----
 oc get vm node-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinity}{"\n"}'
 ----
@@ -151,16 +186,31 @@ oc get vm node-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinit
 ----
 
 +
-. To make the VM follow these new Node Affinity rules, you could migrate it to the node with the label. However, to show that this Node Affinity rule is working we are going to power off the VM completely and then power it back on. 
+. With an external force to move or restart the VM, new Affinity rules do not take effect.
 
 +
-. Stop the the *node-affinity-vm* by clicking on *Action → Stop*.
+To apply the changes manually, you can live migrate or restart the VM. For automatic enforcement, you can configure the *Descheduler* with the *AffinityAndTaints* profile.
 
 +
-. Once the VM completely stops. Click *Actions → Start*.
+. Restart the *node-affinity-vm* VM.
 
 +
-. The VM's relocation to the node with the assigned label is visible via the GUI by navigating to *node-affinity-vm → Overview*. Alternatively, you can verify this change using the OCP CLI.
+[.wrap,console,role=execute]
+----
+virtctl restart node-affinity-vm -n affinity
+----
+
++
+[source,console]
+----
+VM node-affinity-vm was scheduled to restart
+----
+
++
+. Once the VM restarts, it will be running on the node with the affinity label. 
+
++
+You can validate this in the GUI by navigating to the *node-affinity-vm*, and looking at the *Node* name in the *General* box on the right hand side of the *VirtualMachine details* page or using the OCP CLI.
 
 +
 [source,text,role=execute]

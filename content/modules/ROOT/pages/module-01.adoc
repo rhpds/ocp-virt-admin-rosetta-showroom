@@ -107,7 +107,10 @@ The requirements for this type of migration are the same as the previous lesson.
 . Ensure you are <<labaccess,logged in to the OpenShift Console as the *admin* user>> from your *web browser* and continue to the next step.
 
 +
-. From the left side panel, navigate to *Virtualization -> Virtual Machines*. Under *All projects*, select the *live-migrate* namespace and click on the Virtual Machine named *live-migrate-vm1*.
+. From the left side panel, navigate to *Virtualization -> Virtual Machines*.
+
+=
+Under *All projects*, select the *live-migrate* namespace and click on the Virtual Machine named *live-migrate-vm1*.
 
 +
 . The Virtual Machine should already be *Running* from the last lesson. If it is not, click the blue *Play* button to *Start* the Virtual Machine and wait for it to enter the *Running* state.
@@ -166,12 +169,15 @@ TBD
 . Ensure you are <<labaccess,logged in to the OpenShift Console as the *admin* user>> and continue to the next step.
 
 +
-. From the left side panel, navigate to *Virtualization -> Virtual Machines*. Under *All projects*, select the *live-migrate* namespace and click on the Virtual Machine named *live-migrate-vm1*.
+. From the left side panel, navigate to *Virtualization -> Virtual Machines*.
+
++
+Under *All projects*, select the *live-migrate* namespace and click on the Virtual Machine named *live-migrate-vm1*.
 
 +
 image::exercise1/01-image-storage-001.png[title="Virtual machine details", link=self, window=blank, width=100%]
 
-. Click on the Configuration tab and select Storage. You can see that the Virtual Machine currently has a single 30GB bootable disk that is using the *Storage class* called *ocs-external-storagecluster-ceph-rbd*.
+. Click on the *Configuration* tab and select *Storage*. You can see that the Virtual Machine currently has a single 30GB bootable disk that is using the *Storage class* called *ocs-external-storagecluster-ceph-rbd*.
 
 +
 image::exercise1/01-image-storage-002.png[title="View storage details", link=self, window=blank, width=100%]
@@ -224,7 +230,10 @@ It may take over a minute for the migration to start, and five or more minutes f
 +
 image::exercise1/01-image-storage-009.png[title="Migration is running", link=self, window=blank, width=100%]
 
-. Once the migration is *Complete*, from the left side panel, navigate back to *Virtualization -> Virtual Machines*. Under *All projects*, select the *live-migrate* namespace and click on the Virtual Machine named *live-migrate-vm1*.
+. Once the migration is *Complete*, from the left side panel, navigate back to *Virtualization -> Virtual Machines*.
+
++
+Under *All projects*, select the *live-migrate* namespace and click on the Virtual Machine named *live-migrate-vm1*.
 
 +
 Click on the *Configuration* tab and select *Storage*. You can see that the name of the *Source* has changed and the *Storage class* is now *custom-storage-class*, which is what you selected for the storage migration.

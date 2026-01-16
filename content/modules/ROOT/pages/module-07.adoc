@@ -59,6 +59,7 @@ VM vm-migration-ns-ns-live was scheduled to start
 ----
 oc get vmi -n vm-live-migration-source
 ----
+
 +
 The output will look similar to the following, with a different *IP* and *NODENAME*:
 
