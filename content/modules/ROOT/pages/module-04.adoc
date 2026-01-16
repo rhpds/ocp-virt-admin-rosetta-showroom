@@ -424,10 +424,10 @@ From the *Configuration* tab, select *Scheduling* and click the *blue pencil* ic
 image::exercise4/04-image-affinity04.png[title="Pod Affinity Rule", link=self, window=blank, width=100%]
 
 +
-. Click *Add affinity rule*.
+. From the new window, click *Add affinity rule*.
 
 +
-. Change the type to *Workload (pod) Affinity*
+. Change the *type* to *Workload (pod) Affinity*
 
 +
 . Keep the *Condition* set to *Required during scheduling* and leave the *Topology key* at the default value.
@@ -530,56 +530,79 @@ node-affinity-vm   35m    Running   10.233.0.35   worker-cluster-dvddt-1   True
 ----
 
 +
-. You will now see the the *pod-affinity-vm* is now running on the same node *node-affinity-vm* because of the pod affinity rule.
+. You will now see the *pod-affinity-vm* running on the same node *node-affinity-vm* because of the pod affinity rule.
 
 
 [#podantiaffinity]
 == Pod Anti-Affinity
 
-Pod Anti-Affinity is a crucial feature for achieving High Availability (HA) in virtualized environments. It functions by instructing the scheduler to prevent the co-location of VM Pods on the same node if they possess a specific label.
+Pod Anti-Affinity is a crucial feature in achieving cross-cluster High Availability (HA) for your workloads. It work by instructing the scheduler to prevent the co-location of related VMs on the same node.
 
-The primary benefit of this rule is to enhance application resilience. For instance, by ensuring that VM Pods belonging to the same service (such as a database cluster) are distributed across different nodes, a failure in a single node will not cause an outage for the entire service.
+The primary benefit is to enhance application resilience. It ensurs that VMs belonging to the same service (such as a database cluster) are distributed across different nodes. The failure of a single node will not cause an outage for the entire service.
 
-This lab will guide you through setting up and demonstrating the functionality of Pod Anti-Affinity.
+This lab will demonstrate the setup and usage of Pod Anti-Affinity.
 
 [#podantiaffinityinstructions]
 === Instructions
 
-[start=1]
 . Ensure you are <<labaccess,logged in to both the OpenShift Console and CLI as the *admin* user>> from your *web browser* and the *terminal* window on the right side of your screen and continue to the next step.
 
 +
-. We will be reusing the `app: fedora` label we created last time to create our Pod Anti-Affinity rule. This rule will ensure Pod Anti-Affinity with *node-affinity-vm*.
+. To begin, we are going to leverage our existing *node-affinity-vm* and the *app: fedora* label from the previous lab. This will serve as 1 of the 2 VMs we use to demonstract Anti-Affinity.
 
 +
-. Click the *pod-anti-affinity-vm*  
+. Next, we are going to configure the *pod-anti-affinity-vm*.
 
 +
-. Click *Configure → Scheduling*
+.. Begin by starting *pod-anti-affinity-vm* Virtual Machine
 
 +
-. Click the *Affinity rules*
+[.wrap,console,role=execute]
+----
+virtctl start pod-anti-affinity-vm -n affinity
+----
 
 +
-. *Add Affinity rule*
+[source,console]
+----
+VM pod-anti-affinity-vm was scheduled to start
+----
+
++
+. Once the VM has started, using the OpenShift Console, from the left side panel, navigate to *Virtualization → VirtualMachines*
+
++
+Under *All projects*, select the *affinity* namespace and click on the Virtual Machine named *pod-anti-affinity-vm* and click on the *Configuration* tab.
+
++
+From the *Configuration* tab, select *Scheduling* and click the *blue pencil* icon under *Affinity rules* to add a new one.
 
 +
 image::exercise4/04-image-affinity06.png[title="Add Pod Anti-Affinity Rule", link=self, window=blank, width=100%]
 
 +
-. Change the type to *Workload (pod) Anti-Affinity*
+. From the new window, click *Add affinity rule*.
 
 +
-. Keep the *Condition* set to *Required during scheduling*.
+. Change the *type* to *Workload (pod) Anti-Affinity*
 
 +
-. Keep the *Topology key* the same 
+. Keep the *Condition* set to *Required during scheduling* and leave the *Topology key* at the default value.
 
 +
 . Click *Add expression* under *Workload labels*
 
 +
-. Next, we will set a *key* and *value* to establish Pod Anti-Affinity, ensuring this VM runs on a different node than *node-affinity-vm*. Set the *key* to `app` and the *value* to `fedora` and click *add*. The resulting Pod Affinity rule should match the illustration provided below. Verify the rule's correctness, then click *Save affinity rule*.
+Set the *Key* field to `app` and the *Values* field to `fedora` and click *Add*.
+
++
+This is the same label applied to the *node-affinity-vm*.
+
++
+Your Final Pod Affinity rule will look like the picture below.
+
++
+Confirm this is true and click *Save affinity rule*.
 
 +
 image::exercise4/04-image-affinity07.png[title="Add Pod Anti-Affinity Rule", link=self, window=blank, width=100%]
@@ -588,7 +611,10 @@ image::exercise4/04-image-affinity07.png[title="Add Pod Anti-Affinity Rule", lin
 . Click *Apply Rules*
 
 +
-. Now let's take a look at the Pod Anti-Affinity rule on *pod-anti-affinity-vm*. You can view this information either through the GUI by navigating to *pod-anti-affinity-vm → YAML*, or by using the CLI.
+. Now let's take a look at the Pod Affinity rule on *pod-anti-affinity-vm*.
+
++
+You can view this information through the GUI by inspecting the *pod-anti-affinity-vm* *YAML*, or using the CLI.
 
 +
 [source,text,role=execute]
@@ -603,7 +629,7 @@ oc get vm pod-anti-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.aff
 ----
 
 +
-. See where the *pod-anti-affinity-vm* and *node-affinity-vm* are running by looking at OpenShift Console or check on the OpenShift Command line. 
+. Check where the *pod-anti-affinity-vm* and *node-affinity-vm* are running by looking at OpenShift Console or using the OpenShift CLI.
 
 +
 [source,text,role=execute]
@@ -615,21 +641,41 @@ oc get vmi pod-anti-affinity-vm node-affinity-vm -n affinity
 .Output
 ----
 NAME                   AGE   PHASE     IP            NODENAME                 READY
-pod-anti-affinity-vm   30m   Running   10.233.0.44   worker-cluster-t96sv-2   True
-node-affinity-vm        5m   Running   10.233.0.46   worker-cluster-t96sv-2   True
+pod-anti-affinity-vm   30m   Running   10.233.0.44   worker-cluster-dvddt-1   True
+node-affinity-vm        5m   Running   10.233.0.46   worker-cluster-dvddt-1   True
 ----
 
 +
-. To make the VM follow these new Pod Anti-Affinity rules. You normally would migrate it to the node with the label. However, to show that this Pod Anti-Affinity rule is working. We are going to power off the vm completely and then power it back on.
+[NOTE]
+====
+It's possible your *pod-anti-affinity-vm* and *node-affinity-vm* are already on different nodes because the cluster is lightly loaded. Even so, you can restart the pods endlessly and they never will end up on the same node.
+====
+
+. As we noted in the last lab, without an external force to move or restart the VM, new Affinity rules do not take effect.
 
 +
-. Stop the *pod-anti-affinity-vm* VM by clicking *Action → Stop*.
+To apply the changes manually, you can live migrate or restart the VM. For automatic enforcement, you can configure the *Descheduler* with the *AffinityAndTaints* profile.
 
 +
-. Once the VM completely stops. Click *Actions → Start*.
+. Restart the *pod-anti-affinity-vm* VM.
 
 +
-. See where the *pod-anti-affinity-vm* and *node-affinity-vm* are running by looking at OpenShift Console or check on the OpenShift Command line. 
+[.wrap,console,role=execute]
+----
+virtctl restart pod-anti-affinity-vm -n affinity
+----
+
++
+[source,console]
+----
+VM pod-anti-affinity-vm was scheduled to restart
+----
+
++
+. Once the VM restarts, the pod anti-affinity will be in effect.
+
++
+You can validate this in the GUI by navigating to the *pod-anti-affinity-vm* and *node-affinity-vm*, and looking at the *Node* name in the *General* box on the right hand side of the *VirtualMachine details* page or using the OCP CLI.
 
 +
 [source,text,role=execute]
@@ -640,10 +686,10 @@ oc get vmi pod-anti-affinity-vm node-affinity-vm -n affinity
 +
 .Output
 ----
-NAME                   AGE   PHASE     IP            NODENAME                 READY
-pod-anti-affinity-vm    1m   Running   10.233.0.44   worker-cluster-t96sv-3   True
-node-affinity-vm        6m   Running   10.233.0.46   worker-cluster-t96sv-2   True
+NAME                   AGE   PHASE     IP            NODENAME                        READY
+pod-anti-affinity-vm   43s   Running                 control-plane-cluster-dvddt-1   True
+node-affinity-vm       58m   Running   10.233.0.35   worker-cluster-dvddt-1          True
 ----
 
 +
-. The *pod-anti-affinity-vm* VM will now be running on a different node than *node-affinity-vm*. If *pod-anti-affinity-vm* was not already running on a different node than the *node-affinity-vm*. 
+. You will now see the *pod-anti-affinity-vm* running on a different node from *node-affinity-vm* because of the pod anti-affinity rule.
