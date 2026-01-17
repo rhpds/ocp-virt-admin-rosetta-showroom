@@ -20,13 +20,13 @@ In OpenShift Virtualization, compute resources assigned to Virtual Machines (VMs
 
 With time-sliced CPUs, the Linux kernel's *Completely Fair Scheduler (CFS)* manages how VMs share physical CPU cores. CFS rotates VMs through available cores, giving each VM a proportional slice of CPU time based on its configured CPU requests.
 
-By default OpenShift Virtualization has a 10:1 overcommit ratio. To achieve CPU overcommit, each VM’s virt-launcher pod will define _100m_ of CPU requests or _1/10th_ of a CPU from a Kubernetes resource and scheduling perspective, per vCPU requested by the VM.
+By default OpenShift Virtualization has a 10:1 overcommit ratio. To achieve CPU overcommit, each VM’s *virt-launcher* pod will define _100m_ of CPU requests or _1/10th_ of a CPU from a Kubernetes resource and scheduling perspective, per vCPU requested by the VM.
 
 The default _10:1_ overcommit ratio can be configured to the desired overcommit level by changing the *vmiCPUAllocationRatio* on the *hyperconverged* Custom Resource. Changing this ratio will influence the CPU requests for each vCPU that is allocated by default, which enforces the maximum level of CPU overcommit through Kubernetes based request scheduling.
 
 [NOTE]
 ====
-Resource assignments are made at virt-launcher pod scheduling time, so any VMs will need to be live migrated stopped and restarted to change CPU allocation behavior after a ratio change.
+Resource assignments are made at *virt-launcher* pod scheduling time, so any VMs will need to be live migrated stopped and restarted to change CPU allocation behavior after a ratio change.
 ====
 
 [#cpuinstructions]
@@ -81,7 +81,7 @@ Capacity:
 ----
 
 +
-The `cpu` value shows the number of physical CPU cores (or threads if hyperthreading is enabled) available on the node.
+The `cpu` value shows the number of physical CPU cores (or threads if hyper-threading is enabled) available on the node.
 .. Alternatively, check CPU allocatable resources (physical CPUs minus system reservations):
 
 +
@@ -371,7 +371,7 @@ NOTE: We won't configure the *wasp-agent* in this lab due to time and resource c
 
 IMPORTANT: Starting with Kubernetes 1.21 and OpenShift 4.21 the *wasp-agent* will be superseded by the native Kubernetes SWAP implementation.
 
-The *memoryOvercommitPercentage* paramater on the *hyperconverged* Custom Resourse tells OpenShift Virtualization how to scale the memory requests for each VM. When set to the default, 100, it calculates memory requests based on the full amount of memory declared by the VM. When it's set to a higher value, the request is set to a proportionally smaller value than the VM requested, allowing for memory overcommit. 
+The *memoryOvercommitPercentage* parameter on the *hyperconverged* Custom Resources tells OpenShift Virtualization how to scale the memory requests for each VM. When set to the default, 100, it calculates memory requests based on the full amount of memory declared by the VM. When it's set to a higher value, the request is set to a proportionally smaller value than the VM requested, allowing for memory overcommit. 
 
 For example, with a VM with 16GiB of memory.
 
@@ -381,7 +381,7 @@ If it's set to 200, the request on the pod will be set to 8GiB plus the overhead
 
 [IMPORTANT]
 ====
-To calculate the request value when overcomitting memory, you can use the following formula:
+To calculate the request value when overcommitting memory, you can use the following formula:
 
 requested memory = VM memory * (100 / memoryOvercommitPercentage)
 
@@ -441,7 +441,7 @@ Click on the *virt-launcher* pod and to go the *YAML* tab to see the *memory req
 +
 image::exercise2/virt-launcher-memory-request.png[title="Virt-Launcher Memory Request", link=self, window=blank, width=100%]
 
-. Observe the memory requests for the virt-launcher pod compared to the memory allocated to the VM :
+. Observe the memory requests for the *virt-launcher* pod compared to the memory allocated to the VM :
 
 +
 [,shell,role="execute wrap",subs="attributes"]
@@ -457,7 +457,7 @@ oc get pod -n over-commit -l vm.kubevirt.io/name=overcommit-vm-1 -o json | jq '.
 ----
 
 +
-NOTE: The virt-launcher pod is requesting 2564Mi which is 2048Mi + **overhead**.
+NOTE: The *virt-launcher* pod is requesting 2564Mi which is 2048Mi + **overhead**.
 
 +
 IMPORTANT: This overhead is necessary and expected - it ensures the VM has enough resources to run properly.
@@ -521,7 +521,7 @@ Click on the *virt-launcher* pod and to go the *YAML* tab to see the *memory req
 image::exercise2/virt-launcher-memory-request-overcommit.png[title="Virt-Launcher Memory Request 1.5x", link=self, window=blank, width=100%]
 
 +
-The virt-launcher pod is requesting _1972720981_ bytes which is ~ _1972Mi_  ~ _1.97GiB_.
+The *virt-launcher* pod is requesting _1972720981_ bytes which is ~ _1972Mi_  ~ _1.97GiB_.
 
 +
 NOTE: This is less than the _2048MiB_ requested by the VM. This is because the memory overcommit ratio is _150%_.

@@ -1,6 +1,6 @@
 = Decentralized Live Migration
 
-A decentralized live migration is a variation of a storage live migration that allows you to migrate a running *VirtualMachine* between namespaces and clusters.
+A decentralized live migration is a variation of a storage live migration that allows you to migrate a running *VirtualMachine* between *namespaces* and *clusters*.
 
 This can be useful to:
 
@@ -11,7 +11,6 @@ This can be useful to:
 *Expedite Restores*: Instant restore capabilities from backup vendors, particularly when coupled with namespace migration, can drastically speed up recovery times. virtual machines can be quickly restored to a temporary location and then migrated to their original namespace and storage.
 
 This lab demonstrates the forthcoming Tech Preview capabilities of Decentralized Live Migration. In this lab, we will walk through the live migration of a *VirtualMachine* from one *Namespace* to another. The process of live migrating between namespaces follows the same process as if you were to migrate a *VirtualMachine* between 2 clusters.
-
 
 [NOTE]
 =====
@@ -29,7 +28,7 @@ The migration involves two *VirtualMachineInstances* and two *VirtualMachineInst
 These requirements have already been enabled on your cluster and are noted for your reference.
 
 * The *Migration Toolkit for Virtualization (MTV)* Operator must be installed with the feature *feature_ocp_live_migration* set to *true* when creating the *ForkliftController* CR
-* You must enable the *DecentralizedLiveMigration* *featureGate* on the *KubeVirt* CR
+* You must enable the *DecentralizedLiveMigration* *featureGate* on the *hyperconverged* Custom Resource
 
 include::lab-access.adoc[]
 
@@ -411,7 +410,7 @@ oc get vm -n vm-live-migration-source
 ----
 
 +
-The *VirtualMachine* will show you it is *Migrating*.
+The *VirtualMachine* will show it is *Migrating*.
 
 +
 [source,console]
@@ -427,7 +426,7 @@ vm-migration-ns-ns-live   7m1s   Migrating   False
 From the left side panel, navigate to *Virtualization -> Virtual Machines*. Under *All projects*, select the *vm-live-migration-source* namespace and click on the Virtual Machine named *vm-migration-ns-ns-live*.
 
 +
-On the *Virtual machine details* page, you will see the the *Source* VM is *Running*.
+On the *Virtual machine details* page, you will see the *Source* VM is *Running*.
 
 +
 image::exercise7/image1-ui-src-vm-running.png[title="Source Virtual Machine Details - Running", link=self, window=blank, width=100%]
@@ -436,7 +435,7 @@ image::exercise7/image1-ui-src-vm-running.png[title="Source Virtual Machine Deta
 To view the *Destination* VM, select by the *Namespace* *vm-live-migration-destination* to expand it and click on the virtual machine named *vm-migration-ns-ns-live*.
 
 +
-On the *Virtual machine details* page, you will see the the *Destination* VM. If the migration has not started, it will have a status of *WaitingForReceiver*.
+On the *Virtual machine details* page, you will see the *Destination* VM. If the migration has not started, it will have a status of *WaitingForReceiver*.
 
 +
 image::exercise7/image2-ui-dest-waiting.png[title="Destination Virtual Machine Details - WaitingForReceiver", link=self, window=blank, width=100%]
@@ -668,7 +667,7 @@ image::exercise7/ui/image11-review-create.png[title="Review and Create", link=se
 ====
 We see *The plan is not ready* with a status of *Cannot start* due to a *MAC address conflict*.
 
-Once this issue is resolved, the migration will continue successfull with no changes in the workflow.
+Once this issue is resolved, the migration will continue successfully with no changes in the workflow.
 
 You can follow https://issues.redhat.com/browse/CNV-72966[CNV-72966 - loosen (or drop) mac collision detection], targeting 4.22, for more information.
 ====

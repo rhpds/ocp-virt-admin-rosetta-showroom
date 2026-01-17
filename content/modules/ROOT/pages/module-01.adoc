@@ -129,7 +129,7 @@ image::exercise1/01-image-compute-003.png[title="Initiate migration", link=self,
 +
 image::exercise1/01-image-compute-004.png[title="Configure migration", link=self, window=blank, width=100%]
 
-. Select *Specific Node*, which will then dispay the list of available nodes. Select the check the box next to a worker node and click *Migrate Virtual Machine*
+. Select *Specific Node*, which will then display the list of available nodes. Select the check the box next to a worker node and click *Migrate Virtual Machine*
 
 +
 image::exercise1/01-image-compute-005.png[title="Select worker node", link=self, window=blank, width=100%]

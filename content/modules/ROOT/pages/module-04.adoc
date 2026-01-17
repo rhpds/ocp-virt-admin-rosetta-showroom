@@ -1,6 +1,6 @@
 = Affinity and Anti-Affinity for VM Placement
 
-This lab showcases how to use and apply Node Affinity, Pod Affinity, and Pod-Anti Affinity to Virtual Machines. The lab focuses on the practical application of these principles in real-world scenarios and strengthens your technical understanding of how they work.
+This lab showcases how to use and apply Node Affinity, Pod Affinity, and Pod-Anti Affinity against Virtual Machines. The lab focuses on the practical application of these principles in real-world scenarios and strengthens your technical understanding of how they work.
 
 [NOTE]
 ====
@@ -119,7 +119,7 @@ image::exercise4/04-image-affinity-check-labels.png[title="Check the Label", lin
 . Using the OpenShift Console, from the left side panel, navigate to *Virtualization → VirtualMachines*.
 
 +
-Under *All projects*, select the *affinity* namespace and click on the Virtual Machine named *node-affinity-vm*. → Configuration* 
+Under *All projects*, select the *affinity* namespace and click on the Virtual Machine named *node-affinity-vm*.
 
 +
 . Click on the *Configuration* tab.
@@ -149,7 +149,7 @@ Under *Node Labels* click *Add Expression*.
 Set the *Key* field to `zone` and the *Values* field to `east` and click *Add*.
 
 +
-This is the same label applied to the node earler.
+This is the same label applied to the node earlier.
 
 +
 Your Final Node Affinity rule will look like the picture below.
@@ -240,7 +240,7 @@ This lab will demonstrate the setup and usage of Pod Affinity.
 . Ensure you are <<labaccess,logged in to both the OpenShift Console and CLI as the *admin* user>> from your *web browser* and the *terminal* window on the right side of your screen and continue to the next step.
 
 +
-. To begin, we are going to leverage our existing *node-affinity-vm* from the previous lab. This will serve as 1 of the 2 VMs we use to demonstract Affinity. 
+. To begin, we are going to leverage our existing *node-affinity-vm* from the previous lab. This will serve as 1 of the 2 VMs we use to demonstrate Affinity. 
 
 +
 There are 2 ways to add label:
@@ -256,13 +256,13 @@ Both methods have benefits and drawbacks. In many production use cases, they wil
 
 +
 [loweralpha, start=1]
-... Editing the VM YAML requires a restart of the VM for the new labels to take effect. This is because the label on the VM must get passed down to the *virt-launcher* pod and that only happenes on restart.
+... Editing the VM YAML requires a restart of the VM for the new labels to take effect. This is because the label on the VM must get passed down to the *virt-launcher* pod and that only happens after a restart.
 
 +
-... Using *oc label* is ephemeral and is lost after a VM restart. This is because the label is applied directly to the *virt-laucnher* pod, with immediate effect, but not set on the VM object.
+... Using *oc label* is ephemeral and is lost after a VM restart. This is because the label is applied directly to the *virt-launcher* pod, with immediate effect, but not set on the VM object.
 
 +
-. To make things premenant, use the OpenShift CLI to set a label `app: fedora` on the *node-affinity-vm*.
+. To make things permanent, use the OpenShift CLI to set a label `app: fedora` on the *node-affinity-vm*.
 
 +
 Add the label under *spec.template.metadata.labels* NOT *metadata.labels* at the top of the YAML:
@@ -379,7 +379,7 @@ virtualmachine.kubevirt.io/node-affinity-vm edited
 ----
 
 +
-. Restart the *node-affinity-vm* so the label is applied to the *virt-laucnher* pod.
+. Restart the *node-affinity-vm* so the label is applied to the *virt-launcher* pod.
 
 +
 [.wrap,console,role=execute]
@@ -439,7 +439,7 @@ image::exercise4/04-image-affinity04.png[title="Pod Affinity Rule", link=self, w
 Set the *Key* field to `app` and the *Values* field to `fedora` and click *Add*.
 
 +
-This is the same label applied to the *node-affinity-vm* earler.
+This is the same label applied to the *node-affinity-vm* earlier.
 
 +
 Your Final Pod Affinity rule will look like the picture below.
@@ -538,7 +538,7 @@ node-affinity-vm   35m    Running   10.233.0.35   worker-cluster-dvddt-1   True
 
 Pod Anti-Affinity is a crucial feature in achieving cross-cluster High Availability (HA) for your workloads. It work by instructing the scheduler to prevent the co-location of related VMs on the same node.
 
-The primary benefit is to enhance application resilience. It ensurs that VMs belonging to the same service (such as a database cluster) are distributed across different nodes. The failure of a single node will not cause an outage for the entire service.
+The primary benefit is to enhance application resilience. It ensues that VMs belonging to the same service (such as a database cluster) are distributed across different nodes. The failure of a single node will not cause an outage for the entire service.
 
 This lab will demonstrate the setup and usage of Pod Anti-Affinity.
 
@@ -548,7 +548,7 @@ This lab will demonstrate the setup and usage of Pod Anti-Affinity.
 . Ensure you are <<labaccess,logged in to both the OpenShift Console and CLI as the *admin* user>> from your *web browser* and the *terminal* window on the right side of your screen and continue to the next step.
 
 +
-. To begin, we are going to leverage our existing *node-affinity-vm* and the *app: fedora* label from the previous lab. This will serve as 1 of the 2 VMs we use to demonstract Anti-Affinity.
+. To begin, we are going to leverage our existing *node-affinity-vm* and the *app: fedora* label from the previous lab. This will serve as 1 of the 2 VMs we use to demonstrate Anti-Affinity.
 
 +
 . Next, we are going to configure the *pod-anti-affinity-vm*.

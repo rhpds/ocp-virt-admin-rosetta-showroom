@@ -216,8 +216,7 @@ I1113 15:30:00.673755       1 evictions.go:551] "Evicted pod in dry run mode" po
 +
 [NOTE]
 ====
-We can see that the *virt-launcher-dynamic-schedule-vm-1-lltlv* pod would have been evicted but the *Deacheduler* was in *dry run* or *Predictive* mode.
-
+We can see that the *virt-launcher-dynamic-schedule-vm-1-lltlv* pod would have been evicted but the *Descheduler* was in *dry run* or *Predictive* mode.
 ====
 
 +

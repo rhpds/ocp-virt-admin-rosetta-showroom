@@ -3,11 +3,22 @@
 
 Fencing is a vital mechanism that safeguards cluster resources and ensures data integrity. It works by isolating an unresponsive or failed node. This process is crucial to prevent the "split-brain" scenario, which occurs when multiple nodes try to write to shared storage simultaneously, inevitably leading to data corruption. 
 
-This lab demonstrates the capabilities of the Node Health Check Operator and the Self Node Remediation Operator. You will simulate a node failure to observe the virtual machine migration process and subsequent node recovery.
+This lab demonstrates the capabilities of the *Node Health Check Operator* and the *Self Node Remediation Operator*. You will simulate a node failure to observe the virtual machine migration process and subsequent node recovery.
 
 [NOTE]
 ====
 Fencing and Self Node Remediation are similar to VMware's Infrastructure HA and Node Failure features.
+====
+
+[IMPORTANT]
+====
+While this lab demonstrates fencing through the *Node Health Check (NHC)* and *Self Node Remediation (SNR)* operators, the recommendation to the field is that you strongly push customers towards *Fence Agents Remediation* as it provides the fastest workload recovery time.
+
+NHC and SNR are only recommended in situations where there is no management interface or if the BMC is unreachable from cluster.
+
+Work is still evolving in this space. Engineering is working on additional enhancements to bring recovery time to under 60 seconds.
+
+You can follow https://issues.redhat.com/browse/VIRTSTRAT-77[Fencing: Additional out-of-band health checks for faster remediation] as that work progresses.
 ====
 
 include::lab-access.adoc[]
@@ -39,7 +50,7 @@ From the *Selector labels* dropdown, select *Worker* under *Role*. You do not ne
 image::exercise6/06-image-nodehealthcheck2.png[title="Create NodeHealthCheck", link=self, window=blank, width=100%]
 
 +
-Further down on the same screen, leave *Min healthy* and both *Type* and *Status* dropdowns as the defaults.
+Further down on the same screen, leave *Min healthy* and both *Type* and *Status* drop downs as the default.
 
 +
 Change duration to *5s* for both of the *Unhealthy Conditions*.
@@ -65,6 +76,16 @@ oc get vmi -n fencing
 ----
 NAME          AGE    PHASE     IP            NODENAME                 READY
 fencing-vm1   169m   Running   10.235.0.29   worker-cluster-r2k68-1   True
+----
+
++
+. Before we trigger a failure, in second terminal, start a watch to monitor the state of the nodes so you can see your worker remediate.
+
++
+[source,text,role=execute]
+.Monitor the worker nodes
+----
+oc get nodes -w
 ----
 
 +
@@ -98,7 +119,7 @@ Removing debug pod ...
 ----
 
 +
-. Once the *debug pod* exists, monitor the status of your Mirtual Machine, *fencing-vm1*. You will see that the self remediation process is isolating the node and migrating the workloads.
+. Once the *debug pod* exists, monitor the status of your Virtual Machine, *fencing-vm1*. You will see that the self remediation process is isolating the node and migrating the workloads.
 
 +
 [source,text,role=execute]
@@ -108,17 +129,13 @@ oc get -n fencing vmi -w
 ----
 
 +
-. In second terminal you can monitor the state of the nodes to watch your worker remediate.
-
-+
-[source,text,role=execute]
-.Monitor the worker nodes
-----
-oc get nodes -w
-----
-
-+
 . Using the OpenShift Console, from the left side panel, navigate to *Ecosystem → Installed Operators → Self Node Remediation Operator → Self Node Remediation*.
+
++
+[NOTE]
+====
+The *SelfNodeRemediation* operand will not show up until the node goes *NotReady*, this will take a few seconds.
+====
 
 +
 Here you can see the self remediation object and follow its progress against the node.

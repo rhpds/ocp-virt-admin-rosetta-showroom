@@ -54,7 +54,7 @@ VM hot-plug-vm1 was scheduled to start
 ----
 
 +
-. Click on the Configuration tab and select Details, if it is not already selected. 
+. Click on the *Configuration* tab and select *Details*, if it is not already selected. 
 
 +
 You can see that the InstanceType is *General Purpose* and *1 CPU | 2GiB Memory*.
@@ -114,6 +114,7 @@ You will see that the VM has 2 CPUs and approximately 4 GiB of total memory.
 
 +
 NOTE: This VM image has kdump enabled, which reserves some memory for the kernel. This is why the memory amount appears to be less than 4 GiB. In fact, 4 GiB of memory is configured for the VM, but the operating system sees a lower number. If kdump were disabled, the total memory would be 4 GiB.
+
 +
 image::exercise3/03-image-cpu-007-v2.png[title="Verify new resources", link=self, window=blank, width=100%]
 
@@ -188,7 +189,7 @@ Run the *lsblk* command and you will see the new 5 GiB disk added as *vdc*.
 +
 image::exercise3/03-image-disk-007.png[title="View the new disk from the OS", link=self, window=blank, width=100%]
 
-. The new disk is hot-plugged to the virtual machine by way of a new pod that manages access to the disk. The new pod is created in same project as the VM and is called *hp-volume-xxxxx*. This pod runs in addition to the virt-launcher.
+. The new disk is hot-plugged to the virtual machine by way of a new pod that manages access to the disk. The new pod is created in same project as the VM and is called *hp-volume-xxxxx*. This pod runs in addition to the *virt-launcher*.
 
 +
 .Get a list of pods
@@ -211,7 +212,7 @@ virt-launcher-hot-plug-vm1-rb6lg    2/2     Running     0          147m
 . We are not going to do it, but at this point you can create a filesystem on the new disk, mount it and use it as needed.
 
 +
-. Now you will remove the hot-plugged disk from the virtual machine.
+. Now you will remove the hot-plugged disk from the Virtual Machine.
 
 +
 . Using the *OpenShift Console*, navigate to *Virtualization → Virtual Machines*.
@@ -257,7 +258,7 @@ image::exercise3/03-image-disk-013.png[title="Disk is removed in OS", link=self,
 [#bonuslabinstructions]
 === Bonus Lab - Convert a Hot Plug Disk to a Permanent Disk
 
-The steps below are optional as they are not directly relate to hot plugging a new disk. However, it may be advantageous for you to know how to convert a hot-plugged disk to a standard disk, which requires a VM restart. 
+The steps below are optional as they are not directly relate to hot plugging a new disk. However, it may be advantageous for you to know how to convert a *hot-plugged* disk to a standard disk, which requires a VM restart. 
 
 . The PVC you detached above still exists until it is deleted manually. Therefore, you can reattach the PVC as a standard disk while the VM is shut down.
 
@@ -328,7 +329,6 @@ This is similar to VMware's *Hot Add* feature.
 [#nicinstructions]
 === Instructions
 
-[start=1]
 . Ensure you are <<labaccess,logged in to the OpenShift Console as the *admin* user>> from your *web browser* and continue to the next step.
 
 +
@@ -401,10 +401,10 @@ Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* wi
 You can view the new NIC from the operating system by running the command *ip address* and viewing the output.
 
 +
-image::exercise3/03-image-nic-008.png[title="Messages on consoel about new NIC", link=self, window=blank, width=100%]
+image::exercise3/03-image-nic-008.png[title="Messages on console about new NIC", link=self, window=blank, width=100%]
 
 +
-. The new NIC is now available for use (e.g. *enp2s0*, although it mayve have a different name in your environment).
+. The new NIC is now available for use (e.g. *enp2s0*, although it may have a different name in your environment).
 
 +
 image::exercise3/03-image-nic-009.png[title="New NIC is up", link=self, window=blank, width=100%]
