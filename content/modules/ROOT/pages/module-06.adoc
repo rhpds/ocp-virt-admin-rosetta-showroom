@@ -68,7 +68,7 @@ Click *Create*
 [source,text,role=execute]
 .Get VM info
 ----
-oc get vmi -n fencing
+oc get vmi fencing-vm1 -n fencing
 ----
 
 +
@@ -76,6 +76,29 @@ oc get vmi -n fencing
 ----
 NAME          AGE    PHASE     IP            NODENAME                 READY
 fencing-vm1   169m   Running   10.235.0.29   worker-cluster-r2k68-1   True
+----
+
++
+To be more percise, you can use *jq* to only return the *nodeName* and assign it to a variable for later use:
+
++
+[source,text,role=execute]
+.Get VM info
+----
+node=`oc get vmi fencing-vm1 -n fencing -o json | jq -r '.status.nodeName'`
+----
+
++
+[source,text,role=execute]
+.Get VM info
+----
+echo ${node}
+----
+
++
+.Output
+----
+worker-cluster-r2k68-1
 ----
 
 +
@@ -89,13 +112,13 @@ oc get nodes -w
 ----
 
 +
-. Create a failure condition, accessing the node from step 4 with *oc debug*, and put it into an unhealthy state by stopping the *kubelet* service.
+. Create a failure condition, access the node from step 4, using the *${node}* variable and *oc debug*, to put it into an unhealthy state by stopping the *kubelet* service.
 
 +
 [source,text,role=execute]
 .Debug into the node
 ----
-oc debug node/<worker from step 4>
+oc debug node/${node}
 ----
 
 +
@@ -125,7 +148,7 @@ Removing debug pod ...
 [source,text,role=execute]
 .Get VM info
 ----
-oc get -n fencing vmi -w
+oc get vmi fencing-vm1 -n fencing -w
 ----
 
 +
@@ -146,9 +169,11 @@ image::exercise6/06-image-nodehealthcheck4.png[title="Node remediation running",
 +
 . From your two terminal windows, you will see:
 
++
 .. The worker node being remediated, going from *Ready* → *NotReady* → *NotReady,SchedulingDisabled* → *Ready,SchedulingDisabled* → *Ready*
 
 +
+[source,console]
 ----
 NAME                     STATUS                        ROLES    AGE     VERSION
 worker-cluster-r2k68-1   Ready                         worker   4h15m   v1.33.5
@@ -165,9 +190,10 @@ worker-cluster-r2k68-1   Ready                         worker   4h18m   v1.33.5
 ----
 
 +
-The VM will go from a *Running* → *Failed* state when the nodes fails, followed by *Pending* → *Scheduling* → *Scheduled* → *Running* as it is remediated and migrated to a new node.
+.. The VM will go from a *Running* → *Failed* state when the nodes fails, followed by *Pending* → *Scheduling* → *Scheduled* → *Running* as it is remediated and migrated to a new node.
 
 +
+[source,console]
 ----
 NAME          AGE   PHASE        IP            NODENAME                 READY
 fencing-vm1   36m   Running      10.235.0.14   worker-cluster-r2k68-1   True
@@ -179,6 +205,9 @@ fencing-vm1   1s    Scheduling                                          False
 fencing-vm1   10s   Scheduled                  worker-cluster-r2k68-3   False
 fencing-vm1   10s   Running      10.232.2.41   worker-cluster-r2k68-3   True
 ----
+
++
+
 
 [IMPORTANT]
 ====
