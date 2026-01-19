@@ -406,3 +406,16 @@ image::exercise3/03-image-nic-008.png[title="Messages on console about new NIC",
 
 +
 image::exercise3/03-image-nic-009.png[title="New NIC is up", link=self, window=blank, width=100%]
+
+[IMPORTANT]
+====
+Stop the *hot-plug-vm1* VM using *virtctl* from your *Terminal* window to ensure you have enough resources for the next labs.
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop hot-plug-vm1 -n hot-plug
+----
+
+*VM hot-plug-vm1 was scheduled to stop*
+====
+
