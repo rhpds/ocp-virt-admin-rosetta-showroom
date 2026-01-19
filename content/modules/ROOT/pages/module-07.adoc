@@ -1,8 +1,11 @@
 = Decentralized Live Migration
 
 ifdef::vmware[]
-.VMware Rosetta Stone
+.Rosetta Stone: VMware
 ****
+OpenShift does live migration of storage and compute, as does VMware.
+
+Storage migration in VMware is already built in.
 ****
 endif::[]
 
@@ -81,13 +84,13 @@ Now let's migrate our virtual machine *vm-migration-ns-ns-live* from the namespa
 [start=3]
 . As we noted above, the migration requires two *VirtualMachineInstances*.
 
-+ 
++
 The first step is to create an empty *DataVolume* for the receiver virtual machine in the destination namespace. +
 
-+ 
++
 Execute the following command to create the destination *DataVolume*:
 
-+ 
++
 [.wrap,yaml,role=execute]
 ----
 cat <<EOF | oc apply -f -
@@ -109,66 +112,66 @@ spec:
 EOF
 ----
 
-+ 
++
 Confirm the *DataVolume* and associated *PersistentVolumeClaim* have been created by executing the following two commands:
 
 +
 It is expected that the DV and PVC are *PendingPopulation* and *Pending* until the migration starts.
 
-+ 
++
 [.wrap,console,role=execute]
 ----
 oc get DataVolume -n vm-live-migration-destination
 ----
 
-+ 
++
 [source,console]
 ----
 NAME                     PHASE              PROGRESS  RESTARTS  AGE
 vm-migration-ns-ns-live  PendingPopulation  N/A                 107s
 ----
 
-+ 
++
 [.wrap,console,role=execute]
 ----
 oc get PersistentVolumeClaim -n vm-live-migration-destination
 ----
 
-+ 
++
 [source,console]
 ----
 NAME                     STATUS   VOLUME  CAPACITY  ACCESS MODES  STORAGECLASS                          VOLUMEATTRIBUTESCLASS  AGE
 vm-migration-ns-ns-live  Pending                                  ocs-external-storagecluster-ceph-rbd  <unset>                2m5s
 ----
-+ 
++
 
 [start=4]
 . Next, create the receiver virtual machine in the destination namespace
 
-+ 
-The destination *VirtualMachine* is same as the source *VirtualMachine* except for two key differences: 
++
+The destination *VirtualMachine* is same as the source *VirtualMachine* except for two key differences:
 
 +
 [loweralpha]
 .. The destination *VirtualMachine* has an annotation to set the post live migration *runStrategy*
 
-+ 
++
 [source,yaml]
 ----
     kubevirt.io/restore-run-strategy: Always
 ----
 
-+ 
++
 [loweralpha,start=2]
-.. The destination virtual machine has different *spec.runStrategy* 
+.. The destination virtual machine has different *spec.runStrategy*
 
-+ 
++
 [source,yaml]
 ----
   runStrategy: WaitAsReceiver
 ----
 
-+ 
++
 . Execute the following command to create the destination virtual machine:
 
 +
@@ -278,7 +281,7 @@ vm-migration-ns-ns-live   5m55s   WaitingForSync                    False
 ----
 
 +
-You will notice that the *VirtualMachine* and *VirtualMachineInstance* have a unique *PHASE*, *WaitingForReceiver* and *WaitingForSync*. 
+You will notice that the *VirtualMachine* and *VirtualMachineInstance* have a unique *PHASE*, *WaitingForReceiver* and *WaitingForSync*.
 
 +
 This indicates the *VirtualMachine* is waiting for the migration to start as a receiver and the *VirtualMachineInstance* is waiting for data to be synchronized from the source *VirtualMachine*.
@@ -287,7 +290,7 @@ This indicates the *VirtualMachine* is waiting for the migration to start as a r
 [start=6]
 . With the destination *VirtualMachine* and *VirtualMachineInstance* waiting, create the destination *VirtualMachineInstanceMigration* by executing the following command:
 
-+ 
++
 [.wrap,yaml,role=execute]
 ----
 cat <<EOF | oc apply -f -
@@ -310,13 +313,13 @@ The *migrationID* field in the YAML above does not refer to anything specific, b
 +
 Confirm the destination *VirtualMachineInstanceMigration* has been created by executing the following command:
 
-+ 
++
 [.wrap,console,role=execute]
 ----
 oc get VirtualMachineInstanceMigration -n vm-live-migration-destination
 ----
 
-+ 
++
 [source,console]
 ----
 NAME                                              PHASE            VMI
@@ -454,7 +457,7 @@ image::exercise7/image3-ui-dest-starting.png[title="Destination Virtual Machine 
 
 +
 When the *Source* and *Destination* are ready, the status of the *Destination* VM will change to *Migrating*.
-  
+
 +
 image::exercise7/image4-ui-dest-migrating.png[title="Destination Virtual Machine Details - Migrating", link=self, window=blank, width=100%]
 
@@ -581,7 +584,7 @@ If *Create plan* is greyed out, make sure you change the *project* to *openshift
 +
 image::exercise7/ui/image2-click-create-plans.png[title="Create Migration Plan", link=self, window=blank, width=100%]
 
-. On the *Creation migration plan* page, give your plan a name like `namespace-to-namespace`. 
+. On the *Creation migration plan* page, give your plan a name like `namespace-to-namespace`.
 
 +
 Leave the *Plan project* as the default value of *openshift-mtv*.
@@ -642,7 +645,7 @@ Click *Next*
 +
 image::exercise7/ui/image8-migration-type-live.png[title="Migration Type", link=self, window=blank, width=100%]
 
-. On the *Other settings* page, leave the defaults. 
+. On the *Other settings* page, leave the defaults.
 
 +
 Click *Next*
@@ -666,7 +669,7 @@ Click *Create plan*
 +
 image::exercise7/ui/image11-review-create.png[title="Review and Create", link=self, window=blank, width=100%]
 
-. When the *Plan* is created, you will be taken to the *Plan details* page where you can monitor the status and progress of your migration. 
+. When the *Plan* is created, you will be taken to the *Plan details* page where you can monitor the status and progress of your migration.
 
 +
 [NOTE]
