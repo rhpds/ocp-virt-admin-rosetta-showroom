@@ -195,7 +195,7 @@ image::exercise2/vm-details.png[title="Confirm number of CPUs", link=self, windo
 .. Confirm the number of CPUs inside the guest
 
 +
-Click on the *Console* tab, select *Serial console* from the drop down. If necessary, click the blue *Connect* button.
+Click on the *Console* tab. If necessary, click the blue *Connect* button.
 
 +
 Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* with the *User name* and *Password* credentials from above the console window.

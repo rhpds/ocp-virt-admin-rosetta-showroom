@@ -85,13 +85,13 @@ NOTE: In order for the new CPU and Memory configuration to take effect, the virt
 image::exercise3/03-image-cpu-005.png[title="CPU and Memory messages", link=self, window=blank, width=100%]
 
 +
-. From the UI, click on the *Console* tab, select *Serial console* from the drop down. If necessary, click the blue *Connect* button.
+. From the UI, click on the *Console* tab. If necessary, click the blue *Connect* button.
 
 +
 Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* with the *User name* and *Password* credentials from above the console window.
 
 +
-image::exercise3/03-image-cpu-006-v2.png[title="Login to VM", link=self, window=blank, width=100%]
+image::exercise3/03-image-cpu-006.png[title="Login to VM", link=self, window=blank, width=100%]
 
 . To validate that the VM now has 2 CPUs and 4GiB of memory, run the following:
 
@@ -116,7 +116,7 @@ You will see that the VM has 2 CPUs and approximately 4 GiB of total memory.
 NOTE: This VM image has kdump enabled, which reserves some memory for the kernel. This is why the memory amount appears to be less than 4 GiB. In fact, 4 GiB of memory is configured for the VM, but the operating system sees a lower number. If kdump were disabled, the total memory would be 4 GiB.
 
 +
-image::exercise3/03-image-cpu-007-v2.png[title="Verify new resources", link=self, window=blank, width=100%]
+image::exercise3/03-image-cpu-007.png[title="Verify new resources", link=self, window=blank, width=100%]
 
 [#disk]
 == Adding a Virtual Disk to a Running VM
@@ -178,10 +178,7 @@ If there are no logs in standard out, *sudo dmesg* will show them and the additi
 image::exercise3/03-image-disk-006.png[title="Kernel messages about a new disk", link=self, window=blank, width=100%]
 
 +
-. Select *Serial console* from the drop down. If necessary, click the blue *Connect* button.
-
-+
-Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* with the *User name* and *Password* credentials from above the console window.
+. Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* with the *User name* and *Password* credentials from above the console window. If necessary, click the blue *Connect* button.
 
 +
 Run the *lsblk* command and you will see the new 5 GiB disk added as *vdc*.
@@ -241,7 +238,7 @@ image::exercise3/03-image-disk-012.png[title="Confirm disk detach", link=self, w
 . Confirm that the disk (*vdc*) has been removed.
 
 +
-From the VM page, click on the *Console* tab, select *Serial console* from the drop down. If necessary, click the blue *Connect* button.
+From the VM page, click on the *Console* tab. If necessary, click the blue *Connect* button.
 
 +
 Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* with the *User name* and *Password* credentials from above the console window.
@@ -303,7 +300,7 @@ image::exercise3/03-image-disk-persist-005.png[title="Both disks are attached", 
 +
 image::exercise3/03-image-disk-persist-006.png[title="Both disks are attached", link=self, window=blank, width=100%]
 
-. Once the virtual machine is *Running*, click on the *Console* tab and select the *Serial console* from the drop down. If necessary, click the blue *Connect* button.
+. Once the virtual machine is *Running*, click on the *Console* tab. If necessary, click the blue *Connect* button.
 
 +
 Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* with the *User name* and *Password* credentials from above the console window.
@@ -353,7 +350,7 @@ Note that the VM currently has a *single NIC*.
 image::exercise3/03-image-nic-003a.png[title="Single NIC only", link=self, window=blank, width=100%]
 
 +
-You may also login to the VM via the Console tab and view the NIC details from the operating system.
+You may also login to the VM via the *Console* tab and view the *NIC* details from the operating system.
 
 +
 image::exercise3/03-image-nic-003b.png[title="Single NIC in Console", link=self, window=blank, width=100%]
@@ -389,7 +386,7 @@ image::exercise3/03-image-nic-005.png[title="View pending changes", link=self, w
 image::exercise3/03-image-nic-006.png[title="Migrate the VM", link=self, window=blank, width=100%]
 
 + 
-. Navigate back to the *Console* tab, select *Serial console* from the drop down. If necessary, click the blue *Connect* button.
+. Navigate back to the *Console* tab. If necessary, click the blue *Connect* button.
 
 +
 Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* with the *User name* and *Password* credentials from above the console window.
@@ -398,7 +395,7 @@ Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* wi
 . You may see messages on the VM console that new hardware has been added.
 
 +
-You can view the new NIC from the operating system by running the command *ip address* and viewing the output.
+You can view the new *NIC* from the operating system by running the command *ip address* and viewing the output.
 
 +
 image::exercise3/03-image-nic-008.png[title="Messages on console about new NIC", link=self, window=blank, width=100%]
