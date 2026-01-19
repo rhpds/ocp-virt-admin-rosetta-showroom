@@ -393,14 +393,13 @@ Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* wi
 +
 . You may see messages on the VM console that new hardware has been added.
 
-+
-You can view the new *NIC* from the operating system by running the command *ip address* and viewing the output.
 
 +
 image::exercise3/03-image-nic-008.png[title="Messages on console about new NIC", link=self, window=blank, width=100%]
 
 +
 . The new NIC is now available for use (e.g. *enp2s0*, although it may have a different name in your environment).
-
++
+You can view the new *NIC* from the operating system by running the command *ip address* and viewing the output.
 +
 image::exercise3/03-image-nic-009.png[title="New NIC is up", link=self, window=blank, width=100%]
