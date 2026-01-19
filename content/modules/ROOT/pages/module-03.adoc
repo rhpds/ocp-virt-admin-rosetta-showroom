@@ -255,7 +255,7 @@ image::exercise3/03-image-disk-013.png[title="Disk is removed in OS", link=self,
 [#bonuslabinstructions]
 === Bonus Lab - Convert a Hot Plug Disk to a Permanent Disk
 
-The steps below are optional as they are not directly relate to hot plugging a new disk. However, it may be advantageous for you to know how to convert a *hot-plugged* disk to a standard disk, which requires a VM restart. 
+The steps below are optional as they are not directly related to hot plugging a new disk. However, it may be advantageous for you to know how to convert a *hot-plugged* disk to a standard disk, which requires a VM restart. 
 
 . The PVC you detached above still exists until it is deleted manually. Therefore, you can reattach the PVC as a standard disk while the VM is shut down.
 
@@ -316,7 +316,7 @@ image::exercise3/03-image-disk-persist-007.png[title="The disk is attached", lin
 
 [#nic]
 == Adding a NIC to a Running VM
-In this lab, we will add a new *Network Interface Card* (NIC) to an existing VM. To do this, you will start with an existing VM that has a single NIC on the pod network. Using the OpenShift Virtualization console, you will modify the configuration of the VM to include an additional NIC on a new network. You complete the hot plug action by live-migrating the VM to another worker node.
+In this lab, we will add a new *Network Interface Card* (NIC) to an existing VM. To do this, you will start with an existing VM that has a single NIC on the pod network. Using the OpenShift Virtualization console, you will modify the configuration of the VM to include an additional NIC on a new network.
 
 [NOTE]
 ====
@@ -383,8 +383,6 @@ image::exercise3/03-image-nic-005.png[title="View pending changes", link=self, w
 . After the NIC is added, the VM will *automatically live migrate* in order to complete the hardware addition.
 +
 NOTE: In order for the new NIC configuration to take effect, the virtual machine will automatically migrate from one worker node to another. If the new NIC configuration does not appear immediately, you may have to wait a few minutes.
-+
-image::exercise3/03-image-nic-006.png[title="Migrate the VM", link=self, window=blank, width=100%]
 
 + 
 . Navigate back to the *Console* tab. If necessary, click the blue *Connect* button.
@@ -395,15 +393,14 @@ Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* wi
 +
 . You may see messages on the VM console that new hardware has been added.
 
-+
-You can view the new *NIC* from the operating system by running the command *ip address* and viewing the output.
 
 +
 image::exercise3/03-image-nic-008.png[title="Messages on console about new NIC", link=self, window=blank, width=100%]
 
 +
 . The new NIC is now available for use (e.g. *enp2s0*, although it may have a different name in your environment).
-
++
+You can view the new *NIC* from the operating system by running the command *ip address* and viewing the output.
 +
 image::exercise3/03-image-nic-009.png[title="New NIC is up", link=self, window=blank, width=100%]
 
