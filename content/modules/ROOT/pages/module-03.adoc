@@ -3,6 +3,8 @@
 ifdef::vmware[]
 .VMware Rosetta Stone
 ****
+VMware admins typically address requests for hot-add resources through the vCenter UI if they are being done manually.
+The Aria suite, also formerly known as vRealize Insights (VRI) and vRealize Automation (VRA), and/or other 3rd party Capacity Management software is used to manage the hot-add and hot-removal of resources in an automated fashion.
 ****
 endif::[]
 
@@ -17,11 +19,6 @@ include::lab-access.adoc[]
 [#cpu]
 == Adding CPU and Memory to a Running VM
 In this lab, we will add additional CPU and Memory resources to a Virtual Machine by changing the Virtual Machine’s Instance Type. To do this, you will start with an existing VM that has a single vCPU and 2 GiB of memory. Using the OpenShift Virtualization console, you will modify the configuration of the VM Instance Type to a type that has 2 vCPU and 4 GiB of memory.
-
-[NOTE]
-====
-This is similar to VMware's *Hot Add* feature.
-====
 
 [#cpuinstructions]
 === Instructions
@@ -60,7 +57,7 @@ VM hot-plug-vm1 was scheduled to start
 ----
 
 +
-. Click on the *Configuration* tab and select *Details*, if it is not already selected. 
+. Click on the *Configuration* tab and select *Details*, if it is not already selected.
 
 +
 You can see that the InstanceType is *General Purpose* and *1 CPU | 2GiB Memory*.
@@ -68,7 +65,7 @@ You can see that the InstanceType is *General Purpose* and *1 CPU | 2GiB Memory*
 +
 image::exercise3/03-image-cpu-002.png[title="Virtual Machine details", link=self, window=blank, width=100%]
 
-. Click on the blue pencil icon to modify the CPU and Memory resources. 
+. Click on the blue pencil icon to modify the CPU and Memory resources.
 
 +
 In the window that appears, click the *Size* drop down and select *2xmedium: 2CPUs, 4Gi Memory*.
@@ -169,7 +166,7 @@ Click the *Save* button.
 image::exercise3/03-image-disk-004.png[title="Configure the new disk", link=self, window=blank, width=100%]
 
 +
-. The new disk has been added with a label of *Persistent Hotplug*. 
+. The new disk has been added with a label of *Persistent Hotplug*.
 
 +
 image::exercise3/03-image-disk-005.png[title="The disk is added", link=self, window=blank, width=100%]
@@ -261,7 +258,7 @@ image::exercise3/03-image-disk-013.png[title="Disk is removed in OS", link=self,
 [#bonuslabinstructions]
 === Bonus Lab - Convert a Hot Plug Disk to a Permanent Disk
 
-The steps below are optional as they are not directly relate to hot plugging a new disk. However, it may be advantageous for you to know how to convert a *hot-plugged* disk to a standard disk, which requires a VM restart. 
+The steps below are optional as they are not directly relate to hot plugging a new disk. However, it may be advantageous for you to know how to convert a *hot-plugged* disk to a standard disk, which requires a VM restart.
 
 . The PVC you detached above still exists until it is deleted manually. Therefore, you can reattach the PVC as a standard disk while the VM is shut down.
 
@@ -324,11 +321,6 @@ image::exercise3/03-image-disk-persist-007.png[title="The disk is attached", lin
 == Adding a NIC to a Running VM
 In this lab, we will add a new *Network Interface Card* (NIC) to an existing VM. To do this, you will start with an existing VM that has a single NIC on the pod network. Using the OpenShift Virtualization console, you will modify the configuration of the VM to include an additional NIC on a new network. You complete the hot plug action by live-migrating the VM to another worker node.
 
-[NOTE]
-====
-This is similar to VMware's *Hot Add* feature.
-====
-
 [#nicinstructions]
 === Instructions
 
@@ -368,7 +360,7 @@ image::exercise3/03-image-nic-003b.png[title="Single NIC in Console", link=self,
 In the new window, provide a name for the new interface, such as *nic-1*.
 
 +
-The model should be *virtio*, and the *Network* should be *default/east-west-nad* from the drop down. 
+The model should be *virtio*, and the *Network* should be *default/east-west-nad* from the drop down.
 
 +
 Click the *Save* button.
@@ -391,7 +383,7 @@ image::exercise3/03-image-nic-005.png[title="View pending changes", link=self, w
 +
 image::exercise3/03-image-nic-006.png[title="Migrate the VM", link=self, window=blank, width=100%]
 
-+ 
++
 . Navigate back to the *Console* tab. If necessary, click the blue *Connect* button.
 
 +
