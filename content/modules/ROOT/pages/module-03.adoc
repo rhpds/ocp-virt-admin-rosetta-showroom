@@ -255,7 +255,7 @@ image::exercise3/03-image-disk-013.png[title="Disk is removed in OS", link=self,
 [#bonuslabinstructions]
 === Bonus Lab - Convert a Hot Plug Disk to a Permanent Disk
 
-The steps below are optional as they are not directly relate to hot plugging a new disk. However, it may be advantageous for you to know how to convert a *hot-plugged* disk to a standard disk, which requires a VM restart. 
+The steps below are optional as they are not directly related to hot plugging a new disk. However, it may be advantageous for you to know how to convert a *hot-plugged* disk to a standard disk, which requires a VM restart. 
 
 . The PVC you detached above still exists until it is deleted manually. Therefore, you can reattach the PVC as a standard disk while the VM is shut down.
 
