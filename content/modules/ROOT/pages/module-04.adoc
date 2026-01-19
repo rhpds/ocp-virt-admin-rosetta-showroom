@@ -42,7 +42,7 @@ VM node-affinity-vm was scheduled to start
 ----
 
 +
-. Verify the *VirtualMachineInstance* is running and see what node it is running on.
+. Verify the *VirtualMachineInstance* is running and see what node it is running on. If the *VirtualMachineInstance* is still in the scheduling phase, please execute the command again.
 +
 [.wrap,console,role=execute]
 ----
@@ -412,6 +412,14 @@ VM pod-affinity-vm was scheduled to start
 ----
 
 +
+. Verify the *VirtualMachineInstance* is running and see what node it is running on. If the *VirtualMachineInstance* is still in the scheduling phase, please execute the command again.
++
+[.wrap,console,role=execute]
+----
+oc get vmi -n pod-affinity-vm affinity
+----
+
++
 . Once the VM has started, using the OpenShift Console, from the left side panel, navigate to *Virtualization → VirtualMachines*
 
 +
@@ -566,6 +574,14 @@ virtctl start pod-anti-affinity-vm -n affinity
 [source,console]
 ----
 VM pod-anti-affinity-vm was scheduled to start
+----
+
++
+. Verify the *VirtualMachineInstance* is running and see what node it is running on. If the *VirtualMachineInstance* is still in the scheduling phase, please execute the command again.
++
+[.wrap,console,role=execute]
+----
+oc get vmi -n  pod-anti-affinity-vm affinity
 ----
 
 +
