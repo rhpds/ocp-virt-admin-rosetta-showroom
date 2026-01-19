@@ -362,7 +362,7 @@ image::exercise3/03-image-nic-003b.png[title="Single NIC in Console", link=self,
 In the new window, provide a name for the new interface, such as *nic-1*.
 
 +
-The model should be *virtio*, and the *Network* should be *default/east-west-nad* from the drop down. 
+The model should be *virtio*, and the *Network* should be *hot-plug/east-west-nad* from the drop down. 
 
 +
 Click the *Save* button.
