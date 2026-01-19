@@ -39,7 +39,7 @@ In the before-teimes, when there was RHV, the admin had to worry about the netwo
 
 OpenShift and Kubernets push storage and networking into the CSI and CNI abstractions, more like the OpenStack services (cinder, neutron).
 
-image::vmware-overview.png[vmware-overview,100%,100%,align="left"]
+image::index/vmware-overview.png[vmware-overview,100%,100%,align="left"]
 
 
 ||OpenShift Virtualization| VMware
