@@ -83,14 +83,14 @@ To be more percise, you can use *jq* to only return the *nodeName* and assign it
 
 +
 [source,text,role=execute]
-.Get VM info
+.Get VM info into a variable
 ----
 node=`oc get vmi fencing-vm1 -n fencing -o json | jq -r '.status.nodeName'`
 ----
 
 +
 [source,text,role=execute]
-.Get VM info
+.Show node name
 ----
 echo ${node}
 ----
