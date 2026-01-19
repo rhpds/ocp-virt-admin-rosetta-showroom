@@ -1,16 +1,17 @@
 = {lab_name}
 
-In this lab, we will guide you through the process of applying the Rosetta Stone to OpenShift Virtualization.
-
 OpenShift Virtualization is everywhere and has a major influence across our accounts.
-
 The interest level is high, but there is always the unavoidable question: How does it compare to other hypervisors?
 
-Moving beyond installation, configuration, and VM creation, the Rosetta Stone builds a mapping between traditional virtualization platforms and OpenShift Virtualization capabilities.
+Some sellers are not well versed in other virtualization platforms.
+
+In this lab, we will guide you through the process of applying a sort of "Rosetta Stone" to OpenShift Virtualization and other virualization platforms.
+
+Rosetta Stone builds a mapping between traditional virtualization platforms and OpenShift Virtualization capabilities.
 
 Let's take that mapping and put it into practice to supercharge your knowledge and tackle those customer questions with confidence.
 
-In this lab, we will introduce and walk you through how to explain and demonstrate key administrative and VM owner capabilities around infrastructure optimization, workload availability, scalability, and resource management.
+In this lab, we will introduce and walk you through how to explain and demonstrate key administrative and VM owner capabilities for infrastructure optimization, workload availability, scalability, and resource management.
 
 You will walk away with the understanding, knowledge, and experience to showcase:
 
@@ -29,9 +30,9 @@ image::virt-icon-large.png[virt-icon-large,55%,55%,align="left"]
 == Lab Environment
 
 The terminal window to your right is *already* logged into the lab environment via the bastion host as the *{ssh_user}*.
-All steps of this lab are to be completed from the bastion host as the *{ssh_user}* logged in to the OpenShift cluster as *admin*.
+All steps of this lab are to be completed from the bastion host as the *{ssh_user}* logged in to the OpenShift cluster as *admin*, unless the OpenShift console is indicated.
 
-The lab environment is running Red Hat OpenShift 4.20 with the following required operators pre-installed: 
+The lab environment is running Red Hat OpenShift 4.20 with the following required operators pre-installed:
 
 * OpenShift Virtualization
 * OpenShift Data Foundations
