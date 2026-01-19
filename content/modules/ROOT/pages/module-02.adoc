@@ -231,7 +231,7 @@ To calculate the overcommit ratio on a specific node:
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-oc get vmi -n over-commit -o wide
+oc get vmi -A -o wide | grep $(oc get vmi overcommit-vm-1 -n over-commit -o json | jq -r '.status.nodeName')
 ----
 
 +
