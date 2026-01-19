@@ -182,24 +182,21 @@ image::exercise1/01-image-storage-001.png[title="Virtual machine details", link=
 +
 image::exercise1/01-image-storage-002.png[title="View storage details", link=self, window=blank, width=100%]
 
-. Click on the *Console* tab, select *Serial console* from the drop down. If necessary, click the blue *Connect* button.
+. Click on the *Console* tab. If necessary, click the blue *Connect* button.
 
 +
 Login to the Virtual Machine using *Copy to clipboard* and *Paste to console* with the *User name* and *Password* credentials from above the console window.
 
 +
-image::exercise1/01-image-storage-console-001.png[title="Access the Console", link=self, window=blank, width=100%]
-
-+
 . Run a command, such as `top` or `ping`, that will continue running as we perform the remainder of this exercise.
 
 +
-image::exercise1/01-image-storage-003-v2.png[title="Run command on console", link=self, window=blank, width=100%]
+image::exercise1/01-image-storage-003.png[title="Run command on console", link=self, window=blank, width=100%]
 
 . Click on the *Actions* menu, hover over *Migration* and click on *Storage*.
 
 +
-image::exercise1/01-image-storage-004-v2.png[title="Initiate storage migration", link=self, window=blank, width=100%]
+image::exercise1/01-image-storage-004.png[title="Initiate storage migration", link=self, window=blank, width=100%]
 
 . In the *Migrate VirtualMachine storage* window, review the options, keep the defaults and click *Next*.
 +
@@ -245,4 +242,4 @@ image::exercise1/01-image-storage-010.png[title="VM has been migrated", link=sel
 . Moving back to the *Console* tab, you will see that your ping is still running and was uninterrupted during the migration.
 
 +
-image::exercise1/01-image-storage-011-v2.png[title="No interruption during storage migration", link=self, window=blank, width=100%]
+image::exercise1/01-image-storage-011.png[title="No interruption during storage migration", link=self, window=blank, width=100%]
