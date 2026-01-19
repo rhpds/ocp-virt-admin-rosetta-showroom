@@ -61,7 +61,7 @@ worker-cluster-jlkcx-2          Ready    worker                        52m   v1.
 +
 [,text,role="execute wrap",subs="attributes"]
 ----
-oc describe node <pick_a_worker_from_above> | grep -A 10 "Capacity:"
+oc describe node $(oc get nodes -o custom-columns=":metadata.name" --no-headers | grep worker | head -n 1) | grep -A 10 "Capacity:"
 ----
 
 +
@@ -87,7 +87,7 @@ The `cpu` value shows the number of physical CPU cores (or threads if hyper-thre
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-oc get node <pick_a_worker_from_above> -o jsonpath='{.status.allocatable.cpu}{"\n"}'
+oc get node $(oc get nodes -o custom-columns=":metadata.name" --no-headers | grep worker | head -n 1) -o jsonpath='{.status.allocatable.cpu}{"\n"}'
 ----
 
 +
@@ -102,6 +102,7 @@ oc get node <pick_a_worker_from_above> -o jsonpath='{.status.allocatable.cpu}{"\
 
 +
 image::exercise2/node-details.png[title="Confirm number of CPUs", link=self, window=blank, width=100%]
+
 
 +
 . Viewing VM vCPU Allocations
@@ -215,6 +216,7 @@ nproc
 32
 ----
 
+
 +
 image::exercise2/overcommit-nproc.png[title="Confirm number of CPUs", link=self, window=blank, width=100%]
 
@@ -225,12 +227,6 @@ image::exercise2/overcommit-nproc.png[title="Confirm number of CPUs", link=self,
 To calculate the overcommit ratio on a specific node:
 
 .. Identify all VMs running on the node:
-
-+
-[IMPORTANT]
-====
-In the following step, you need to replace "node_name" with the name of the node your VM is running on.
-====
 
 +
 [,shell,role="execute wrap",subs="attributes"]
@@ -246,21 +242,15 @@ NAME              AGE   PHASE     IP             NODENAME                       
 overcommit-vm-1   75m   Running   10.232.0.121   control-plane-cluster-qc86c-1   True    True              
 ----
 
+
+
 +
-Set *NODE* to the *NODENAME* from above:
+.. Sum the vCPUs for all VMs on the node:
 
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-NODE="node_name"
-----
-
-+
-.. Sum the vCPUs for all VMs on that node:
-
-+
-[,shell,role="execute wrap",subs="attributes"]
-----
+NODE=$(oc get nodes -o custom-columns=":metadata.name" --no-headers | grep $(oc get vmi overcommit-vm-1 -n over-commit -o json | jq -r '.status.nodeName'))
 oc get vmi -A -o json | \
 jq -r --arg NODE "$NODE" \
 '.items[] | select(.status.nodeName == $NODE) | 
@@ -277,6 +267,10 @@ jq -s 'map(.total_vcpus) | add'
 ----
 32
 ----
+
++
+NOTE: You should at least see "32" but it may differ if more VMs are actually running on the same node.
+
 
 +
 .. Calculate the overcommit ratio:
