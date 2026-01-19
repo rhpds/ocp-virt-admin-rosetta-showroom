@@ -1,5 +1,23 @@
 = Live Migration of Workloads
 
+ifdef::vmware[]
+VMware datastore is set up differently.
+VMware Datastores can be thought of as LUNs, which belong to a datastore cluster.
+Uses Storage VMotion to move those workloads around.
+
+Differences
+* Different paradigm.  
+* PV PVC provides it to a VM when it needs it, getting it from a StorageClass.
+* Datastore -> Cluster structure
+
+Mapping
+Datastore Cluster (or VM attached directly to Datastore) = StorageClass defines volume, claims against it.
+
+
+
+
+endif::[]
+
 Migrating workloads between compute nodes and storage types is a crucial feature of any modern hypervisor. OpenShift Virtualization allows the simple and easy process of migrating your virtual machine compute and storage from one place to another.
 
 In this module, you will perform three migration tasks:
