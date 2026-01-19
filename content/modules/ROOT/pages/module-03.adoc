@@ -316,7 +316,7 @@ image::exercise3/03-image-disk-persist-007.png[title="The disk is attached", lin
 
 [#nic]
 == Adding a NIC to a Running VM
-In this lab, we will add a new *Network Interface Card* (NIC) to an existing VM. To do this, you will start with an existing VM that has a single NIC on the pod network. Using the OpenShift Virtualization console, you will modify the configuration of the VM to include an additional NIC on a new network. You complete the hot plug action by live-migrating the VM to another worker node.
+In this lab, we will add a new *Network Interface Card* (NIC) to an existing VM. To do this, you will start with an existing VM that has a single NIC on the pod network. Using the OpenShift Virtualization console, you will modify the configuration of the VM to include an additional NIC on a new network.
 
 [NOTE]
 ====
