@@ -21,3 +21,4 @@ asciidoc:
       text: Red Hat
     - url: https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/virtualization/about
       text: OpenShift Virtualization Documentation
+    vmware: true
