@@ -179,3 +179,15 @@ fencing-vm1   1s    Scheduling                                          False
 fencing-vm1   10s   Scheduled                  worker-cluster-r2k68-3   False
 fencing-vm1   10s   Running      10.232.2.41   worker-cluster-r2k68-3   True
 ----
+
+[IMPORTANT]
+====
+Stop the *fencing-vm1* VM using *virtctl* from your *Terminal* window to ensure you have enough resources for the next labs.
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop fencing-vm1 -n fencing
+----
+
+*VM fencing-vm1 was scheduled to stop*
+====
