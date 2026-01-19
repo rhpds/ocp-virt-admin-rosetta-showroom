@@ -1,5 +1,11 @@
 = Decentralized Live Migration
 
+ifdef::vmware[]
+.VMware Rosetta Stone
+****
+****
+endif::[]
+
 A decentralized live migration is a variation of a storage live migration that allows you to migrate a running *VirtualMachine* between *namespaces* and *clusters*.
 
 This can be useful to:
