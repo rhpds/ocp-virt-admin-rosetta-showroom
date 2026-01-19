@@ -161,7 +161,16 @@ This feature is similar to VMware's Storage vMotion feature.
 [#storagerequirements]
 === Requirements
 
-TBD
+* The *Migration Toolkit for Containers (MTC)* Operator must be installed for storage class migrations
+
+[NOTE]
+====
+MTC has been deprecated and engineering is working on removing the *MTC* requirement for storage class migrations.
+
+This feature is targeting *4.21* and engineering plans to backport it to *4.20.z*. 
+
+You can follow https://issues.redhat.com/browse/VIRTSTRAT-97[VM Storage Migration] for more information.
+====
 
 [#storageinstructions]
 === Instructions
