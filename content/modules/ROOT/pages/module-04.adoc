@@ -596,7 +596,7 @@ oc get vmi pod-anti-affinity-vm -n affinity
 ----
 NAME                   AGE   PHASE     IP            NODENAME                 READY
 pod-anti-affinity-vm   1m    Running   10.233.0.44   worker-cluster-dvddt-1   True
----
+----
 
 +
 . Once the VM has started, using the OpenShift Console, from the left side panel, navigate to *Virtualization → VirtualMachines*
