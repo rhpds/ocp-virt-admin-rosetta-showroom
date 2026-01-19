@@ -42,26 +42,36 @@ OpenShift and Kubernets push storage and networking into the CSI and CNI abstrac
 image::index/vmware-overview.png[vmware-overview,100%,100%,align="left"]
 
 
-||OpenShift Virtualization| VMware
-|Infrastructure Automation| RHACM, Ansible, and GitOps| Aria Automation Config (SaltStack) and PowerShell
-// TODO: make this a table
-Application Automation
-RHACM, Ansible, Pipelines, and GitOps
-Aria Automation Orchestrator (vRealize Orchestrator) and Aria Automation (vRealize Automation)
-Networking
-Multus / OVN-Kubernetes / Third party CNI
-NSX
-Storage
-ODF, Optimizing Storage and partner ecosystem for CSI
-vSAN, Partner Ecosystem
-Observability
-RHACM, OpenShift Logging & Metrics, Service Mesh, Distributed Tracing
-Wavefront
-Data Protection
-OpenShift API for Data Protection (OADP)
+[cols="1,2,2", options="header"]
+|===
+| | OpenShift Virtualization | VMware
 
+| *Infrastructure Automation*
+| RHACM, Ansible, and GitOps
+| Aria Automation Config (SaltStack) and PowerShell
+
+| *Application Automation*
+| RHACM, Ansible, Pipelines, and GitOps
+| Aria Automation Orchestrator (vRealize Orchestrator) and Aria Automation (vRealize Automation)
+
+| *Networking*
+| Multus / OVN-Kubernetes / Third party CNI
+| NSX
+
+| *Storage*
+| ODF, Optimizing Storage and partner ecosystem for CSI
+| vSAN, Datastores, Datastore Clusters, Partner Ecosystem
+
+| *Observability*
+| RHACM, OpenShift Logging & Metrics, Service Mesh, Distributed Tracing
+| Wavefront
+
+| *Data Protection*
+| OpenShift API for Data Protection (OADP) +
 Partner ecosystem
-vSphere Replication, partner ecosystem
+| vSphere Replication, partner ecosystem
+|===
+
 endif::vmware[]
 
 [#labenvironment]
