@@ -381,7 +381,8 @@ image::exercise3/03-image-nic-005.png[title="View pending changes", link=self, w
 
 +
 . After the NIC is added, the VM will *automatically live migrate* in order to complete the hardware addition.
-
++
+NOTE: In order for the new NIC configuration to take effect, the virtual machine will automatically migrate from one worker node to another. If the new NIC configuration does not appear immediately, you may have to wait a few minutes.
 +
 image::exercise3/03-image-nic-006.png[title="Migrate the VM", link=self, window=blank, width=100%]
 
