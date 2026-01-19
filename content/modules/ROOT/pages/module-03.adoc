@@ -1,5 +1,11 @@
 = Hot Plugging Resources
 
+ifdef::vmware[]
+.VMware Rosetta Stone
+****
+****
+endif::[]
+
 In this module, you will perform three tasks:
 
 * <<cpu,Increase the CPU and Memory of a running VM>>
