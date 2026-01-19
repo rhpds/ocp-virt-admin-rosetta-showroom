@@ -61,7 +61,7 @@ worker-cluster-jlkcx-2          Ready    worker                        52m   v1.
 +
 [,text,role="execute wrap",subs="attributes"]
 ----
-oc describe node $(oc get nodes -o custom-columns=":metadata.name" --no-headers | grep worker | head -n 1) | grep -A 10 "Capacity:"
+oc describe node $(oc get nodes -o custom-columns=":metadata.name" --no-headers | grep worker | head -n 1) | grep -A 9 "Capacity:"
 ----
 
 +
