@@ -1,5 +1,11 @@
 = Dynamic Rescheduling of Workloads
 
+ifdef::vmware[]
+.VMware Rosetta Stone
+****
+****
+endif::[]
+
 [#dynamicreschintro]
 == Introduction
 
