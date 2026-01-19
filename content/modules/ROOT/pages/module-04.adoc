@@ -1,5 +1,12 @@
 = Affinity and Anti-Affinity for VM Placement
 
+ifdef::vmware[]
+.VMware Rosetta Stone
+****
+****
+endif::[]
+
+
 This lab showcases how to use and apply Node Affinity, Pod Affinity, and Pod-Anti Affinity against Virtual Machines. The lab focuses on the practical application of these principles in real-world scenarios and strengthens your technical understanding of how they work.
 
 [NOTE]
