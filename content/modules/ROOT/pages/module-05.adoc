@@ -305,11 +305,21 @@ virt-launcher-dynamic-schedule-vm-1-4qhnq   2/2     Running     0          4m28s
 virt-launcher-dynamic-schedule-vm-1-n6ct7   0/2     Completed   0          9m49s   10.234.0.84    worker-cluster-jlkcx-2          <none>           1/1
 ----
 
-+
-. Scale the stress test deployment down to free up the resources
+[IMPORTANT]
+====
+Scale down the *dynamic-schedule-stress-test* deployment and stop the *dynamic-schedule-vm-1* VM using *virtctl* from your *Terminal* window to ensure you have enough resources for the next labs.
 
-+
 [.wrap,console,role=execute,subs="attributes"]
 ----
 oc -n dynamic-schedule-stress-test scale deployment stress-test --replicas=0
 ----
+
+*deployment.apps/stress-test scaled*
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop dynamic-schedule-vm-1 -n dynamic-schedule
+----
+
+*VM dynamic-schedule-vm-1 was scheduled to stop*
+====
