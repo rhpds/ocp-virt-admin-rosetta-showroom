@@ -11,7 +11,7 @@ In this module, you will perform three migration tasks:
 include::lab-access.adoc[]
 
 [#computerand]
-== Compute Migration to a specific node
+== Compute Migration to a random node
 During maintenance or troubleshooting, you might need to migrate a VM to a different node. Live migration is the process of moving a running Virtual Machine Instance (VMI) to a different node without disruption.
 
 [NOTE]
