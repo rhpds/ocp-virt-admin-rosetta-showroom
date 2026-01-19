@@ -723,3 +723,29 @@ node-affinity-vm       58m   Running   10.233.0.35   worker-cluster-dvddt-1     
 
 +
 . You will now see the *pod-anti-affinity-vm* running on a different node from *node-affinity-vm* because of the pod anti-affinity rule.
+
+[IMPORTANT]
+====
+Stop the *node-affinity-vm*, *pod-affinity-vm* and *pod-anti-affinity-vm* VMs using *virtctl* from your *Terminal* window to ensure you have enough resources for the next labs.
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop node-affinity-vm -n affinity
+----
+
+*VM node-affinity-vm was scheduled to stop*
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop pod-affinity-vm -n affinity
+----
+
+*VM pod-affinity-vm was scheduled to stop*
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop pod-anti-affinity-vm -n affinity
+----
+
+*VM pod-anti-affinity-vm was scheduled to stop*
+====
