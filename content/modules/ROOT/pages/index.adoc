@@ -31,16 +31,20 @@ image::virt-icon-large.png[virt-icon-large,55%,55%,align="left"]
 ifdef::vmware[]
 == VMware and OpenShift Virtualization
 
-The difference between OpenShift Virtualization and VMware is their approach to infrastructure services.
+VMware and OpenShift Virtualization are nearing feature parity, and for customers who are well educated, adoption is not a challenge.
 
-Red Hat has been doing this for a very long time.
+However, because of the product philosophies, there is a significant difference between OpenShift Virtualization and VMware in the eyes of administorators and their management.
+VMware originated as a desktop software company, so every feature gets implemented in the graphical interface first.
+This hides nearly all the complexity from the average user.
 
-In the before-teimes, when there was RHV, the admin had to worry about the network config, and storage config, and had to request these things like LUNs and network drops.
-
-OpenShift and Kubernets push storage and networking into the CSI and CNI abstractions, more like the OpenStack services (cinder, neutron).
+However, OpenShift Virtualization, like the Kubernetes project it is part of (kubevirt,) does not implement features "graphical interface first."
+While Red Hat has been doing Virtualization on an enterprise scale since the 1990s, and continues to innovate today, our concerns are with community collaboration and this does not put graphical administration first.
 
 //image::index/vmware-overview.png[vmware-overview,100%,100%,align="left"]
 
+Use the table below as a guide to begin your exploration of the feature parity of OpenShift Virtualization and VMware.
+
+.Feature Comparison
 [cols="1,2,2", options="header"]
 |===
 | | OpenShift Virtualization | VMware
