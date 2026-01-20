@@ -5,7 +5,7 @@ ifdef::vmware[]
 ****
 This feature is similar to VMware's Distributed Resource Scheduler (DRS).
 
-Similar to DRS, the OpenShift Descheduler is not a mandatory elelment of VM creation, but can be applied at any time.
+Similar to DRS, the OpenShift Descheduler is not a mandatory element of VM creation, but can be applied at any time.
 ****
 endif::[]
 
