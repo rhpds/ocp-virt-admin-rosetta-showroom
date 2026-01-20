@@ -1,13 +1,14 @@
 = Affinity and Anti-Affinity for VM Placement
 
+ifdef::vmware[]
+.Rosetta Stone: VMware
+****
+OpenShift Affinity Rules are similar to VMWare's Virtual Machine Affinity Rules.
+If one were to also employ the OpenShift Descheduler for smart automated rescheduling of VMs, this feature would be similar to VMware's VM Affinity Rules coupled with the Distributed Resource Scheduler (DRS).
+But that is not covered in this module.
+****
+
 This lab showcases how to use and apply Node Affinity, Pod Affinity, and Pod-Anti Affinity against Virtual Machines. The lab focuses on the practical application of these principles in real-world scenarios and strengthens your technical understanding of how they work.
-
-[NOTE]
-====
-This feature is similar to VMWare's Virtual Machine Affinity Rules without DRS.
-
-You can combine this feature, with the *Descheduler* using the *AffinityAndTaints* profile to create a similar *Virtual Machine Affinity Rules* with *DRS* experience.
-====
 
 include::lab-access.adoc[]
 
@@ -66,13 +67,13 @@ node-affinity-vm   57s   Running   10.232.1.153   control-plane-cluster-dvddt-1 
 The following command returns the name of 1 node where the *node-affinity-vm* VM is not running and labels it:
 
 +
-... Gets a list of all of nodes (*oc get nodes -o name*) 
+... Gets a list of all of nodes (*oc get nodes -o name*)
 
 +
-... Does an inverted-match to select non-matching lines and returns 1 result (*grep -v -m 1*) 
+... Does an inverted-match to select non-matching lines and returns 1 result (*grep -v -m 1*)
 
 +
-... With the *nodeName* where the *node-affinity-vm* VM is currently running (*oc get vmi node-affinity-vm -n affinity -o json | jq -r '.status.nodeName'*) 
+... With the *nodeName* where the *node-affinity-vm* VM is currently running (*oc get vmi node-affinity-vm -n affinity -o json | jq -r '.status.nodeName'*)
 
 +
 [source,text,role=execute]
@@ -207,7 +208,7 @@ VM node-affinity-vm was scheduled to restart
 ----
 
 +
-. Once the VM restarts, it will be running on the node with the affinity label. 
+. Once the VM restarts, it will be running on the node with the affinity label.
 
 +
 You can validate this in the GUI by navigating to the *node-affinity-vm*, and looking at the *Node* name in the *General* box on the right hand side of the *VirtualMachine details* page or using the OCP CLI.
@@ -217,7 +218,7 @@ You can validate this in the GUI by navigating to the *node-affinity-vm*, and lo
 .Get VMI information
 ----
 oc get vmi node-affinity-vm -n affinity
----- 
+----
 
 +
 .Output
@@ -240,7 +241,7 @@ This lab will demonstrate the setup and usage of Pod Affinity.
 . Ensure you are <<labaccess,logged in to both the OpenShift Console and CLI as the *admin* user>> from your *web browser* and the *terminal* window on the right side of your screen and continue to the next step.
 
 +
-. To begin, we are going to leverage our existing *node-affinity-vm* from the previous lab. This will serve as 1 of the 2 VMs we use to demonstrate Affinity. 
+. To begin, we are going to leverage our existing *node-affinity-vm* from the previous lab. This will serve as 1 of the 2 VMs we use to demonstrate Affinity.
 
 +
 There are 2 ways to add label:
@@ -394,7 +395,7 @@ VM node-affinity-vm was scheduled to restart
 ----
 
 +
-. Next, we are going to configure the *pod-affinity-vm*.  
+. Next, we are going to configure the *pod-affinity-vm*.
 
 +
 .. Begin by starting *pod-affinity-vm* Virtual Machine
@@ -478,7 +479,7 @@ You can view this information through the GUI by inspecting the *pod-affinity-vm
 [source,text,role=execute]
 ----
 oc get vm pod-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinity}{"\n"}'
----- 
+----
 
 +
 .Output
@@ -487,7 +488,7 @@ oc get vm pod-affinity-vm -n affinity -o jsonpath='{.spec.template.spec.affinity
 ----
 
 +
-. Check where the *pod-affinity-vm* and *node-affinity-vm* are running by looking at OpenShift Console or using the OpenShift CLI. 
+. Check where the *pod-affinity-vm* and *node-affinity-vm* are running by looking at OpenShift Console or using the OpenShift CLI.
 
 +
 [source,text,role=execute]
@@ -525,7 +526,7 @@ VM pod-affinity-vm was scheduled to restart
 ----
 
 +
-. Once the VM restarts, the pod affinity will be in effect. 
+. Once the VM restarts, the pod affinity will be in effect.
 
 +
 You can validate this in the GUI by navigating to the *pod-affinity-vm* and *node-affinity-vm*, and looking at the *Node* name in the *General* box on the right hand side of the *VirtualMachine details* page or using the OCP CLI.

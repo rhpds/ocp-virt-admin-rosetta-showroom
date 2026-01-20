@@ -1,5 +1,14 @@
 = Dynamic Rescheduling of Workloads
 
+ifdef::vmware[]
+.Rosetta Stone: VMware
+****
+This feature is similar to VMware's Distributed Resource Scheduler (DRS).
+
+Similar to DRS, the OpenShift Descheduler is not a mandatory element of VM creation, but can be applied at any time.
+****
+endif::[]
+
 [#dynamicreschintro]
 == Introduction
 
@@ -7,7 +16,7 @@ You can use the descheduler to evict pods based on specific strategies so that t
 
 With OpenShift Virtualization, we handle this gracefully through the *virt-api-validator* *validating webhook*. This webhook intercepts all eviction requests and makes a series of decision on how to treat the request.
 
-The short summary is that when an eviction request is received for a Virtual Machine that is live migratable, that VM is live migrated instead of being evicted. 
+The short summary is that when an eviction request is received for a Virtual Machine that is live migratable, that VM is live migrated instead of being evicted.
 
 https://github.com/kubevirt/kubevirt/blob/main/docs/handling-eviction-requests.md[How Evictions are Handled in OpenShift Virtualization]
 
@@ -18,13 +27,6 @@ You can benefit from descheduling running pods in situations such as the followi
 * Node failure requires pods to be moved.
 * New nodes are added to clusters.
 * Pods have been restarted too many times.
-
-
-[NOTE]
-====
-This feature is similar to VMWare's DRS (Distributed Resource Scheduler)
-====
-
 
 [#dynamicreschobj]
 == Objectives
@@ -54,7 +56,7 @@ include::lab-access.adoc[]
 
 . Ensure you are <<labaccess,logged in to the OpenShift CLI as the *admin* user>> from the *terminal* window on the right side of your screen and continue to the next step.
 
-+ 
++
 . Start the *dynamic-schedule-vm1* Virtual Machine
 
 +
@@ -104,7 +106,7 @@ metadata:
   namespace: openshift-kube-descheduler-operator
 spec:
   logLevel: Normal
-  mode: Predictive 
+  mode: Predictive
   operatorLogLevel: Normal
   profileCustomizations:
     devEnableSoftTainter: true
@@ -120,7 +122,7 @@ spec:
 +
 [NOTE]
 ====
-By default, the mode is set to *Predictive* which means it only *simulates and logs* potential pod evictions. It does *not* actually perform any evictions. 
+By default, the mode is set to *Predictive* which means it only *simulates and logs* potential pod evictions. It does *not* actually perform any evictions.
 
 To *enable eviction*, set the mode to *Automatic*.
 ====

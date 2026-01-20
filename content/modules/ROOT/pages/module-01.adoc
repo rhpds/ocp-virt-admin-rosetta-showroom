@@ -1,5 +1,26 @@
 = Live Migration of Workloads
 
+ifdef::vmware[]
+.Rosetta Stone: VMware
+****
+In VMware this is called VMotion.
+
+VMware uses the concept of Datastores.
+VMware Datastores can be thought of as LUNs, which may or may not belong to a Datastore Cluster.
+
+.Differences
+ * Different paradigm.
+ * PV PVC provides it to a VM when it needs it, getting it from a StorageClass.
+ * Datastore -> Cluster structure
+
+.Mapping
+ * Datastore Cluster (or VM attached directly to Datastore) = StorageClass defines volume, claims against it.
+
+Datastore Clusters are a collection of Datastores and use SDRS for placement of the .VMDK files on specific Datastores.
+Storage Distributed Resource Scheduler (SDRS) can only be applied to Datastore Clusters, and is used to automate this process.
+****
+endif::[]
+
 Migrating workloads between compute nodes and storage types is a crucial feature of any modern hypervisor. OpenShift Virtualization allows the simple and easy process of migrating your virtual machine compute and storage from one place to another.
 
 In this module, you will perform three migration tasks:
@@ -14,10 +35,14 @@ include::lab-access.adoc[]
 == Compute Migration to a random node
 During maintenance or troubleshooting, you might need to migrate a VM to a different node. Live migration is the process of moving a running Virtual Machine Instance (VMI) to a different node without disruption.
 
+ifdef::vmware[]
+.Rosetta Stone: VMware
+****
 [NOTE]
 ====
-This feature is similar to VMware's Compute vMotion feature.
+This feature is similar to VMware's Compute vMotion feature, and Distributed Resource Scheduler (DRS) for VM placement.
 ====
+****
 
 In this lab, you will be performing a live migration of Virtual Machine from one compute node to another. To do this, you will access a running VM, determine its current node, and then migrate it to another node.
 
@@ -47,7 +72,7 @@ In this lab, you will be performing a live migration of Virtual Machine from one
 image::exercise1/01-vm-start-001.png[title="Start the Virtual Machine", link=self, window=blank, width=100%]
 +
 
-. The Virtual Machine will schedule, start and move into the *Running* state as seen below. 
+. The Virtual Machine will schedule, start and move into the *Running* state as seen below.
 +
 
 image::exercise1/01-vm-start-002.png[title="Running Virtual Machine", link=self, window=blank, width=100%]
@@ -153,10 +178,17 @@ image::exercise1/01-image-compute-007.png[title="VM is running", link=self, wind
 == Storage Migration
 Storage environments often have their own lifecycles and performance profiles, so it is important to be able to move Virtual Machines between storage devices for lifecycle and performance management. OpenShift Virtualization allows the migration of PVCs from one StorageClass to another while the virtual machine is running.
 
+ifdef::vmware[]
+.Rosetta Stone: VMware
+****
 [NOTE]
 ====
 This feature is similar to VMware's Storage vMotion feature.
+
+This also includes the Storage Distributed Resource Scheduler (SDRS) for disk placement.
 ====
+endif::[]
+****
 
 [#storagerequirements]
 === Requirements
@@ -225,7 +257,7 @@ image::exercise1/01-image-storage-007.png[title="Review migration details", link
 +
 image::exercise1/01-image-storage-008.png[title="Migration has started", link=self, window=blank, width=100%]
 
-. To view the storage migration status, navigate to *Migration for Virtualization* from the left side panel and click *Storage migrations*. The migration plan will start in the *Pending* state, move to *Running* and then to *Completed*. 
+. To view the storage migration status, navigate to *Migration for Virtualization* from the left side panel and click *Storage migrations*. The migration plan will start in the *Pending* state, move to *Running* and then to *Completed*.
 
 +
 [NOTE]

@@ -1,14 +1,18 @@
 [#fencing]
-= Fencing and How to Handle Node Failure 
+= Fencing and How to Handle Node Failure
 
-Fencing is a vital mechanism that safeguards cluster resources and ensures data integrity. It works by isolating an unresponsive or failed node. This process is crucial to prevent the "split-brain" scenario, which occurs when multiple nodes try to write to shared storage simultaneously, inevitably leading to data corruption. 
+ifdef::vmware[]
+.Rosetta Stone: VMware
+****
+EN GUARDE! 🤺
+
+Fencing and Self Node Remediation are similar to VMware's Infrastructure HA and Node Failure features.
+****
+endif::[]
+
+Fencing is a vital mechanism that safeguards cluster resources and ensures data integrity. It works by isolating an unresponsive or failed node. This process is crucial to prevent the "split-brain" scenario, which occurs when multiple nodes try to write to shared storage simultaneously, inevitably leading to data corruption.
 
 This lab demonstrates the capabilities of the *Node Health Check Operator* and the *Self Node Remediation Operator*. You will simulate a node failure to observe the virtual machine migration process and subsequent node recovery.
-
-[NOTE]
-====
-Fencing and Self Node Remediation are similar to VMware's Infrastructure HA and Node Failure features.
-====
 
 [IMPORTANT]
 ====
@@ -200,7 +204,7 @@ fencing-vm1   36m   Running      10.235.0.14   worker-cluster-r2k68-1   True
 fencing-vm1   37m   Running      10.235.0.14   worker-cluster-r2k68-1   False
 fencing-vm1   38m   Failed       10.235.0.14   worker-cluster-r2k68-1   False
 fencing-vm1   38m   Failed       10.235.0.14   worker-cluster-r2k68-1   False
-fencing-vm1   0s    Pending                                          
+fencing-vm1   0s    Pending
 fencing-vm1   1s    Scheduling                                          False
 fencing-vm1   10s   Scheduled                  worker-cluster-r2k68-3   False
 fencing-vm1   10s   Running      10.232.2.41   worker-cluster-r2k68-3   True
