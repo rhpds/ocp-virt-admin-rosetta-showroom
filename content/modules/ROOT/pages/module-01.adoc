@@ -5,19 +5,19 @@
 ifdef::vmware[]
 .Rosetta Stone: VMware
 ****
-In VMware this is called Vmotion.
+In VMware this is called VMotion.
 
 VMware datastore is set up differently.
 VMware Datastores can be thought of as LUNs, which belong to a datastore cluster.
 Uses Storage VMotion to move those workloads around.
 
-Differences
-* Different paradigm.
-* PV PVC provides it to a VM when it needs it, getting it from a StorageClass.
-* Datastore -> Cluster structure
+.Differences
+ * Different paradigm.
+ * PV PVC provides it to a VM when it needs it, getting it from a StorageClass.
+ * Datastore -> Cluster structure
 
-Mapping
-Datastore Cluster (or VM attached directly to Datastore) = StorageClass defines volume, claims against it.
+.Mapping
+ * Datastore Cluster (or VM attached directly to Datastore) = StorageClass defines volume, claims against it.
 
 ****
 endif::[]
