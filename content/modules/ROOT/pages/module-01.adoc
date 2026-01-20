@@ -1,5 +1,3 @@
-:vmware: true
-
 = Live Migration of Workloads
 
 ifdef::vmware[]
@@ -7,9 +5,8 @@ ifdef::vmware[]
 ****
 In VMware this is called VMotion.
 
-VMware datastore is set up differently.
-VMware Datastores can be thought of as LUNs, which belong to a datastore cluster.
-Uses Storage VMotion to move those workloads around.
+VMware uses the concept of Datastores.
+VMware Datastores can be thought of as LUNs, which may or may not belong to a Datastore Cluster.
 
 .Differences
  * Different paradigm.
@@ -19,6 +16,8 @@ Uses Storage VMotion to move those workloads around.
 .Mapping
  * Datastore Cluster (or VM attached directly to Datastore) = StorageClass defines volume, claims against it.
 
+Datastore Clusters are a collection of Datastores and use SDRS for placement of the .VMDK files on specific Datastores.
+Storage Distributed Resource Scheduler (SDRS) can only be applied to Datastore Clusters, and is used to automate this process.
 ****
 endif::[]
 
