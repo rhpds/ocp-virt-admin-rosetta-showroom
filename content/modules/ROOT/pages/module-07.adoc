@@ -683,3 +683,15 @@ You can follow https://issues.redhat.com/browse/CNV-72966[CNV-72966 - loosen (or
 
 +
 image::exercise7/ui/image12-plan-created-error.png[title="Plan Details", link=self, window=blank, width=100%]
+
+[IMPORTANT]
+====
+Stop the *vm-migration-ns-ns-live* VM using *virtctl* from your *Terminal* window to ensure you have enough resources for the next labs.
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop vm-migration-ns-ns-live -n vm-live-migration-source
+----
+
+*VM vm-migration-ns-ns-live was scheduled to stop*
+====

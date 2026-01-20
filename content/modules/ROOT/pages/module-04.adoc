@@ -43,7 +43,7 @@ VM node-affinity-vm was scheduled to start
 ----
 
 +
-. Verify the *VirtualMachineInstance* is running and see what node it is running on.
+. Verify the *VirtualMachineInstance* is running and see what node it is running on. If the *VirtualMachineInstance* is still in the scheduling phase, please execute the command again.
 +
 [.wrap,console,role=execute]
 ----
@@ -413,6 +413,21 @@ VM pod-affinity-vm was scheduled to start
 ----
 
 +
+. Verify the *VirtualMachineInstance* is running and see what node it is running on. If the *VirtualMachineInstance* is still in the scheduling phase, please execute the command again.
++
+[.wrap,console,role=execute]
+----
+oc get vmi -n pod-affinity-vm affinity
+----
+
++
+.Output
+----
+NAME               AGE    PHASE     IP             NODENAME                        READY
+pod-affinity-vm    1m2s   Running   10.232.0.218   control-plane-cluster-dvddt-1   True
+----
+
++
 . Once the VM has started, using the OpenShift Console, from the left side panel, navigate to *Virtualization → VirtualMachines*
 
 +
@@ -570,6 +585,21 @@ VM pod-anti-affinity-vm was scheduled to start
 ----
 
 +
+. Verify the *VirtualMachineInstance* is running and see what node it is running on. If the *VirtualMachineInstance* is still in the scheduling phase, please execute the command again.
++
+[.wrap,console,role=execute]
+----
+oc get vmi pod-anti-affinity-vm -n affinity
+----
+
++
+.Output
+----
+NAME                   AGE   PHASE     IP            NODENAME                 READY
+pod-anti-affinity-vm   1m    Running   10.233.0.44   worker-cluster-dvddt-1   True
+----
+
++
 . Once the VM has started, using the OpenShift Console, from the left side panel, navigate to *Virtualization → VirtualMachines*
 
 +
@@ -694,3 +724,29 @@ node-affinity-vm       58m   Running   10.233.0.35   worker-cluster-dvddt-1     
 
 +
 . You will now see the *pod-anti-affinity-vm* running on a different node from *node-affinity-vm* because of the pod anti-affinity rule.
+
+[IMPORTANT]
+====
+Stop the *node-affinity-vm*, *pod-affinity-vm* and *pod-anti-affinity-vm* VMs using *virtctl* from your *Terminal* window to ensure you have enough resources for the next labs.
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop node-affinity-vm -n affinity
+----
+
+*VM node-affinity-vm was scheduled to stop*
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop pod-affinity-vm -n affinity
+----
+
+*VM pod-affinity-vm was scheduled to stop*
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop pod-anti-affinity-vm -n affinity
+----
+
+*VM pod-anti-affinity-vm was scheduled to stop*
+====

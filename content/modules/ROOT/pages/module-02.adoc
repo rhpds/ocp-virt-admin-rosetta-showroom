@@ -239,7 +239,7 @@ To calculate the overcommit ratio on a specific node:
 +
 [,shell,role="execute wrap",subs="attributes"]
 ----
-oc get vmi -n over-commit -o wide
+oc get vmi -A -o wide | grep $(oc get vmi overcommit-vm-1 -n over-commit -o json | jq -r '.status.nodeName')
 ----
 
 +
@@ -602,4 +602,14 @@ Calculated as:
 2 * (100/200) = 1GiB + VM overhead
 ====
 
-+
+[IMPORTANT]
+====
+Stop the *overcommit-vm-1* VM using *virtctl* from your *Terminal* window to ensure you have enough resources for the next labs.
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop overcommit-vm-1 -n over-commit
+----
+
+*VM overcommit-vm-1 was scheduled to stop*
+====
