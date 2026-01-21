@@ -362,7 +362,7 @@ IMPORTANT: **A VM with 32 vCPUs only requests `3200m` (0.1 * 32 = 3.2 CPU) by de
 [#memory]
 == Memory Overcommit
 
-Kubernetes, until 1.21, and OpenShift, until 4.21, did not have a Generally Available native SWAP implementation and thus did now allow use of SWAP.
+Kubernetes, until 1.21, and OpenShift, until 4.21, did not have a Generally Available native SWAP implementation and thus did not allow use of SWAP.
 
 Memory oversubscription without use of swap is hazardous because if the amount of memory required by processes running on a node exceeds the amount of RAM available, processes will be killed. That's not desirable, particularly for VMs where the workloads will be go offline if the VM is killed.
 

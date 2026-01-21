@@ -417,7 +417,7 @@ VM pod-affinity-vm was scheduled to start
 +
 [.wrap,console,role=execute]
 ----
-oc get vmi -n pod-affinity-vm affinity
+oc get vmi -n  affinity pod-affinity-vm
 ----
 
 +
