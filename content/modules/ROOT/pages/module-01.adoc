@@ -73,6 +73,8 @@ image::exercise1/01-image-compute-003.png[title="Initiate migration", link=self,
 +
 image::exercise1/01-image-compute-004.png[title="Configure migration", link=self, window=blank, width=100%]
 
+. Click *Migrate Virtual Machine*
++
 . Wait a few moments and the Virtual Machine status will change from *Running* to *Migrating*.
 
 +
