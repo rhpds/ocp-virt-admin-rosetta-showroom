@@ -1,5 +1,13 @@
 = Overcommit in OpenShift Virtualization
 
+ifdef::vmware[]
+.VMware Rosetta Stone
+****
+VMware admins typically interact with CPU and memory overcommit as part of a more collaborative relationship with Capacity Management teams, applying values *to each ESXi host* that are often provided to them by those teams or other 3rd party capacity management systems.
+****
+endif::[]
+
+
 *Overcommit* occurs when the allocated virtual resources exceed the physical resources available on the host. Overcommit allows users to enable higher workload density by leveraging the fact that Virtual Machines (VMs) rarely use their full allocated capacity simultaneously.
 
 In this module, you will perform two overcommit tasks:
@@ -143,7 +151,7 @@ oc get vm overcommit-vm-1 -n over-commit -o jsonpath='{.spec.template.spec.domai
 16
 ----
 
-+ 
++
 .. Start the *overcommit-vm-1* Virtual Machine
 
 ... You can do this via the *Console*
@@ -239,7 +247,7 @@ oc get vmi -A -o wide | grep $(oc get vmi overcommit-vm-1 -n over-commit -o json
 .Output
 ----
 NAME              AGE   PHASE     IP             NODENAME                        READY   LIVE-MIGRATABLE   PAUSED
-overcommit-vm-1   75m   Running   10.232.0.121   control-plane-cluster-qc86c-1   True    True              
+overcommit-vm-1   75m   Running   10.232.0.121   control-plane-cluster-qc86c-1   True    True
 ----
 
 
@@ -253,7 +261,7 @@ overcommit-vm-1   75m   Running   10.232.0.121   control-plane-cluster-qc86c-1  
 NODE=$(oc get nodes -o custom-columns=":metadata.name" --no-headers | grep $(oc get vmi overcommit-vm-1 -n over-commit -o json | jq -r '.status.nodeName'))
 oc get vmi -A -o json | \
 jq -r --arg NODE "$NODE" \
-'.items[] | select(.status.nodeName == $NODE) | 
+'.items[] | select(.status.nodeName == $NODE) |
 {
   name: .metadata.name,
   total_vcpus: ((.spec.domain.cpu.sockets // 1) * (.spec.domain.cpu.cores // 1) * (.spec.domain.cpu.threads // 1))
@@ -337,7 +345,7 @@ oc get pods -n over-commit -l vm.kubevirt.io/name=overcommit-vm-1 \
 ----
 
 +
-Using the *OpenShift Console*, navigate to *Workloads → Pods*. 
+Using the *OpenShift Console*, navigate to *Workloads → Pods*.
 
 +
 From the *Project:* dropdown and select the *over-commit* namespace to see the *virt-launcher* pod for the VM.
@@ -354,9 +362,9 @@ IMPORTANT: **A VM with 32 vCPUs only requests `3200m` (0.1 * 32 = 3.2 CPU) by de
 [#memory]
 == Memory Overcommit
 
-Kubernetes, until 1.21, and OpenShift, until 4.21, did not have a Generally Available native SWAP implementation and thus did now allow use of SWAP.
+Kubernetes, until 1.21, and OpenShift, until 4.21, did not have a Generally Available native SWAP implementation and thus did not allow use of SWAP.
 
-Memory oversubscription without use of swap is hazardous because if the amount of memory required by processes running on a node exceeds the amount of RAM available, processes will be killed. That's not desirable, particularly for VMs where the workloads will be go offline if the VM is killed. 
+Memory oversubscription without use of swap is hazardous because if the amount of memory required by processes running on a node exceeds the amount of RAM available, processes will be killed. That's not desirable, particularly for VMs where the workloads will be go offline if the VM is killed.
 
 OpenShift Virtualization ships the *wasp-agent* to permit the controlled use of swap with VMs.
 Refer to the https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/virtualization/postinstallation-configuration#virt-using-wasp-agent-to-configure-higher-vm-workload-density_virt-configuring-higher-vm-workload-density[wasp-agent component documentation] for more information.
@@ -365,7 +373,7 @@ NOTE: We won't configure the *wasp-agent* in this lab due to time and resource c
 
 IMPORTANT: Starting with Kubernetes 1.21 and OpenShift 4.21 the *wasp-agent* will be superseded by the native Kubernetes SWAP implementation.
 
-The *memoryOvercommitPercentage* parameter on the *hyperconverged* Custom Resources tells OpenShift Virtualization how to scale the memory requests for each VM. When set to the default, 100, it calculates memory requests based on the full amount of memory declared by the VM. When it's set to a higher value, the request is set to a proportionally smaller value than the VM requested, allowing for memory overcommit. 
+The *memoryOvercommitPercentage* parameter on the *hyperconverged* Custom Resources tells OpenShift Virtualization how to scale the memory requests for each VM. When set to the default, 100, it calculates memory requests based on the full amount of memory declared by the VM. When it's set to a higher value, the request is set to a proportionally smaller value than the VM requested, allowing for memory overcommit.
 
 For example, with a VM with 16GiB of memory.
 
@@ -400,7 +408,7 @@ See the section on https://docs.redhat.com/en/documentation/openshift_container_
 
 +
 
-Using the *OpenShift Console*, navigate to *Virtualization → Virtual Machines*. 
+Using the *OpenShift Console*, navigate to *Virtualization → Virtual Machines*.
 
 +
 Under *All projects*, select the *over-commit* namespace and select the *overcommit-vm-1* VM to view the *CPU/Memory* allocation.
@@ -424,7 +432,7 @@ oc get vm -n over-commit overcommit-vm-1 -o json | jq .spec.template.spec.domain
 ----
 
 +
-Using the *OpenShift Console*, navigate to *Workloads → Pods*. 
+Using the *OpenShift Console*, navigate to *Workloads → Pods*.
 
 +
 From the *Project:* dropdown and select the *over-commit* namespace to see the *virt-launcher* pod for the VM.
@@ -594,4 +602,14 @@ Calculated as:
 2 * (100/200) = 1GiB + VM overhead
 ====
 
-+
+[IMPORTANT]
+====
+Stop the *overcommit-vm-1* VM using *virtctl* from your *Terminal* window to ensure you have enough resources for the next labs.
+
+[,shell,role="execute wrap",subs="attributes"]
+----
+virtctl stop overcommit-vm-1 -n over-commit
+----
+
+*VM overcommit-vm-1 was scheduled to stop*
+====
