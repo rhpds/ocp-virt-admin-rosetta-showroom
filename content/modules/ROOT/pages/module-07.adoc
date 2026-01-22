@@ -6,6 +6,8 @@ ifdef::vmware[]
 OpenShift does live migration of storage and compute, as does VMware.
 
 Storage migration in VMware is already built in.
+
+This feature provides similar functionality and benefit as Cross-vCenter vMotion.
 ****
 endif::[]
 
@@ -688,10 +690,13 @@ image::exercise7/ui/image12-plan-created-error.png[title="Plan Details", link=se
 ====
 Stop the *vm-migration-ns-ns-live* VM using *virtctl* from your *Terminal* window to ensure you have enough resources for the next labs.
 
-[,shell,role="execute wrap",subs="attributes"]
+[.wrap,console,role=execute]
 ----
-virtctl stop vm-migration-ns-ns-live -n vm-live-migration-source
+virtctl stop vm-migration-ns-ns-live -n vm-live-migration-destination
 ----
 
-*VM vm-migration-ns-ns-live was scheduled to stop*
+[source,console]
+----
+VM vm-migration-ns-ns-live was scheduled to stop
+----
 ====
